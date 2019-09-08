@@ -13,6 +13,7 @@ mrh = 5; // main room height
 mrrh = 2; // main room roof height
 hr = mrr + 4; // house radius
 orh = 2.5; // outer room height
+orrh = 1; // outer room roof height
 
 // calculate approximate house size
 function house_size() =
@@ -171,9 +172,17 @@ if (show_floor) {
 // roof on outer rooms
 if (show_roof) {
     for (i = [2:corners-2])
+        let (p1 = p(i, mrr))
+        let (p2 = p(i+1, mrr))
         translate([0,0,orh])
-        linear_extrude(height = wt)
-        polygon([p(i, mrr), p(i, hr), p(i+1, hr), p(i+1,mrr)]);
+        hull()
+        for(p=[ [p1[0], p1[1], 0] + [0,0,orrh]
+              , p(i, hr)
+              , p(i+1, hr)
+              , [p2[0], p2[1], 0] + [0,0,orrh]
+              ])
+            translate(p) cube(wt, true);
+
 }
 
 // winter garden
