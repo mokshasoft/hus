@@ -10,6 +10,7 @@ wt = 0.2;  // wall thickness
 corners = 8; // number of corners in main room
 mrr = 4; // main room radius
 mrh = 5; // main room height
+mrrh = 2; // main room roof height
 hr = mrr + 4; // house radius
 orh = 2.5; // outer room height
 
@@ -100,8 +101,9 @@ octawalls(mrr, mrh);
 if (show_roof) {
     for (i = [0:corners-1])
         translate([0,0,mrh])
-        linear_extrude(height = wt)
-        polygon([[0,0], p(i, mrr), p(i+1, mrr)]);
+        hull()
+        for(p=[p(i, mrr), p(i+1, mrr), [0,0,mrrh]])
+            translate(p) cube(wt, true);
 }
 
 // hall
