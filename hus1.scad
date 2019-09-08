@@ -132,8 +132,11 @@ module non_standard_right() {
     // roof
     if (show_roof) {
         translate([0,0,orh])
-        linear_extrude(height = wt)
-        polygon([p1, p2, p3, p4]);
+        hull()
+        for(p=[ [p1[0], p1[1], 0] + [0,0,orrh]
+              , p2, p3
+              , [p4[0], p4[1], 0] + [0,0,orrh]])
+            translate(p) cube(wt, true);
     }
 }
 non_standard_right();
@@ -156,8 +159,11 @@ module non_standard_left() {
     // roof
     if (show_roof) {
         translate([0,0,orh])
-        linear_extrude(height = wt)
-        polygon([p1, p2, p3, p4]);
+        hull()
+        for(p=[ [p1[0], p1[1], 0] + [0,0,orrh]
+              , p2, p3
+              , [p4[0], p4[1], 0] + [0,0,orrh]])
+            translate(p) cube(wt, true);
     }
 }
 non_standard_left();
