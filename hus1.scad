@@ -2,6 +2,9 @@
 show_floor = true;
 show_roof = true;
 
+// constants
+gr = 1.61803; // golden ration
+
 // configure the house
 wt = 0.2;  // wall thickness
 corners = 8; // number of corners in main room
@@ -52,10 +55,18 @@ module octagon(r, h) {
 }
 
 module octawalls(r, h) {
+    v = 360/corners/2;
+    wallw = 2*mrr*sin(v);
+    ww = wallw / gr; // window width
+    wh = ww / gr / 2; // window height
     difference () {
         octagon(r, h);
         translate([0,0,-wt])
         octagon(r - wt, h + 2*wt);
+        for (i = [0:corners-1])
+            rotate(v + 2*i*v)
+            translate([mrr,0,mrh*0.85])
+            cube([10*wt, ww, wh], center = true);
     }
 }
 
