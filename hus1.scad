@@ -56,6 +56,7 @@ module octagon(r, h) {
 
 module octawalls(r, h) {
     v = 360/corners/2;
+    dist = mrr*cos(v);
     wallw = 2*mrr*sin(v);
     ww = wallw / gr; // window width
     wh = ww / gr / 2; // window height
@@ -63,11 +64,17 @@ module octawalls(r, h) {
         octagon(r, h);
         translate([0,0,-wt])
         octagon(r - wt, h + 2*wt);
+        // create the hole for the windows
         for (i = [0:corners-1])
             rotate(v + 2*i*v)
-            translate([mrr,0,mrh*0.85])
-            cube([10*wt, ww, wh], center = true);
+            translate([dist,0,mrh*0.85])
+            cube([2*wt, ww, wh], center = true);
     }
+    // add the glass to the windows
+    for (i = [0:corners-1])
+        rotate(v + 2*i*v)
+        translate([dist - wt/2,0,mrh*0.85])
+        %cube([wt/2, ww, wh], center = true);
 }
 
 module hall(size, h) {
