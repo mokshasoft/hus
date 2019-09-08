@@ -69,6 +69,10 @@ module octawalls(r, h) {
             rotate(v + 2*i*v)
             translate([dist,0,mrh*0.85])
             cube([2*wt, ww, wh], center = true);
+        // create the hole for the front door
+        rotate(v)
+        translate([dist,0,1])
+        cube([2*wt, 1, 2], center = true);        
     }
     // add the glass to the windows
     for (i = [0:corners-1])
