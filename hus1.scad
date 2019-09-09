@@ -204,3 +204,20 @@ module winter_garden() {
     %wall(p3, p4, orh);
 }
 winter_garden();
+
+// inner walls
+module inner_walls() {
+    if (corners == 8) {
+        wall(p(2, mrr), p(2, hr), orh);
+        wall(p(7, mrr), p(7, hr), orh);
+        wall(p(6, mrr), p(6, hr), orh);
+        wall(p(7, mrr+1.5), p(6, mrr+1.5), orh);
+        wall(p(5, mrr), p(5, hr), orh);
+        wall(p(4, mrr), p(4, hr), orh);
+        wall(p(3, mrr+1.5), p(4, mrr+1.5), orh);
+        wall(p(3, mrr), p(3, hr), orh);
+        wall( inbetween(p(1,mrr+(hr-mrr)/2), p(2, mrr+(hr-mrr)/2), 50)
+        , p(2, mrr+(hr-mrr)/2), orh);
+    }
+}
+inner_walls();
