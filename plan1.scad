@@ -123,6 +123,9 @@ module bottom() {
     // inner octagon
     octagon(mrr);
     // outer octagon
+    rmwall(inbetween(p(7, hr), p(0, hr), 50), p(0, hr))
+    rmwall(p(0, hr), p(1, hr))
+    rmwall(p(1, hr), inbetween(p(1, hr), p(2, hr), 50))
     octagon(hr);
     // winter garden
     winter_garden();
