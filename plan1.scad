@@ -148,8 +148,11 @@ module plan1() {
     door(p(7, hr), p(0, hr), 25)
     // door to bathroom area
     door(p(6, mrr), p(7, mrr), 50)
+    // door to south-east bedroom
+    door(p(3, mrr), p(4, mrr), 75)
     bottom();
     // create the hall
+    door(p(3, mrr), inbetween(p(2, hr), p(3, hr), 50), 70)
     wall(p(3, mrr), inbetween(p(2, hr), p(3, hr), 50));
     door(p(7, mrr), p(7, hr), 25)
     wall(p(7, mrr), p(7, hr));
@@ -162,11 +165,11 @@ module plan1() {
     let (d = mrr + (hr - mrr)/2)
     door(p(6, d), p(7, d), 50)
     wall(p(6, d), p(7, d));
-    // large bed room
+    // large bedroom
     let (p1 = inbetween(p(4, mrr), p(5, mrr), 50))
     let (p2 = inbetween(p(4, hr), p(5, hr), 50))
     wall(p1, p2);
-    // split the other bed rooms
+    // split the other bedrooms
     let (p1 = inbetween(p(3, mrr), p(4, mrr), 50))
     let (p2 = inbetween(p(3, hr), p(4, hr), 50))
     wall(p1, p2);
