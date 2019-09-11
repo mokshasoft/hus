@@ -133,6 +133,16 @@ module bottom() {
 
 // create floor plan example 1
 module plan1() {
+    // windows
+    window(p(2, hr), p(3, hr), 75)
+    window(p(3, hr), p(4, hr), 25)
+    window(p(3, hr), p(4, hr), 80)
+    window(p(4, hr), p(5, hr), 25)
+    window(p(5, hr), p(6, hr), 25)
+    window(p(5, hr), p(6, hr), 50)
+    window(p(5, hr), p(6, hr), 75)
+    window(p(6, hr), p(7, hr), 35)
+    window(p(6, hr), p(7, hr), 65)
     // wall to winter garden
     door(p(0, mrr), p(1, mrr), 50)
     window(p(0, mrr), p(1, mrr), 18, 0.8)
