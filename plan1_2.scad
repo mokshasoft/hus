@@ -75,6 +75,10 @@ module plan2() {
     window(p(5, hr), p(6, hr), 25)
     window(p(5, hr), p(6, hr), 50)
     window(p(5, hr), p(6, hr), 75)
+    // shower room
+    window(p(6, hr), p(7, hr), 30)
+    // toilet
+    window(p(6, hr), p(7, hr), 80)
     // guestroom
     window(p(7, hr), p(0, hr), 25)
     // winter garden
