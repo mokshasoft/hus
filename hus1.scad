@@ -25,7 +25,8 @@ echo("area of house = ", house_size());
 
 // calculate the coordinates for the corners
 function p(i, r) =
-   let(angle=i*(360/corners))
+   let (vz = 360/corners/2)
+   let (angle=i*(360/corners) - vz)
    [ r*cos(angle)
    , r*sin(angle)
    ];
@@ -57,30 +58,34 @@ module octagon(r, h) {
 }
 
 module octawalls(r, h) {
-    v = 360/corners/2;
-    dist = mrr*cos(v);
-    wallw = 2*mrr*sin(v);
-    ww = wallw / gr; // window width
-    wh = ww / gr / 2; // window height
     difference () {
         octagon(r, h);
-        translate([0,0,-wt])
+        translate([0, 0, -wt])
         octagon(r - wt, h + 2*wt);
-        // create the hole for the windows
-        for (i = [0:corners-1])
-            rotate(v + 2*i*v)
-            translate([dist,0,mrh*0.85])
-            cube([2*wt, ww, wh], center = true);
-        // create the hole for the front door
-        rotate(v)
-        translate([dist,0,1])
-        cube([2*wt, 1, 2], center = true);        
     }
-    // add the glass to the windows
-    for (i = [0:corners-1])
-        rotate(v + 2*i*v)
-        translate([dist - wt/2,0,mrh*0.85])
-        %cube([wt/2, ww, wh], center = true);
+}
+
+module window(p1, p2, pos, height, sizex, sizey) {
+    assert(0 < pos && pos < 100);
+    x_diff = p2[0] - p1[0];
+    y_diff = p2[1] - p1[1];
+    len = sqrt(pow(x_diff, 2) +
+               pow(y_diff, 2));
+    difference () {
+        children();
+        // create the hole for the window
+        translate([0,0,height])
+        translate(p1 + pos*[x_diff, y_diff]/100)
+        rotate(atan2(y_diff, x_diff) + 90, [0,0,1])
+        cube([2*wt, sizex, sizey], center = true);
+    }
+    // add the glass to the window
+    color("gray")
+    translate([0,0,height])
+    translate(p1 + pos*[x_diff, y_diff]/100)
+    rotate(atan2(y_diff, x_diff) + 90, [0,0,1])
+    translate([wt/2, 0, 0])
+    cube([wt/2, sizex, sizey], center = true);
 }
 
 module hall(size, h) {
@@ -97,7 +102,25 @@ if (show_floor) {
     octagon(mrr, wt);
 }
 // walls of main room
-octawalls(mrr, mrh);
+module main_room() {
+    v = 360/corners/2;
+    dist = mrr*cos(v);
+    wallw = 2*mrr*sin(v);
+    ww = wallw / gr; // window width
+    wh = ww / gr / 2; // window height
+    h = mrh*0.85;
+    window(p(0, mrr), p(1, mrr), 50, h, ww, wh)
+    window(p(1, mrr), p(2, mrr), 50, h, ww, wh)
+    window(p(2, mrr), p(3, mrr), 50, h, ww, wh)
+    window(p(3, mrr), p(4, mrr), 50, h, ww, wh)
+    window(p(4, mrr), p(5, mrr), 50, h, ww, wh)
+    window(p(5, mrr), p(6, mrr), 50, h, ww, wh)
+    window(p(6, mrr), p(7, mrr), 50, h, ww, wh)
+    window(p(7, mrr), p(0, mrr), 50, h, ww, wh)
+    octawalls(mrr, mrh);
+}
+main_room();
+
 // roof of main room
 if (show_roof) {
     for (i = [0:corners-1])
@@ -199,9 +222,9 @@ module winter_garden() {
     p3 = p(1, hr);
     p4 = inbetween(p(1,hr), p(2, hr), 50);
     // walls
-    %wall(p1, p2, orh);
-    %wall(p2, p3, orh);
-    %wall(p3, p4, orh);
+    color("gray") wall(p1, p2, orh);
+    color("gray") wall(p2, p3, orh);
+    color("gray") wall(p3, p4, orh);
 }
 winter_garden();
 
