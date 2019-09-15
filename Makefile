@@ -1,4 +1,4 @@
-STL=hus1.scad plan1_1.scad plan1_2.scad
+STL=hus1.scad hus2.scad plan1_1.scad plan1_2.scad
 
 all: stl
 
