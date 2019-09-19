@@ -90,8 +90,8 @@ module winter_garden() {
     p3 = p(1, hr);
     p4 = inbetween(p(1,hr), p(2, hr), 50);
     // walls
-    color("gray") w(p1, p2, orh);
-    color("gray") w(p2, p3, orh);
-    color("gray") w(p3, p4, orh);
+    glas_color() w(p1, p2, orh);
+    glas_color() w(p2, p3, orh);
+    glas_color() w(p3, p4, orh);
 }
 winter_garden();
