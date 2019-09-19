@@ -120,32 +120,6 @@ module non_standard_right() {
     }
 }
 
-// the non-standard outer wall on the left
-module non_standard_left() {
-    // calculate corners of room
-    p1 = inbetween(p(corners-1,mrr), p(0, mrr), 50);
-    p2 = inbetween(p(corners-1,hr), p(0, hr), 50);
-    p3 = p(corners-1, hr);
-    p4 = p(corners-1, mrr);
-    // walls
-    w(p1, p2, orh);
-    w(p2, p3, orh);
-    // floor
-    if (show_floor) {
-        linear_extrude(height = wt)
-        polygon([p1, p2, p3, p4]);
-    }
-    // roof
-    if (show_roof) {
-        translate([0,0,orh])
-        hull()
-        for(p=[ [p1[0], p1[1], 0] + [0,0,orrh]
-              , p2, p3
-              , [p4[0], p4[1], 0] + [0,0,orrh]])
-            translate(p) cube(wt, true);
-    }
-}
-
 // floor on outer rooms
 module outer_floor() {
     for (i = [2:corners-2])
@@ -193,7 +167,7 @@ module house() {
     }
     outer_walls();
     non_standard_right();
-    non_standard_left();
+    mirror([0,1,0]) non_standard_right();
     winter_garden();
 }
 
