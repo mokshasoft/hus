@@ -1,3 +1,5 @@
+use <element.scad>
+
 // configure the rendering
 show_floor = true;
 show_roof = true;
@@ -24,74 +26,30 @@ function house_size() =
 echo("area of house = ", house_size());
 
 // calculate the coordinates for the corners
-function p(i, r) =
-   let (vz = 360/corners/2)
-   let (angle=i*(360/corners) - vz)
-   [ r*cos(angle)
-   , r*sin(angle)
-   ];
-
-function inbetween(p1, p2, procent) =
-    let (x_diff = p2[0] - p1[0])
-    let (y_diff = p2[1] - p1[1])
-    [ p1[0] + x_diff*procent/100
-    , p1[1] + y_diff*procent/100
-    ];
+function p(i, r) = point(i, r, corners);
 
 // create a wall of thickness wt
-module wall(p1, p2, h) {
-    let (x_diff = p2[0] - p1[0])
-    let (y_diff = p2[1] - p1[1])
-    let (len = sqrt(pow(x_diff, 2) +
-                    pow(y_diff, 2)))
-    linear_extrude(height = h)
-    translate(p1)
-    rotate(atan2(y_diff, x_diff))
-    translate([0, -wt/2])
-    square([len, wt]);
+module w(p1, p2, h) {
+    wall(p1, p2, h, wt);
 }
 
-module octagon(r, h) {
-    coords=[for (i = [0:corners-1]) p(i, r)];
-    linear_extrude(height = h)
-    polygon(coords);
+module o(r, h) {
+    octagon(r, h, corners);
 }
 
-module octawalls(r, h) {
-    difference () {
-        octagon(r, h);
-        translate([0, 0, -wt])
-        octagon(r - wt, h + 2*wt);
-    }
+module ow(r, h) {
+    octawalls(r, h, wt, corners);
 }
 
-module window(p1, p2, pos, height, sizex, sizey) {
-    assert(0 < pos && pos < 100);
-    x_diff = p2[0] - p1[0];
-    y_diff = p2[1] - p1[1];
-    len = sqrt(pow(x_diff, 2) +
-               pow(y_diff, 2));
-    difference () {
-        children();
-        // create the hole for the window
-        translate([0,0,height])
-        translate(p1 + pos*[x_diff, y_diff]/100)
-        rotate(atan2(y_diff, x_diff) + 90, [0,0,1])
-        cube([2*wt, sizex, sizey], center = true);
-    }
-    // add the glass to the window
-    color("gray")
-    translate([0,0,height])
-    translate(p1 + pos*[x_diff, y_diff]/100)
-    rotate(atan2(y_diff, x_diff) + 90, [0,0,1])
-    translate([wt/2, 0, 0])
-    cube([wt/2, sizex, sizey], center = true);
+module wi(p1, p2, pos, height, sizex, sizey) {
+    window(p1, p2, pos, height, sizex, sizey, wt)
+    children();
 }
 
 module hall(size, h) {
     r = mrr - size;
-    wall(p(0, mrr), p(0, r), h);
-    wall(p(0, r), p(1, r), h);
+    w(p(0, mrr), p(0, r), h);
+    w(p(0, r), p(1, r), h);
     translate([0, 0, h])
     linear_extrude(height = wt)
     polygon([p(0,mrr), p(0, r), p(1, r), p(1, mrr)]);
@@ -99,7 +57,7 @@ module hall(size, h) {
 
 // floor of main room
 if (show_floor) {
-    octagon(mrr, wt);
+    o(mrr, wt);
 }
 // walls of main room
 module main_room() {
@@ -109,15 +67,15 @@ module main_room() {
     ww = wallw / gr; // window width
     wh = ww / gr / 2; // window height
     h = mrh*0.85;
-    window(p(0, mrr), p(1, mrr), 50, h, ww, wh)
-    window(p(1, mrr), p(2, mrr), 50, h, ww, wh)
-    window(p(2, mrr), p(3, mrr), 50, h, ww, wh)
-    window(p(3, mrr), p(4, mrr), 50, h, ww, wh)
-    window(p(4, mrr), p(5, mrr), 50, h, ww, wh)
-    window(p(5, mrr), p(6, mrr), 50, h, ww, wh)
-    window(p(6, mrr), p(7, mrr), 50, h, ww, wh)
-    window(p(7, mrr), p(0, mrr), 50, h, ww, wh)
-    octawalls(mrr, mrh);
+    wi(p(0, mrr), p(1, mrr), 50, h, ww, wh)
+    wi(p(1, mrr), p(2, mrr), 50, h, ww, wh)
+    wi(p(2, mrr), p(3, mrr), 50, h, ww, wh)
+    wi(p(3, mrr), p(4, mrr), 50, h, ww, wh)
+    wi(p(4, mrr), p(5, mrr), 50, h, ww, wh)
+    wi(p(5, mrr), p(6, mrr), 50, h, ww, wh)
+    wi(p(6, mrr), p(7, mrr), 50, h, ww, wh)
+    wi(p(7, mrr), p(0, mrr), 50, h, ww, wh)
+    ow(mrr, mrh);
 }
 main_room();
 
@@ -135,7 +93,7 @@ hall(1.5, orh);
 
 // outer walls
 for (i = [2:corners-2])
-    wall(p(i, hr), p(i+1, hr), orh);
+    w(p(i, hr), p(i+1, hr), orh);
 
 // the non-standard outer wall on the right
 module non_standard_right() {
@@ -145,8 +103,8 @@ module non_standard_right() {
     p3 = p(2, hr);
     p4 = p(2, mrr);
     // walls
-    wall(p1, p2, orh);
-    wall(p2, p3, orh);
+    w(p1, p2, orh);
+    w(p2, p3, orh);
     // floor
     if (show_floor) {
         linear_extrude(height = wt)
@@ -172,8 +130,8 @@ module non_standard_left() {
     p3 = p(corners-1, hr);
     p4 = p(corners-1, mrr);
     // walls
-    wall(p1, p2, orh);
-    wall(p2, p3, orh);
+    w(p1, p2, orh);
+    w(p2, p3, orh);
     // floor
     if (show_floor) {
         linear_extrude(height = wt)
@@ -222,24 +180,24 @@ module winter_garden() {
     p3 = p(1, hr);
     p4 = inbetween(p(1,hr), p(2, hr), 50);
     // walls
-    color("gray") wall(p1, p2, orh);
-    color("gray") wall(p2, p3, orh);
-    color("gray") wall(p3, p4, orh);
+    color("gray") w(p1, p2, orh);
+    color("gray") w(p2, p3, orh);
+    color("gray") w(p3, p4, orh);
 }
 winter_garden();
 
 // inner walls
 module inner_walls() {
     if (corners == 8) {
-        wall(p(2, mrr), p(2, hr), orh);
-        wall(p(7, mrr), p(7, hr), orh);
-        wall(p(6, mrr), p(6, hr), orh);
-        wall(p(7, mrr+1.5), p(6, mrr+1.5), orh);
-        wall(p(5, mrr), p(5, hr), orh);
-        wall(p(4, mrr), p(4, hr), orh);
-        wall(p(3, mrr+1.5), p(4, mrr+1.5), orh);
-        wall(p(3, mrr), p(3, hr), orh);
-        wall( inbetween(p(1,mrr+(hr-mrr)/2), p(2, mrr+(hr-mrr)/2), 50)
+        w(p(2, mrr), p(2, hr), orh);
+        w(p(7, mrr), p(7, hr), orh);
+        w(p(6, mrr), p(6, hr), orh);
+        w(p(7, mrr+1.5), p(6, mrr+1.5), orh);
+        w(p(5, mrr), p(5, hr), orh);
+        w(p(4, mrr), p(4, hr), orh);
+        w(p(3, mrr+1.5), p(4, mrr+1.5), orh);
+        w(p(3, mrr), p(3, hr), orh);
+        w( inbetween(p(1,mrr+(hr-mrr)/2), p(2, mrr+(hr-mrr)/2), 50)
         , p(2, mrr+(hr-mrr)/2), orh);
     }
 }
