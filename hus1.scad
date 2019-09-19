@@ -56,9 +56,10 @@ module hall(size, h) {
 }
 
 // floor of main room
-if (show_floor) {
+module main_floor() {
     o(mrr, wt);
 }
+
 // walls of main room
 module main_room() {
     v = 360/corners/2;
@@ -77,10 +78,9 @@ module main_room() {
     wi(p(7, mrr), p(0, mrr), 50, h, ww, wh)
     ow(mrr, mrh);
 }
-main_room();
 
 // roof of main room
-if (show_roof) {
+module main_roof() {
     for (i = [0:corners-1])
         translate([0,0,mrh])
         hull()
@@ -88,12 +88,11 @@ if (show_roof) {
             translate(p) cube(wt, true);
 }
 
-// hall
-hall(1.5, orh);
-
 // outer walls
-for (i = [2:corners-2])
-    w(p(i, hr), p(i+1, hr), orh);
+module outer_walls() {
+    for (i = [2:corners-2])
+        w(p(i, hr), p(i+1, hr), orh);
+}
 
 // the non-standard outer wall on the right
 module non_standard_right() {
@@ -120,7 +119,6 @@ module non_standard_right() {
             translate(p) cube(wt, true);
     }
 }
-non_standard_right();
 
 // the non-standard outer wall on the left
 module non_standard_left() {
@@ -147,17 +145,16 @@ module non_standard_left() {
             translate(p) cube(wt, true);
     }
 }
-non_standard_left();
 
 // floor on outer rooms
-if (show_floor) {
+module outer_floor() {
     for (i = [2:corners-2])
         linear_extrude(height = wt)
         polygon([p(i, mrr), p(i, hr), p(i+1, hr), p(i+1,mrr)]);
 }
 
 // roof on outer rooms
-if (show_roof) {
+module outer_roof() {
     for (i = [2:corners-2])
         let (p1 = p(i, mrr))
         let (p2 = p(i+1, mrr))
@@ -169,7 +166,6 @@ if (show_roof) {
               , [p2[0], p2[1], 0] + [0,0,orrh]
               ])
             translate(p) cube(wt, true);
-
 }
 
 // winter garden
@@ -184,21 +180,44 @@ module winter_garden() {
     color("gray") w(p2, p3, orh);
     color("gray") w(p3, p4, orh);
 }
-winter_garden();
 
-// inner walls
-module inner_walls() {
-    if (corners == 8) {
-        w(p(2, mrr), p(2, hr), orh);
-        w(p(7, mrr), p(7, hr), orh);
-        w(p(6, mrr), p(6, hr), orh);
-        w(p(7, mrr+1.5), p(6, mrr+1.5), orh);
-        w(p(5, mrr), p(5, hr), orh);
-        w(p(4, mrr), p(4, hr), orh);
-        w(p(3, mrr+1.5), p(4, mrr+1.5), orh);
-        w(p(3, mrr), p(3, hr), orh);
-        w( inbetween(p(1,mrr+(hr-mrr)/2), p(2, mrr+(hr-mrr)/2), 50)
-        , p(2, mrr+(hr-mrr)/2), orh);
+module house() {
+    main_room();
+    if (show_roof) {
+        main_roof();
+        outer_roof();
     }
+    if (show_floor) {
+        main_floor();
+        outer_floor();
+    }
+    outer_walls();
+    non_standard_right();
+    non_standard_left();
+    winter_garden();
 }
-inner_walls();
+
+module interior() {
+    // inner walls
+    module inner_walls() {
+        if (corners == 8) {
+            w(p(2, mrr), p(2, hr), orh);
+            w(p(7, mrr), p(7, hr), orh);
+            w(p(6, mrr), p(6, hr), orh);
+            w(p(7, mrr+1.5), p(6, mrr+1.5), orh);
+            w(p(5, mrr), p(5, hr), orh);
+            w(p(4, mrr), p(4, hr), orh);
+            w(p(3, mrr+1.5), p(4, mrr+1.5), orh);
+            w(p(3, mrr), p(3, hr), orh);
+            w( inbetween( p(1,mrr+(hr-mrr)/2)
+                        , p(2, mrr+(hr-mrr)/2), 50)
+             , p(2, mrr+(hr-mrr)/2), orh);
+        }
+    }
+    inner_walls();
+    hall(1.5, orh);
+}
+
+// build house
+house();
+interior();
