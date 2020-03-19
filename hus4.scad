@@ -71,6 +71,18 @@ module side_block() {
     }
 }
 
+// Left and right octagon blocks
 block_offset = mrr + mrr/gr;
 translate([0, block_offset, 0]) side_block();
 translate([0, -block_offset, 0]) side_block();
+
+//
+// Central part of the house
+//
+
+// Front wall
+pf = p(2, mrr) - [0, block_offset];
+w(pf, pf + [0, block_offset], 2);
+// Back wall
+pb = p(4, mrr) - [0, block_offset];
+w(pb, pb + [0, block_offset*1.6], 2);
