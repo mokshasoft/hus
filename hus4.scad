@@ -55,16 +55,22 @@ module main_roof(r, th) {
     rotate(180) half_roof();
 }
 
-// floor of main room
-if (show_floor) {
-    o(mrr, wt);
+module side_block() {
+    // floor of main room
+    if (show_floor) {
+        o(mrr, wt);
+    }
+    // walls of main room
+    difference() {
+        ow(mrr, mrh);
+        main_roof(mrr, wt*200);
+    }
+    // roof of main room
+    if (show_roof) {
+        main_roof(mrr, wt);
+    }
 }
-// walls of main room
-difference() {
-    ow(mrr, mrh);
-    main_roof(mrr, wt*200);
-}
-// roof of main room
-if (show_roof) {
-    main_roof(mrr, wt);
-}
+
+block_offset = mrr + mrr/gr;
+translate([0, block_offset, 0]) side_block();
+translate([0, -block_offset, 0]) side_block();
