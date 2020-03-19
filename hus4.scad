@@ -86,3 +86,22 @@ w(pf, pf + [0, block_offset], 2);
 // Back wall
 pb = p(4, mrr) - [0, block_offset];
 w(pb, pb + [0, block_offset*1.6], 2);
+
+// Create the tower
+module tower() {
+    ts = 1.5;
+    
+    module tower_roof(side, th) {
+        cube([2*side + 0.4, 2*side + 0.4, wt], center = true);
+    }
+
+    translate([-mrr, 0])
+        union() {
+            w([ts, ts], [ts, -ts], 8);
+            w([ts, -ts], [-ts, -ts], 8);
+            w([-ts, -ts], [-ts, ts], 8);
+            w([-ts, ts], [ts, ts], 8);
+            translate([0,0,8]) tower_roof(ts, 8);
+        }
+}
+tower();
