@@ -57,6 +57,7 @@ module hall(size, h) {
 
 // floor of main room
 module main_floor() {
+    color_floor()
     o(mrr, wt);
 }
 
@@ -81,6 +82,7 @@ module main_room() {
 
 // roof of main room
 module main_roof() {
+    color_roof()
     for (i = [0:corners-1])
         translate([0,0,mrh])
         hull()
@@ -106,11 +108,13 @@ module non_standard_right() {
     w(p2, p3, orh);
     // floor
     if (show_floor) {
+        color_floor()
         linear_extrude(height = wt)
         polygon([p1, p2, p3, p4]);
     }
     // roof
     if (show_roof) {
+        color_roof()
         translate([0,0,orh])
         hull()
         for(p=[ [p1[0], p1[1], 0] + [0,0,orrh]
@@ -122,6 +126,7 @@ module non_standard_right() {
 
 // floor on outer rooms
 module outer_floor() {
+    color_floor()
     for (i = [2:corners-2])
         linear_extrude(height = wt)
         polygon([p(i, mrr), p(i, hr), p(i+1, hr), p(i+1,mrr)]);
@@ -129,6 +134,7 @@ module outer_floor() {
 
 // roof on outer rooms
 module outer_roof() {
+    color_roof()
     for (i = [2:corners-2])
         let (p1 = p(i, mrr))
         let (p2 = p(i+1, mrr))
@@ -150,9 +156,9 @@ module winter_garden() {
     p3 = p(1, hr);
     p4 = inbetween(p(1,hr), p(2, hr), 50);
     // walls
-    glas_color() w(p1, p2, orh);
-    glas_color() w(p2, p3, orh);
-    glas_color() w(p3, p4, orh);
+    color_glass() w(p1, p2, orh);
+    color_glass() w(p2, p3, orh);
+    color_glass() w(p3, p4, orh);
 }
 
 module house() {
@@ -188,6 +194,7 @@ module interior() {
              , p(2, mrr+(hr-mrr)/2), orh);
         }
     }
+    color_inner_wall()
     inner_walls();
     hall(1.5, orh);
 }
