@@ -76,6 +76,7 @@ module main_roof(th) {
 
 // floor of main room
 if (show_floor) {
+    color_floor()
     o(mrr, wt);
 }
 // walls of main room
@@ -85,6 +86,7 @@ difference() {
 }
 // roof of main room
 if (show_roof) {
+    color_roof()
     main_roof(wt);
 }
 
@@ -92,6 +94,7 @@ if (show_roof) {
 hall(1.5, orh);
 
 // outer walls
+color_outer_wall()
 for (i = [2:corners-2])
     w(p(i, hr), p(i+1, hr), orh);
 
@@ -151,6 +154,7 @@ non_standard_left();
 
 // floor on outer rooms
 if (show_floor) {
+    color_floor()
     for (i = [2:corners-2])
         linear_extrude(height = wt)
         polygon([p(i, mrr), p(i, hr), p(i+1, hr), p(i+1,mrr)]);
@@ -158,6 +162,7 @@ if (show_floor) {
 
 // roof on outer rooms
 if (show_roof) {
+    color_roof()
     for (i = [2:corners-2])
         let (p1 = p(i, mrr))
         let (p2 = p(i+1, mrr))
@@ -201,4 +206,6 @@ module inner_walls() {
          , p(2, mrr+(hr-mrr)/2), orh);
     }
 }
+
+color_inner_wall()
 inner_walls();
