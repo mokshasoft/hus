@@ -70,3 +70,38 @@ module window(p1, p2, pos, height, sizex, sizey, wt = 300) {
     translate([wt/2, 0, 0])
     cube([wt/2, sizex, sizey], center = true);
 }
+
+module color_lawn() {
+    color("LawnGreen")
+    children();
+}
+
+module color_outer_wall() {
+    color("MediumSpringGreen")
+    children();
+}
+
+module color_inner_wall() {
+    color("Ivory")
+    children();
+}
+
+module color_roof() {
+    color("Lavender")
+    children();
+}
+
+module color_floor() {
+    color("Wheat")
+    children();
+}
+
+module color_logs() {
+    color("Ivory")
+    children();
+}
+
+module color_glass() {
+    color("azure", 0.25)
+    children();
+}

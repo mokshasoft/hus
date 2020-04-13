@@ -46,15 +46,15 @@ p8 = p9 + bed_w*[cos(angle), sin(angle)];
 
 // Lawn
 if (show_lawn) {
-    color("LawnGreen")
-    translate([-1.5*s, -1.5*s, -500])
-    cube([4*s, 4*s, 4]);
+    color_lawn()
+    translate([0, 0, -500])
+    cube([4*s, 4*s, 4], center = true);
 }
 
 module hus() {
     // Windows
 
-    color("MediumSpringGreen")
+    color_outer_wall()
     union() {
         // Outer walls
         wall(p1, p2, house_h);
@@ -67,31 +67,33 @@ module hus() {
     }
 
     // Inner walls
-
-    // Bed room
-    wall(p7, p7 + bed_l*[cos(90-angle), sin(90-angle)], room_h);
-    // Bath room and study
-    tmp = p8 + bed_l*[-cos(90-angle), sin(90-angle)];
-    wall(p8, tmp, room_h);
-    wall(inbetween(p9, p2, 50), inbetween(p8, tmp, 50), room_h);
+    color_inner_wall()
+    union() {
+        // Bed room
+        wall(p7, p7 + bed_l*[cos(90-angle), sin(90-angle)], room_h);
+        // Bath room and study
+        tmp = p8 + bed_l*[-cos(90-angle), sin(90-angle)];
+        wall(p8, tmp, room_h);
+        wall(inbetween(p9, p2, 50), inbetween(p8, tmp, 50), room_h);
+    }
 
     // Winter garden
-    color("azure",0.25)
+    color_glass()
     wall(p5, p1, house_h);
 
     // Pillars
-    color("Ivory")
+    color_inner_wall()
     for (p = [p1, p2, p3, p4, p5])
         translate([p[0], p[1], -500]) cylinder(h = house_h + 500, d = log_d);
 
     if (show_floor) {
-        color("Wheat")
+        color_floor()
         linear_extrude(300)
         polygon([p1, p2, p3, p4, p5]);
     }
 
     if (show_roof) {
-        color("Lavender")
+        color_roof()
         rotate([-3, 0, 0])
         scale([1.3, 1.3, 1])
         translate([0, -700, house_h])
