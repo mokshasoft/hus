@@ -13,7 +13,7 @@ bath_w = 1660;
 
 // bedroom
 bed_l = 3320;
-bed_w = 2720;
+bed_w = 3000;
 
 // outer size
 house_h = 4000; // house height
@@ -23,7 +23,7 @@ log_d = 400;    // log diameter
 angle = 20;     // angle of the left and right walls from center
 w = 6000;       // front width of winter garden
 ws = 1700;      // winter-garden side length
-s = ws + bed_l; // left and right wall lengths
+s = ws + bed_l + 2000; // left and right wall lengths
 o = 1500;       // offset left and right of left and right walls
 
 module win(p1, p2, pos, height, sizex, sizey, wt = 300) {
@@ -70,11 +70,14 @@ module hus() {
     color_inner_wall()
     union() {
         // Bed room
-        wall(p7, p7 + bed_l*[cos(90-angle), sin(90-angle)], room_h);
+        wl = s - ws;
+        tmp1 = p8 + wl*[-cos(90 - angle), sin(90 - angle)];
+        wall(p8, tmp1, room_h);
         // Bath room and study
-        tmp = p8 + bed_l*[-cos(90-angle), sin(90-angle)];
-        wall(p8, tmp, room_h);
-        wall(inbetween(p9, p2, 50), inbetween(p8, tmp, 50), room_h);
+        tmp2 = p7 + wl*[cos(90-angle), sin(90-angle)];
+        wall(p7, tmp2, room_h);
+        wall(inbetween(p6, p4, 35), inbetween(p7, tmp2, 35), room_h);
+        wall(inbetween(p6, p4, 70), inbetween(p7, tmp2, 70), room_h);
     }
 
     // Winter garden
@@ -96,7 +99,7 @@ module hus() {
         color_roof()
         rotate([-3, 0, 0])
         scale([1.3, 1.3, 1])
-        translate([0, -700, house_h])
+        translate([0, -700, house_h + 100])
         linear_extrude(400)
         polygon([p1, p2, p3, p4, p5]);
     }
