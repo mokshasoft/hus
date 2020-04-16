@@ -1,4 +1,5 @@
 include <element.scad>
+include <area.scad>
 
 // configure the rendering
 show_floor = true;
@@ -23,7 +24,8 @@ log_d = 400;    // log diameter
 angle = 20;     // angle of the left and right walls from center
 w = 6000;       // front width of winter garden
 ws = 1700;      // winter-garden side length
-s = ws + bed_l + 2000; // left and right wall lengths
+s = ws + bed_l + 2000; // left and right wall lengths including winter garden
+wl = s - ws;    // left and right wall lengths
 o = 1500;       // offset left and right of left and right walls
 
 module win(p1, p2, pos, height, sizex, sizey, wt = 300) {
@@ -41,6 +43,8 @@ p6 = inbetween(p5, p4, 100*ws/s);
 p7 = p6 + bed_w*[-cos(angle), sin(angle)];
 p9 = inbetween(p1, p2, 100*ws/s);
 p8 = p9 + bed_w*[cos(angle), sin(angle)];
+p10 = p8 + wl*[-cos(90 - angle), sin(90 - angle)];
+p11 = p7 + wl*[cos(90-angle), sin(90-angle)];
 
 // Corners of the bed-room
 
@@ -70,14 +74,11 @@ module hus() {
     color_inner_wall()
     union() {
         // Bed room
-        wl = s - ws;
-        tmp1 = p8 + wl*[-cos(90 - angle), sin(90 - angle)];
-        wall(p8, tmp1, room_h);
+        wall(p8, p10, room_h);
         // Bath room and study
-        tmp2 = p7 + wl*[cos(90-angle), sin(90-angle)];
-        wall(p7, tmp2, room_h);
-        wall(inbetween(p6, p4, 35), inbetween(p7, tmp2, 35), room_h);
-        wall(inbetween(p6, p4, 70), inbetween(p7, tmp2, 70), room_h);
+        wall(p7, p11, room_h);
+        wall(inbetween(p6, p4, 35), inbetween(p7, p11, 35), room_h);
+        wall(inbetween(p6, p4, 70), inbetween(p7, p11, 70), room_h);
     }
 
     // Winter garden
@@ -107,3 +108,12 @@ module hus() {
 }
 
 hus();
+
+// Areas
+
+house_area = area([p1, p2, p3, p4, p5]);
+echo("house area = ", -house_area/1000000, " m2");
+living_room_area = area([p8, p10, p3, p11, p7]);
+echo("living room area = ", -living_room_area/1000000, " m2");
+winter_garden_area = area([p1, p9, p8, p7, p6, p5]);
+echo("winter garden area = ", -winter_garden_area/1000000, " m2");
