@@ -117,3 +117,5 @@ living_room_area = area([p8, p10, p3, p11, p7]);
 echo("living room area = ", -living_room_area/1000000, " m2");
 winter_garden_area = area([p1, p9, p8, p7, p6, p5]);
 echo("winter garden area = ", -winter_garden_area/1000000, " m2");
+loft_area = area([p9, p2, p10, p8]);
+echo("loft areas = ", -loft_area/1000000, " m2");
