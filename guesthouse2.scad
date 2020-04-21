@@ -1,5 +1,5 @@
 include <element.scad>
-include <area.scad>
+include <measurement.scad>
 
 // configure the rendering
 show_floor = true;
@@ -119,3 +119,13 @@ winter_garden_area = area([p1, p9, p8, p7, p6, p5]);
 echo("winter garden area = ", -winter_garden_area/1000000, " m2");
 loft_area = area([p9, p2, p10, p8]);
 echo("loft areas = ", -loft_area/1000000, " m2");
+
+// Lengths
+
+echo("p7 -> p8 = ", length(p7, p8)/1000);
+echo("p6 -> p9 = ", length(p6, p9)/1000);
+echo("p5 -> p1 = ", length(p5, p1)/1000);
+echo("p1 -> p2 = ", length(p1, p2)/1000);
+echo("p8 -> p3 = ", length(p8, p3)/1000);
+echo("p8 -> p5 = ", length(p8, p5)/1000);
+echo("p8 -> p2 = ", length(p8, p2)/1000);

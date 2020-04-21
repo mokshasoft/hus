@@ -1,4 +1,5 @@
 // Written in 2015 by Marius Kintel <marius@kintel.net>
+// Additions 2020 by Mokshasoft AB
 //
 // To the extent possible under law, the author(s) have dedicated all
 // copyright and related and neighboring rights to this software to the
@@ -24,3 +25,6 @@ function area(vertices) =
 // In this case, sum all partial areas into the final area.
 function sum(values,s=0) =
   s == len(values) - 1 ? values[s] : values[s] + sum(values,s+1);
+
+function length(p1, p2) =
+    sqrt(pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2));
