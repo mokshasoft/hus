@@ -122,10 +122,11 @@ echo("loft areas = ", -loft_area/1000000, " m2");
 
 // Lengths
 
-echo("p7 -> p8 = ", length(p7, p8)/1000);
-echo("p6 -> p9 = ", length(p6, p9)/1000);
-echo("p5 -> p1 = ", length(p5, p1)/1000);
-echo("p1 -> p2 = ", length(p1, p2)/1000);
-echo("p8 -> p3 = ", length(p8, p3)/1000);
-echo("p8 -> p5 = ", length(p8, p5)/1000);
-echo("p8 -> p2 = ", length(p8, p2)/1000);
+echo("p1 -> p5  = ", length(p1, p5)/1000);
+echo("p1 -> p3  = ", length(p1, p3)/1000);
+echo("p2 -> p1  = ", length(p2, p1)/1000);
+echo("p2 -> p3  = ", length(p2, p3)/1000);
+echo("p2 -> p10 = ", length(p2, p10)/1000);
+echo("p1 -> p9  = ", length(p1, p9)/1000);
+echo("p8 -> p3  = ", length(p8, p3)/1000);
+echo("p8 -> p1  = ", length(p8, p1)/1000);
