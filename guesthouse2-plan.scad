@@ -1,40 +1,9 @@
 include <element.scad>
 include <floorplan.scad>
+include <guesthouse2.scad>
 
-// configure the house
-
-// bathroom
-bath_l = 2720;
-bath_w = 1660;
-
-// bedroom
-bed_l = 3320;
-bed_w = 3000;
-
-// outer size
-house_h = 4000; // house height
-room_h = 2200;  // room height
-oh = 600;       // over-hang of the roof
-log_d = 400;    // log diameter
-angle = 20;     // angle of the left and right walls from center
-w = 6000;       // front width of winter garden
-ws = 1700;      // winter-garden side length
-s = ws + bed_l + 2000; // left and right wall lengths including winter garden
-wl = s - ws;    // left and right wall lengths
-o = 1500;       // offset left and right of left and right walls
-
-// Corners of the outer walls of house
-p1 = [-o + -w/2, 0];
-p2 = [-o + -w/2, 0] - [s*sin(angle), -s*cos(angle)];
-p3 = [0, p2[1]] - [0, p2[0]*tan(angle)];
-p4 = [o + w/2, 0] + [s*sin(angle), s*cos(angle)];
-p5 = [o + w/2, 0];
-p6 = inbetween(p5, p4, 100*ws/s);
-p7 = p6 + bed_w*[-cos(angle), sin(angle)];
-p9 = inbetween(p1, p2, 100*ws/s);
-p8 = p9 + bed_w*[cos(angle), sin(angle)];
-p10 = p8 + wl*[-cos(90 - angle), sin(90 - angle)];
-p11 = p7 + wl*[cos(90-angle), sin(90-angle)];
+// Hide the lawn in the floorplan
+show_lawn = false;
 
 module hus() {
     union() {
