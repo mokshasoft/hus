@@ -17,7 +17,7 @@ bed_l = 3320;
 bed_w = 3000;
 
 // outer size
-house_h = 4000; // house height
+house_h = 5000; // house height
 room_h = 2200;  // room height
 oh = 600;       // over-hang of the roof
 log_d = 400;    // log diameter
@@ -111,14 +111,14 @@ hus();
 
 // Areas
 
-house_area = area([p1, p2, p3, p4, p5]);
-echo("house area = ", -house_area/1000000, " m2");
-living_room_area = area([p8, p10, p3, p11, p7]);
-echo("living room area = ", -living_room_area/1000000, " m2");
-winter_garden_area = area([p1, p9, p8, p7, p6, p5]);
-echo("winter garden area = ", -winter_garden_area/1000000, " m2");
-loft_area = area([p9, p2, p10, p8]);
-echo("loft areas = ", -loft_area/1000000, " m2");
+house_area = -area([p1, p2, p3, p4, p5])/1000000;
+echo("house area = ", house_area, " m2");
+living_room_area = -area([p8, p10, p3, p11, p7])/1000000;
+echo("living room area = ", living_room_area, " m2");
+winter_garden_area = -area([p1, p9, p8, p7, p6, p5])/1000000;
+echo("winter garden area = ", winter_garden_area, " m2");
+loft_area = -area([p9, p2, p10, p8])/1000000;
+echo("loft areas = ", loft_area, " m2");
 
 // Lengths
 
@@ -130,3 +130,20 @@ echo("p2 -> p10 = ", length(p2, p10)/1000);
 echo("p1 -> p9  = ", length(p1, p9)/1000);
 echo("p8 -> p3  = ", length(p8, p3)/1000);
 echo("p8 -> p1  = ", length(p8, p1)/1000);
+
+// Material calculations
+echo("wood floor area = ", house_area - winter_garden_area + 2*loft_area, " m2");
+outer_wall_length =
+    length(p1, p2) +
+    length(p2, p3) +
+    length(p3, p4) +
+    length(p4, p5) +
+    length(p6, p7) +
+    length(p7, p8) +
+    length(p8, p9);
+echo("outer wall area = ", outer_wall_length*house_h/1000000);
+inner_wall_area =
+    (length(p8, p9) + length(p7, p11) + length(p11, p4))*house_h/2/1000000 + // ground level
+    (length(p8, p10) + length(p10, p2) + length(p7, p11))*house_h/2/1000000; // level 1
+echo("inner wall area = ", inner_wall_area, " m2");
+echo("wood ceiling area = ", house_area);
