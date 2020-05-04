@@ -1,9 +1,10 @@
-include <element.scad>
-include <floorplan.scad>
 include <guesthouse2.scad>
+include <floorplan.scad>
 
 // Hide the lawn in the floorplan
 show_lawn = false;
+
+iwt = 100; // Inner wall thickness
 
 module hus() {
     union() {
@@ -20,15 +21,14 @@ module hus() {
     // Inner walls
     union() {
         // Bed room
-        wall(p8, p10);
-        wall(inbetween(p8, p10, 100*1500/wl), inbetween(p9, p2, 100*1500/wl));
+        wall(inbetween(p8, p10, 100*1500/wl), inbetween(p9, p2, 100*1500/wl), iwt);
         // Bath room and study
-        wall(p7, p11);
-        wall(inbetween(p6, p4, 50), inbetween(p7, p11, 50));
+        wall(p7, p11, iwt);
+        wall(inbetween(p6, p4, 50), inbetween(p7, p11, 50), iwt);
     }
 
     // Winter garden
-    wall(p5, p1);
+    wall(p5, p1, iwt);
 }
 
 // Draw the scale
