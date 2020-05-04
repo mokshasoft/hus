@@ -75,7 +75,7 @@ module hus() {
     union() {
         // Bed room
         wall(p8, p10, room_h);
-        wall(inbetween(p8, p10, 100*1500/wl), inbetween(p9, p2, 100*1500/wl), room_h);
+        wall(inbetween(p8, p10, 100*2000/wl), inbetween(p9, p2, 100*2000/wl), room_h);
         // Bath room and study
         wall(p7, p11, room_h);
         wall(inbetween(p6, p4, 50), inbetween(p7, p11, 50), room_h);
