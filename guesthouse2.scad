@@ -21,10 +21,10 @@ house_h = 4000; // house height
 room_h = 2200;  // room height
 oh = 600;       // over-hang of the roof
 log_d = 400;    // log diameter
-angle = 20;     // angle of the left and right walls from center
+angle = 30;     // angle of the left and right walls from center
 w = 6000;       // front width of winter garden
 ws = 1700;      // winter-garden side length
-s = ws + bed_l + 2000; // left and right wall lengths including winter garden
+s = ws + bed_l + 2500; // left and right wall lengths including winter garden
 wl = s - ws;    // left and right wall lengths
 o = 1500;       // offset left and right of left and right walls
 
