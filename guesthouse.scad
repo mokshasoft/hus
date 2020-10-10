@@ -1,4 +1,4 @@
-include <element.scad>
+include <lib/element.scad>
 
 // configure the rendering
 show_floor = true;

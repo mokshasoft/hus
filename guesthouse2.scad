@@ -1,5 +1,5 @@
-include <element.scad>
-include <measurement.scad>
+include <lib/element.scad>
+include <lib/measurement.scad>
 
 // configure the rendering
 show_floor = true;
