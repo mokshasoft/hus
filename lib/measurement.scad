@@ -28,3 +28,8 @@ function sum(values,s=0) =
 
 function length(p1, p2) =
     sqrt(pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2));
+
+function vlength(p) =
+  let (num  = len(p),
+       lens = [ for (i=[0:num-2]) length(p[i], p[i + 1]) ])
+    sum(lens);
