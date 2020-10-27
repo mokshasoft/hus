@@ -12,9 +12,9 @@ a1 = atan(3/4);
 ll = 9.5;
 wl = 5;
 a2 = 20;
-l2 = 10;
-l3 = 12;
-l4 = 10;
+l2 = 11.3;
+l3 = 13.5;
+l4 = 4.7;
 
 room_h = 2.2;  // room height
 oh = 0.6;       // over-hang of the roof
@@ -35,9 +35,10 @@ p1 = [0, 0];
 p2 = p1 + [-ll*cos(a1), ll*sin(a1)];
 p3 = p2 + [-wl*cos(a1 + 90), wl*sin(a1 + 90)];
 p4 = [0, wl/cos(a1)];
-p5 = p4 + [l2*cos(a1), l2*sin(a1)];
-p6 = [12, 9.5];
-p7 = [12.5, 4];
+pc = (p1 + p4)/2;
+p6 = pc + [l3*cos(a2), l3*sin(a2)];
+p5 = pc + [l2*cos(a2), l2*sin(a2)] + [-l4*cos(a2 - 90), -l4*sin(a2 - 90)];
+p7 = pc + [l2*cos(a2), l2*sin(a2)] + [l4*cos(a2 - 90), l4*sin(a2 - 90)];
 
 // Corners of the bed-room
 
