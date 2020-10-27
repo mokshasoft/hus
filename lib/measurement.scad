@@ -33,3 +33,11 @@ function vlength(p) =
   let (num  = len(p),
        lens = [ for (i=[0:num-2]) length(p[i], p[i + 1]) ])
     sum(lens);
+
+function angle(p1, pc, p2) =
+  let ( v1 = p1 - pc
+      , v2 = p2 - pc
+      , n1 = v1/norm(v1)
+      , n2 = v2/norm(v2)
+      )
+    acos(n1*n2);
