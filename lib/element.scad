@@ -27,11 +27,21 @@ module wall(p1, p2, h, thickness = 300) {
     let (y_diff = p2[1] - p1[1])
     let (len = sqrt(pow(x_diff, 2) +
                     pow(y_diff, 2)))
-    linear_extrude(height = h)
-    translate(p1)
-    rotate(atan2(y_diff, x_diff))
-    translate([0, -thickness/2])
-    square([len, thickness]);
+    if (h != 0)
+    {
+        linear_extrude(height = h)
+        translate(p1)
+        rotate(atan2(y_diff, x_diff))
+        translate([0, -thickness/2])
+        square([len, thickness]);
+    }
+    else
+    {
+        translate(p1)
+        rotate(atan2(y_diff, x_diff))
+        translate([0, -thickness/2])
+        square([len, thickness]);
+    }
 }
 
 module octagon(r, h, corners) {
