@@ -96,3 +96,6 @@ wall_volume = wall_area * th_walls;
 echo("wall length = ", wall_length, " m");
 echo("wall area = ", wall_area, " m2");
 echo("wall volume = ", wall_volume, " m3");
+
+// Angles
+echo("south angle = ", angle(p3, p4, p5));
