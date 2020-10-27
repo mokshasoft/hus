@@ -40,8 +40,6 @@ p6 = pc + [l3*cos(a2), l3*sin(a2)];
 p5 = pc + [l2*cos(a2), l2*sin(a2)] + [-l4*cos(a2 - 90), -l4*sin(a2 - 90)];
 p7 = pc + [l2*cos(a2), l2*sin(a2)] + [l4*cos(a2 - 90), l4*sin(a2 - 90)];
 
-// Corners of the bed-room
-
 // Lawn
 if (show_lawn) {
     color_lawn()
@@ -50,8 +48,6 @@ if (show_lawn) {
 }
 
 module hus() {
-    // Windows
-
     color_outer_wall()
     union() {
         // Outer walls
@@ -63,16 +59,6 @@ module hus() {
         w(p6, p7, room_h);
         w(p7, p1, room_h);
     }
-
-    if (show_floor) {
-        //color_floor()
-        //linear_extrude(300)
-        //polygon([p1, p2, p3, p4, p5]);
-    }
-
-    if (show_roof) {
-    }
-
 }
 
 hus();
