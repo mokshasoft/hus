@@ -15,6 +15,8 @@ a2 = 10;
 l2 = 11.3;
 l3 = 13.5;
 l4 = 4.7;
+wgr = 4; // winter garden radius
+wgv = 5; // winter garden vertices
 
 room_h = 2.2;  // room height
 oh = 0.6;       // over-hang of the roof
@@ -39,6 +41,7 @@ pc = (p1 + p4)/2;
 p6 = pc + [l3*cos(a2), l3*sin(a2)];
 p5 = pc + [l2*cos(a2), l2*sin(a2)] + [-l4*cos(a2 - 90), -l4*sin(a2 - 90)];
 p7 = pc + [l2*cos(a2), l2*sin(a2)] + [l4*cos(a2 - 90), l4*sin(a2 - 90)];
+sa = angle(p3, p4, p5);
 
 // Lawn
 if (show_lawn) {
@@ -46,6 +49,9 @@ if (show_lawn) {
     translate([0, 0, -0.5])
     cube([4*s, 4*s, 0.04], center = true);
 }
+
+function wg_vertice(i, nbr, r) =
+  p4 + [-r*cos(a1 + i*sa/(nbr + 1)), r*sin(a1 + i*sa/(nbr + 1))];
 
 module hus() {
     color_outer_wall()
@@ -58,6 +64,12 @@ module hus() {
         w(p5, p6, room_h);
         w(p6, p7, room_h);
         w(p7, p1, room_h);
+        // Winter garden
+        for (i=[0:wgv])
+          let ( x1 = wg_vertice(i, wgv, wgr)
+              , x2 = wg_vertice(i + 1, wgv, wgr)
+              )
+            w(x1, x2, room_h);
     }
 }
 
