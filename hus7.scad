@@ -87,7 +87,7 @@ echo("longest roof length = ", l57);
 
 // Material calculations
 th_walls = 0.4;
-th_floors = 0.3;
+th_floor = 0.3;
 th_roof = 0.5;
 
 wall_length = vlength([p1, p2, p3, p4, p5, p6, p7, p1]);
@@ -96,6 +96,14 @@ wall_volume = wall_area * th_walls;
 echo("wall length = ", wall_length, " m");
 echo("wall area = ", wall_area, " m2");
 echo("wall volume = ", wall_volume, " m3");
+
+roof_volume = house_area*th_roof;
+floor_volume = house_area*th_floor;
+echo("roof volume = ", roof_volume);
+echo("floor volume = ", floor_volume);
+
+total_volume = wall_volume + roof_volume + floor_volume;
+echo("total volume = ", total_volume);
 
 // Angles
 echo("south angle = ", angle(p3, p4, p5));
