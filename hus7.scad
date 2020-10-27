@@ -20,13 +20,6 @@ wgr = 4.5; // winter garden radius
 wgv = 5; // winter garden vertices
 
 room_h = 2.2;  // room height
-oh = 0.6;       // over-hang of the roof
-log_d = 0.4;    // log diameter
-
-module win(p1, p2, pos, height, sizex, sizey, wt = 0.3) {
-    window(p1, p2, pos, height, sizex, sizey, wt)
-    children();
-}
 
 module w(p1, p2, h, thickness = 0.300) {
     wall(p1, p2, h, thickness)
