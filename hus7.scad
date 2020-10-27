@@ -4,7 +4,7 @@ include <lib/measurement.scad>
 // configure the rendering
 show_floor = true;
 show_roof = true;
-show_lawn = true;
+show_lawn = false;
 
 // Parameters
 s = 20;
@@ -19,7 +19,7 @@ l4 = 4.7;
 wgr = 4.5; // winter garden radius
 wgv = 5; // winter garden vertices
 
-room_h = 2.2;  // room height
+room_h = 0;  // room height
 
 module w(p1, p2, h, thickness = 0.300) {
     wall(p1, p2, h, thickness)
