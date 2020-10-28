@@ -73,6 +73,9 @@ hus();
 house_area = -area([p1, p2, p3, p4, p5, p6, p7, p1]);
 echo("house area = ", house_area, " m2");
 
+winter_garden_area = -area(concat([p4], [for (i=[0:wgv]) wg_vertice(i, wgv, wgr)]));
+echo("winter garden area = ", winter_garden_area);
+
 // Lengths
 l57 = length(p5, p7);
 echo("longest roof length = ", l57);
