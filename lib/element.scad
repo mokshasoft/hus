@@ -9,7 +9,7 @@ function point(i, r, corners) =
    , r*sin(angle)
    ];
 
-function inbetween(p1, p2, procent) =
+function inbetween(p1, p2, procent = 50) =
     let (x_diff = p2[0] - p1[0])
     let (y_diff = p2[1] - p1[1])
     [ p1[0] + x_diff*procent/100
