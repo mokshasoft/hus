@@ -85,8 +85,6 @@ module hus() {
     }
     // Roof
     union() {
-        beam(r1, r2);
-        beam(r2, r3);
         plane(r1, r2, ph1, ph2);
         plane(r1, r2, ph3, ph4);
         plane(r2, r3, ph4, ph5);
