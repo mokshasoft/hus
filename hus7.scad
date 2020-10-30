@@ -84,6 +84,10 @@ module hus() {
               , x2 = wg_vertice(i + 1, wgv, wgr)
               )
             w(x1, x2, room_h);
+        // Walls to roof-ridge
+        plane(ph2, ph3, r1, r1);
+        plane(ph5, ph6, r3, r3);
+        plane(ph6, ph7, r3, r3);
     }
     // Roof
     union() {
