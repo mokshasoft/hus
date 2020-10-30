@@ -26,6 +26,12 @@ function area(vertices) =
 function sum(values,s=0) =
   s == len(values) - 1 ? values[s] : values[s] + sum(values,s+1);
 
+function length3D(p1, p2) =
+    let ( v = p1 - p2 )
+      sqrt( pow(v[0], 2)
+          + pow(v[1], 2)
+          + pow(v[2], 2));
+
 function length(p1, p2) =
     sqrt(pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2));
 
