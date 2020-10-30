@@ -104,6 +104,8 @@ echo("winter garden area = ", winter_garden_area);
 // Lengths
 l57 = length(p5, p7);
 echo("longest roof length = ", l57);
+rr1 = r1[2]; // roof-ridge height 1
+echo("roof-ridge height = ", rr1);
 
 // Material calculations
 th_walls = 0.4;
