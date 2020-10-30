@@ -46,6 +46,15 @@ r1 = concat(inbetween(p2, p3), rh);
 r2 = concat(inbetween(p1, p4), rh);
 r3 = concat(inbetween(p5, p7), rh2);
 
+// Points on the top of the outer wall
+ph1 = concat(p1, room_h);
+ph2 = concat(p2, room_h);
+ph3 = concat(p3, room_h);
+ph4 = concat(p4, room_h);
+ph5 = concat(p5, room_h);
+ph6 = concat(p6, room_h);
+ph7 = concat(p7, room_h);
+
 // Lawn
 if (show_lawn) {
     color_lawn()
@@ -78,6 +87,10 @@ module hus() {
     union() {
         beam(r1, r2);
         beam(r2, r3);
+        plane(r1, r2, ph1, ph2);
+        plane(r1, r2, ph3, ph4);
+        plane(r2, r3, ph4, ph5);
+        plane(r2, r3, ph1, ph7);
     }
 }
 
