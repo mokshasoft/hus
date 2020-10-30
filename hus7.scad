@@ -44,7 +44,9 @@ rh = room_h + length(p2, p3)*tan(ra);
 rh2 = room_h + length(p5, p7)*tan(ra);
 r1 = concat(inbetween(p2, p3), rh);
 r2 = concat(inbetween(p1, p4), rh);
-r3 = concat(inbetween(p5, p7), rh2);
+rrv = concat(inbetween(p5, p7), rh2) - r2; // roof-ridge vector
+rra = atan(rrv[2]/length([0, 0], [rrv[0], rrv[1]])); // roof-ridge angle
+r3 = concat(p6, r2[2] + length(inbetween(p1, p4), p6)*tan(rra));
 
 // Points on the top of the outer wall
 ph1 = concat(p1, room_h);
