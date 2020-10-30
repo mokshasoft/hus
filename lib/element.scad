@@ -16,11 +16,6 @@ function inbetween(p1, p2, procent = 50) =
     , p1[1] + y_diff*procent/100
     ];
 
-module glas_color() {
-    color("lightblue")
-    children();
-}
-
 // create a wall
 module wall(p1, p2, h, thickness = 300) {
     let (x_diff = p2[0] - p1[0])
@@ -73,7 +68,7 @@ module window(p1, p2, pos, height, sizex, sizey, wt = 300) {
         cube([4*wt, sizex, sizey], center = true);
     }
     // add the glass to the window
-    glas_color()
+    color_glass()
     translate([0,0,height])
     translate(p1 + pos*[x_diff, y_diff]/100)
     rotate(atan2(y_diff, x_diff) + 90, [0,0,1])

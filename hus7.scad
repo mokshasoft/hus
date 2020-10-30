@@ -19,7 +19,9 @@ l4 = 4.7;
 wgr = 4.5; // winter garden radius
 wgv = 5; // winter garden vertices
 
-room_h = 0;  // room height
+// 3D
+ra = 30; // roof angle
+room_h = 2.6;  // room height
 
 module w(p1, p2, h, thickness = 0.300) {
     wall(p1, p2, h, thickness)
@@ -36,6 +38,10 @@ p6 = pc + [l3*cos(a2), l3*sin(a2)];
 p5 = pc + [l2*cos(a2), l2*sin(a2)] + [-l4*cos(a2 - 90), -l4*sin(a2 - 90)];
 p7 = pc + [l2*cos(a2), l2*sin(a2)] + [l4*cos(a2 - 90), l4*sin(a2 - 90)];
 sa = angle(p3, p4, p5);
+
+// Roof points
+r1 = concat(inbetween(p2, p3), 10);
+r2 = concat(inbetween(p1, p4), 10);
 
 // Lawn
 if (show_lawn) {
@@ -64,6 +70,10 @@ module hus() {
               , x2 = wg_vertice(i + 1, wgv, wgr)
               )
             w(x1, x2, room_h);
+    }
+    // Roof
+    union() {
+        cylinder(h = 5, r = 0.4);
     }
 }
 
