@@ -40,8 +40,11 @@ p7 = pc + [l2*cos(a2), l2*sin(a2)] + [l4*cos(a2 - 90), l4*sin(a2 - 90)];
 sa = angle(p3, p4, p5);
 
 // Roof points
-r1 = concat(inbetween(p2, p3), 10);
-r2 = concat(inbetween(p1, p4), 10);
+rh = room_h + length(p2, p3)*tan(ra);
+rh2 = room_h + length(p5, p7)*tan(ra);
+r1 = concat(inbetween(p2, p3), rh);
+r2 = concat(inbetween(p1, p4), rh);
+r3 = concat(inbetween(p5, p7), rh2);
 
 // Lawn
 if (show_lawn) {
@@ -73,7 +76,8 @@ module hus() {
     }
     // Roof
     union() {
-        cylinder(h = 5, r = 0.4);
+        beam(r1, r2);
+        beam(r2, r3);
     }
 }
 
