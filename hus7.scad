@@ -20,7 +20,7 @@ wgr = 4.5; // winter garden radius
 wgv = 5; // winter garden vertices
 
 // 3D
-ra = 30; // roof angle
+ra = 20; // roof angle
 room_h = 2.6;  // room height
 
 module w(p1, p2, h, thickness = 0.300) {
