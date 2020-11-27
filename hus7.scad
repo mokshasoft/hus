@@ -34,14 +34,14 @@ p2 = p1 + [-ll*cos(a1), ll*sin(a1)];
 p3 = p2 + [-wl*cos(a1 + 90), wl*sin(a1 + 90)];
 p4 = p3 + [ll1*cos(a1), -ll1*sin(a1)];
 pc = (p1 + p4)/2;
-p6 = pc + [l3*cos(a2), l3*sin(a2)];
+p6 = pc + [0, 0.5] + [l3*cos(a2), l3*sin(a2)];
 p5 = pc + [l2*cos(a2), l2*sin(a2)] + [-l4*cos(a2 - 90), -l4*sin(a2 - 90)];
 p7 = pc + [l2*cos(a2), l2*sin(a2)] + [l4*cos(a2 - 90), l4*sin(a2 - 90)];
 sa = angle(p3, p4, p5);
 
 // Roof points
 rh = room_h + length(p2, p3)*tan(ra);
-rh2 = room_h + length(p5, p7)*tan(ra);
+rh2 = room_h + length(p5, p7)*tan(ra + 1.5);
 r1 = concat(inbetween(p2, p3), rh);
 r2 = concat(inbetween(p1, p4), rh);
 rrv = concat(inbetween(p5, p7), rh2) - r2; // roof-ridge vector
