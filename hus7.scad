@@ -20,7 +20,7 @@ wgr = 4.5; // winter garden radius
 wgv = 5; // winter garden vertices
 
 // 3D
-ra = 20; // roof angle
+ra = 10; // roof angle
 room_h = 2.6;  // room height
 
 module w(p1, p2, h, thickness = 0.300) {
@@ -41,7 +41,7 @@ sa = angle(p3, p4, p5);
 
 // Roof points
 rh = room_h + length(p2, p3)*tan(ra);
-rh2 = room_h + length(p5, p7)*tan(ra + 1.5);
+rh2 = room_h + length(p5, p7)*tan(ra + 1);
 r1 = concat(inbetween(p2, p3), rh);
 r2 = concat(inbetween(p1, p4), rh);
 rrv = concat(inbetween(p5, p7), rh2) - r2; // roof-ridge vector
