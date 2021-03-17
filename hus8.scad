@@ -85,6 +85,13 @@ module hus() {
     color_roof()
     translate([-roh + (l2 - ts), -roh, room_ht])
     cube([ts + 2*roh, ts + 2*roh, 0.5]);
+    // Lower roof
+    let (l = roh*[cos(a1), sin(a1)])
+    let (w = roh*[cos(a1 + 90), sin(a1 + 90)])
+    color_roof()
+    translate([0, 0, room_hl])
+    linear_extrude(0.5)
+    polygon([p1 - [0, roh], p2 - l + w, p3 + l + w, p4 + [0, roh]]);
 }
 
 hus();
