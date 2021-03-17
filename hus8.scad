@@ -10,6 +10,7 @@ show_lawn = false;
 a1 = atan(3/4);
 ll = 9.5;
 l2 = 10;
+roh = 0.4; // roof over-hang
 
 // 3D
 room_hl = 2.4;  // room height low
@@ -46,8 +47,8 @@ t3 = t2 + [0, ts];
 t4 = t3 + [ts, 0];
 
 // Points on the top of the outer wall
-function walltop(c) =
-    concat(p1, room_h);
+function walltop(c, h) =
+    concat(p1, h);
 
 // Lawn
 if (show_lawn) {
@@ -80,6 +81,10 @@ module hus() {
         w(w4, w5, room_hh);
         w(w5, w6, room_hh);
     }
+    // Tea roof
+    color_roof()
+    translate([-roh + (l2 - ts), -roh, room_ht])
+    cube([ts + 2*roh, ts + 2*roh, 0.5]);
 }
 
 hus();
