@@ -111,7 +111,7 @@ module color_logs() {
 }
 
 module color_glass() {
-    color("azure", 0.25)
+    color("azure", 0.50)
     children();
 }
 
