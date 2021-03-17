@@ -92,6 +92,11 @@ module hus() {
     translate([0, 0, room_hl])
     linear_extrude(0.5)
     polygon([p1 - [0, roh], p2 - l + w, p3 + l + w, p4 + [0, roh]]);
+    // higher roof
+    color_roof()
+    translate([0, 0, room_hh])
+    linear_extrude(0.5)
+    polygon([p1 - [roh, roh], p4 + [-roh, roh], p5 + [roh, roh], p6 + [roh, ts], p6 + [-ts, ts], p6 - [ts, roh]]);
 }
 
 hus();
