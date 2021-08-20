@@ -31,6 +31,26 @@ module wall(p1, p2, h, thickness = 300) {
     }
 }
 
+// create a wall with two different heights
+module wall2(p1, p2, h1, h2, thickness = 0.5) {
+    let (x_diff = p2[0] - p1[0])
+    let (y_diff = p2[1] - p1[1])
+    let (len = sqrt(pow(x_diff, 2) +
+                    pow(y_diff, 2)))
+    if ((h1 == 0)&&(h2 == 0))
+    {
+        wall(p1, p2, 0, thickness);
+    }
+    else
+    {
+        translate(p1)
+        rotate(atan2(y_diff, x_diff))
+        rotate([90, 0, 0])
+        linear_extrude(height = thickness, center = true)
+        polygon(points=[[0,0],[len,0],[len,h2],[0,h1]]);
+    }
+}
+
 module window(p1, p2, pos, height, sizex, sizey, wt = 300) {
     assert(0 < pos && pos < 100);
     x_diff = p2[0] - p1[0];
