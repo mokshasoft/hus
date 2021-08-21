@@ -47,11 +47,13 @@ module hus() {
 
 module foundation() {
     // Foundation
+    margin = 0.05;
     steps = 3;
     points = [for (x = [0 : steps - 1])
               for (y = [0 : steps - 1])
-                  [ hw*x/(steps - 1), hl*y/(steps - 1) ]];
+                  [ (1 - margin)*hw*x/(steps - 1), (1 - margin)*hl*y/(steps - 1) ]];
     color_concrete()
+    translate([margin*hw/2, margin*hl/2, 0])
     for (a = points) echo("point:", a) plinth(a, pw, el);
 }
 
