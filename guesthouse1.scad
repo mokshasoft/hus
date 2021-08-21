@@ -8,6 +8,8 @@ show_lawn = true;
 
 //// configure the house
 // outer size
+el = 0.5; // house elevation
+pw = 0.6; // plinth width
 hw = 6; // house width
 hl = 6; // house length
 rhl = 2.6; // room height low
@@ -22,20 +24,20 @@ p4 = [0, hl];
 // Lawn
 if (show_lawn) {
     color_lawn()
-    translate([0, 0, -0.5])
+    translate([0, 0, -el])
     cube([4*hw, 4*hw, 0.04], center = true);
 }
 
 module hus() {
+    // Outer walls
     color_outer_wall()
     union() {
-        // Outer walls
         wall2(p1, p2, rhl, rhl);
         wall2(p2, p3, rhl, rhh);
         wall2(p3, p4, rhh, rhh);
         wall2(p4, p1, rhh, rhl);
     }
-
+    
     if (show_floor) {
         color_floor()
         linear_extrude(0.5)
@@ -43,7 +45,18 @@ module hus() {
     }
 }
 
+module foundation() {
+    // Foundation
+    steps = 3;
+    points = [for (x = [0 : steps - 1])
+              for (y = [0 : steps - 1])
+                  [ hw*x/(steps - 1), hl*y/(steps - 1) ]];
+    color_concrete()
+    for (a = points) echo("point:", a) plinth(a, pw, el);
+}
+
 hus();
+translate([0,0, -el]) foundation();
 
 // Measurements
 echo("roof angle:", atan((rhh - rhl)/hl));

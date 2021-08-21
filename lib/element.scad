@@ -100,6 +100,11 @@ module beam(p1, p2, r = 0.4) {
     cylinder(h = distance, r = r, center = true);
 }
 
+module plinth(p, s, h) {
+    translate([p[0], p[1], h/2])
+    cube([s, s, h], center = true);
+}
+
 module color_lawn() {
     color("LawnGreen")
     children();
@@ -132,6 +137,11 @@ module color_logs() {
 
 module color_glass() {
     color("azure", 0.50)
+    children();
+}
+
+module color_concrete() {
+    color("lightgrey")
     children();
 }
 
