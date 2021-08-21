@@ -15,6 +15,9 @@ hl = 6; // house length
 rhl = 2.6; // room height low
 rhh = 4; // room height high
 
+//// Helper values
+ra = atan((rhh - rhl)/hl); // roof angle
+
 // Corners of the outer walls of house
 p1 = [0, 0];
 p2 = [hw, 0];
@@ -54,11 +57,11 @@ module foundation() {
                   [ (1 - margin)*hw*x/(steps - 1), (1 - margin)*hl*y/(steps - 1) ]];
     color_concrete()
     translate([margin*hw/2, margin*hl/2, 0])
-    for (a = points) echo("point:", a) plinth(a, pw, el);
+    for (a = points) plinth(a, pw, el);
 }
 
 hus();
 translate([0,0, -el]) foundation();
 
 // Measurements
-echo("roof angle:", atan((rhh - rhl)/hl));
+echo("roof angle:", ra);
