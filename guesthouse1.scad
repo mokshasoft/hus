@@ -73,9 +73,15 @@ module foundation() {
     points = [for (x = [0 : steps - 1])
               for (y = [0 : steps - 1])
                   [ (1 - margin)*hw*x/(steps - 1), (1 - margin)*hl*y/(steps - 1) ]];
+    sp = [g4, g3, g4 + [hw, 0]];
     color_concrete()
-    translate([margin*hw/2, margin*hl/2, 0])
-    for (a = points) plinth(a, pw, el);
+    union() {
+        // Main house
+        translate([margin*hw/2, margin*hl/2, 0])
+        for (a = points) plinth(a, pw, el);
+        // South patio
+        for (a = sp) plinth(a, pw, el);
+    }
 }
 
 hus();
