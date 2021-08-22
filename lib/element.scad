@@ -8,6 +8,9 @@ function inbetween(p1, p2, procent = 50) =
     , p1[1] + y_diff*procent/100
     ];
 
+function h(p2d, h) =
+    [p2d[0], p2d[1], h];
+
 // create a wall
 module wall(p1, p2, h, thickness = 300) {
     let (x_diff = p2[0] - p1[0])
