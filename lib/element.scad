@@ -74,7 +74,7 @@ module window(p1, p2, pos, height, sizex, sizey, wt = 300) {
     cube([wt/2, sizex, sizey], center = true);
 }
 
-module plane(p1, p2, p3, p4) {
+module plane(p1, p2, p3, p4, th = 0.000002) {
     v1 = [ p2[0] - p1[0]
          , p2[1] - p1[1]
          , p2[2] - p1[2]
@@ -85,7 +85,7 @@ module plane(p1, p2, p3, p4) {
          ];
     hull()
         for(p=[p1, p2, p3, p4])
-            translate(p) cube(0.000002, true);
+            translate(p) cube(th, true);
 }
 
 module beam(p1, p2, r = 0.4) {
