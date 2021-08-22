@@ -14,15 +14,25 @@ hw = 6; // house width
 hl = 6; // house length
 rhl = 2.6; // room height low
 rhh = 4; // room height high
+// Winter garden
+ww = 3; // winter garden width
+wd = 2; // winter garden depth
 
 //// Helper values
 ra = atan((rhh - rhl)/hl); // roof angle
+ras = atan((rhh - rhl)/wd); // roof angle south
 
 // Corners of the outer walls of house
 p1 = [0, 0];
 p2 = [hw, 0];
 p3 = [hw, hl];
 p4 = [0, hl];
+
+// Corners of the winter garden
+g1 = p4;
+g2 = p4 + [ww, 0];
+g3 = g2 + [0, wd];
+g4 = g1 + [0, wd];
 
 // Lawn
 if (show_lawn) {
@@ -41,6 +51,14 @@ module hus() {
         wall2(p4, p1, rhh, rhl);
     }
     
+    // Winter garden
+    color_glass()
+    union() {
+        wall2(g2, g3, rhh, rhl, 0.2);
+        wall2(g3, g4, rhl, rhl, 0.2);
+        wall2(g1, g4, rhh, rhl, 0.2);
+    }
+
     if (show_floor) {
         color_floor()
         linear_extrude(0.5)
@@ -65,3 +83,4 @@ translate([0,0, -el]) foundation();
 
 // Measurements
 echo("roof angle:", ra);
+echo("roof angle south:", ras);
