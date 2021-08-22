@@ -1,5 +1,6 @@
 STL= \
   floorplan.scad \
+  guesthouse1.scad \
   hus1-plan.scad \
   hus1.scad \
   hus2.scad \
