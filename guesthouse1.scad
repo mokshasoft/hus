@@ -50,13 +50,22 @@ module hus() {
         wall2(p3, p4, rhh, rhh);
         wall2(p4, p1, rhh, rhl);
     }
-    
+        
     // Winter garden
     color_glass()
     union() {
         wall2(g2, g3, rhh, rhl, 0.2);
         wall2(g3, g4, rhl, rhl, 0.2);
         wall2(g1, g4, rhh, rhl, 0.2);
+    }
+
+    // Outer roof
+    if (show_roof) {
+        color_roof()
+        union() {
+            plane(h(p1, rhl), h(p2, rhl), h(p3, rhh), h(p4, rhh), th = 0.5);
+            plane(h(g1, rhh), h(g2, rhh), h(g3, rhl), h(g4, rhl), th = 0.5);
+        }
     }
 
     if (show_floor) {
