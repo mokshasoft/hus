@@ -96,7 +96,7 @@ module beam(p1, p2, r = 0.4) {
              , p2[1] - p1[1]
              , p2[2] - p1[2]
              ];
-    distance = length3D(p1, p2);
+    distance = norm(vector);
     translate(vector/2 + p1)
     rotate([0, 0, atan2(vector[1], vector[0])]) // rotationXY
     rotate([0, atan2(sqrt(pow(vector[0], 2) + pow(vector[1], 2)), vector[2]), 0]) // rotationZX
