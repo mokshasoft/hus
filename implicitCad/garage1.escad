@@ -1,0 +1,19 @@
+h = 2;
+w = 6;
+l = 9;
+
+c1 = [0, 0, 0];
+c2 = [w, 0, 0];
+c3 = [w, l, 0];
+c4 = [0, l, 0];
+
+module my_map(f, xs) {
+    for (i = xs) f(i);
+}
+
+module my_cube(p) {
+    translate(p)
+    cube(1);
+}
+
+my_map(my_cube, [c1, c2, c3, c4]);
