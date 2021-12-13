@@ -11,9 +11,64 @@ module my_map(f, xs) {
     for (i = xs) f(i);
 }
 
-module my_cube(p) {
-    translate(p)
+module map_in(f, xs) {
+    l = len(xs);
+    for (i = [1:l - 1]) f(xs[i - 1], xs[i]);
+}
+
+module my_cube(p1, p2) {
+    translate(p1[0])
     cube(1);
 }
 
-my_map(my_cube, [c1, c2, c3, c4]);
+module beam(p1, p2, r = 0.4) {
+    vector = [ p2[0] - p1[0]
+             , p2[1] - p1[1]
+             , p2[2] - p1[2]
+             ];
+    distance = norm(vector);
+    translate(vector/2 + p1)
+    rotate([0, 0, atan2(vector[1], vector[0])]) // rotationXY
+    rotate([0, atan2(sqrt(pow(vector[0], 2) + pow(vector[1], 2)), vector[2]), 0]) // rotationZX
+    cylinder(h = distance, r = r, center = true);
+}
+
+module even_dist(obj, nbr, cc1, cc2) {
+    echo("even_dist", cc1, cc2);
+    cc = (cc2 - cc1)/(nbr - 1);
+    echo("cc", cc);
+    echo("+", cc1 + cc2);
+    for (i = [0:nbr - 1]) {
+        echo(cc1, i, i*cc);
+        translate(cc1 + i*cc)
+        obj();
+    }
+}
+
+// Create a line of plinths
+module beam_line(coord1, coord2, h, nbr, tag = "cc") {
+    assert(nbr >= 2, "more than two plinths");
+    cc = (coord2 - coord1)/(nbr - 1);
+    echo(tag, norm(cc))
+    for (i=[0:nbr - 1]) {
+        p = coord1 + i*cc;
+        beam(p, p + z(h), 0.3);
+    }
+}
+
+module my_line(p1, p2) {
+    nbr = p1[1];
+    cc = (p2[0] - p1[0])/(nbr - 1);
+    for (i=[0:nbr - 1]) {
+        p = p1[0] + i*cc;
+        beam(p, p + z(2), 0.3);
+    }
+}
+
+module c() {
+    cube(1);
+}
+
+echo("++", c1 + c2);
+even_dist(c, 4, c1, c2);
+//map_in(my_cube, [[c1, 3], [c2, 3], [c3, 3], [c4, 3], [c1, 0]]);
