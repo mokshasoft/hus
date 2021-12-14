@@ -20,6 +20,7 @@ function angle(v1, v2) =
 h = 2;
 w = 6;
 l = 9;
+logd = 0.2;
 
 // Create a line of plinths
 module beam_line(coord1, coord2, h, nbr, tag = "cc") {
@@ -29,7 +30,7 @@ module beam_line(coord1, coord2, h, nbr, tag = "cc") {
         echo(tag, norm(cc))
         for (i=[0:nbr - 1])
             let (p = coord1 + i*cc)
-            beam(p, p + z(h), 0.3);
+            beam(p, p + z(h), logd);
 }
 
 c1 = [0, 0, 0];
@@ -37,23 +38,20 @@ c2 = [w, 0, 0];
 c3 = [w, l, 0];
 c4 = [0, l, 0];
 
-let ( th = 0.3
-    , h = 2
-    )
-    color_logs()
-    union() {
-        beam_line(c1, c2, h, 3);
-        beam_line(c2, c3, h, 3);
-        beam_line(c3, c4, h, 3);
-        beam_line(c4, c1, h, 3);
-    }
+color_logs()
+union() {
+    beam_line(c1, c2, h, 3);
+    beam_line(c2, c3, h, 3);
+    beam_line(c3, c4, h, 3);
+    beam_line(c4, c1, h, 3);
+}
 
 color_logs()
 union() {
-    beam(c1 + z(h), c2 + z(h), 0.3);
-    beam(c2 + z(h), c3 + z(h), 0.3);
-    beam(c3 + z(h), c4 + z(h), 0.3);
-    beam(c4 + z(h), c1 + z(h), 0.3);
+    beam(c1 + z(h), c2 + z(h), logd);
+    beam(c2 + z(h), c3 + z(h), logd);
+    beam(c3 + z(h), c4 + z(h), logd);
+    beam(c4 + z(h), c1 + z(h), logd);
 }
 
 module truss(p1, p2, height) {
@@ -62,8 +60,8 @@ module truss(p1, p2, height) {
         )
         echo("angle", angle(c + z(ch) - (p1 + z(h)), p2 - p1))
         union() {
-            beam(p1 + z(h), c + z(ch), 0.3);
-            beam(c + z(ch), p2 + z(h), 0.3);
+            beam(p1 + z(h), c + z(ch), logd);
+            beam(c + z(ch), p2 + z(h), logd);
         }
 }
 
