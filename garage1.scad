@@ -95,6 +95,21 @@ module trellis_base(w, h, thickness, hollow = 50) {
 }
 
 // create a wall
+module wall(p1, p2, h) {
+    let ( thickness = 0.02
+        , x_diff = p2[0] - p1[0]
+        , y_diff = p2[1] - p1[1]
+        , len = sqrt(pow(x_diff, 2) +
+                     pow(y_diff, 2))
+        )
+        translate(p1)
+        rotate(atan2(y_diff, x_diff))
+        translate([0, thickness/2])
+        rotate([90, 0, 0])
+        linear_extrude(thickness)
+        square([len, h]);
+}
+
 module trellis(p1, p2, h) {
     let ( thickness = 0.02
         , x_diff = p2[0] - p1[0]
@@ -111,3 +126,6 @@ module trellis(p1, p2, h) {
 
 trellis(c1, inbetween(c1, c4), 2);
 trellis(c2, inbetween(c2, c3), 2);
+wall(inbetween(c2, c3), c3, 2);
+wall(c3, c4, 2);
+wall(c4, inbetween(c1, c4), 2);
