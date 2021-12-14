@@ -81,6 +81,7 @@ let ( ch = h + rh
     , r1 = c1 + (c2 - c1)/3
     , r2 = c4 + (c3 - c4)/3
     )
+    color("SaddleBrown")
     union() {
         color_roof() plane(c2 + z(h), c3 + z(h), r1 + z(ch), r2 + z(ch));
         color_roof() plane(c1 + z(h), c4 + z(h), r1 + z(ch), r2 + z(ch));
@@ -131,15 +132,18 @@ module trellis(p1, p2, h) {
         trellis_base(len, h, thickness, 50);
 }
 
-trellis(c1, inbetween(c1, c4), 2);
-trellis(c2, inbetween(c2, c3), 2);
-wall(inbetween(c2, c3), c3, 2);
-wall(c3, c4, 2);
-wall(c4, inbetween(c1, c4), 2);
+color("BlanchedAlmond")
+union() {
+    trellis(c1, inbetween(c1, c4), 2);
+    trellis(c2, inbetween(c2, c3), 2);
+    wall(inbetween(c2, c3), c3, 2);
+    wall(c3, c4, 2);
+    wall(c4, inbetween(c1, c4), 2);
 
-// Triangle walls
-plane(c1 + z(h), c1 + z(h), c2 + z(h), c1 + (c2 - c1)/3 + z(rh + h));
-plane(c4 + z(h), c4 + z(h), c3 + z(h), c4 + (c3 - c4)/3 + z(rh + h));
+    // Triangle walls
+    plane(c1 + z(h), c1 + z(h), c2 + z(h), c1 + (c2 - c1)/3 + z(rh + h));
+    plane(c4 + z(h), c4 + z(h), c3 + z(h), c4 + (c3 - c4)/3 + z(rh + h));
+}
 
 // Ground
 color_concrete() plane(c1, c2, c3, c4);
