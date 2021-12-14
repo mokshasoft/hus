@@ -40,6 +40,7 @@ c4 = [0, l, 0];
 let ( th = 0.3
     , h = 2
     )
+    color_logs()
     union() {
         beam_line(c1, c2, h, 3);
         beam_line(c2, c3, h, 3);
@@ -47,11 +48,14 @@ let ( th = 0.3
         beam_line(c4, c1, h, 3);
     }
 
-beam(c1 + z(h), c2 + z(h), 0.3);
-beam(c2 + z(h), c3 + z(h), 0.3);
-beam(c3 + z(h), c4 + z(h), 0.3);
-beam(c4 + z(h), c1 + z(h), 0.3);
-    
+color_logs()
+union() {
+    beam(c1 + z(h), c2 + z(h), 0.3);
+    beam(c2 + z(h), c3 + z(h), 0.3);
+    beam(c3 + z(h), c4 + z(h), 0.3);
+    beam(c4 + z(h), c1 + z(h), 0.3);
+}
+
 module truss(p1, p2, height) {
     let ( ch = h + height
         , c = p1 + (p2 - p1)/3
@@ -65,9 +69,12 @@ module truss(p1, p2, height) {
 
 // roof beams
 rh = 3;
-truss(c1, c2, rh);
-truss(c4, c3, rh);
-truss(inbetween(c1, c4), inbetween(c2, c3), rh);
+color_logs()
+union() {
+    truss(c1, c2, rh);
+    truss(c4, c3, rh);
+    truss(inbetween(c1, c4), inbetween(c2, c3), rh);
+}
 
 // metal roof
 let ( ch = h + rh
@@ -129,3 +136,10 @@ trellis(c2, inbetween(c2, c3), 2);
 wall(inbetween(c2, c3), c3, 2);
 wall(c3, c4, 2);
 wall(c4, inbetween(c1, c4), 2);
+
+// Triangle walls
+plane(c1 + z(h), c1 + z(h), c2 + z(h), c1 + (c2 - c1)/3 + z(rh + h));
+plane(c4 + z(h), c4 + z(h), c3 + z(h), c4 + (c3 - c4)/3 + z(rh + h));
+
+// Ground
+color_concrete() plane(c1, c2, c3, c4);
