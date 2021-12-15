@@ -17,9 +17,9 @@ function angle(v1, v2) =
 
 // Supporting structure
 
-h = 2;
+h = 2.9;
 w = 6;
-l = 9;
+l = 10;
 logd = 0.2;
 
 // Create a line of plinths
@@ -59,6 +59,7 @@ module truss(p1, p2, height) {
         , c = p1 + (p2 - p1)/3
         )
         echo("angle", angle(c + z(ch) - (p1 + z(h)), p2 - p1))
+        echo("angle", angle(c + z(ch) - (p2 + z(h)), p1 - p2))
         union() {
             beam(p1 + z(h), c + z(ch), logd);
             beam(c + z(ch), p2 + z(h), logd);
@@ -132,11 +133,11 @@ module trellis(p1, p2, h) {
 
 color("BlanchedAlmond")
 union() {
-    trellis(c1, inbetween(c1, c4), 2);
-    trellis(c2, inbetween(c2, c3), 2);
-    wall(inbetween(c2, c3), c3, 2);
-    wall(c3, c4, 2);
-    wall(c4, inbetween(c1, c4), 2);
+    trellis(c1, inbetween(c1, c4), h);
+    trellis(c2, inbetween(c2, c3), h);
+    wall(inbetween(c2, c3), c3, h);
+    wall(c3, c4, h);
+    wall(c4, inbetween(c1, c4), h);
 
     // Triangle walls
     plane(c1 + z(h), c1 + z(h), c2 + z(h), c1 + (c2 - c1)/3 + z(rh + h));
