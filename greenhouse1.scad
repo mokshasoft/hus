@@ -1,12 +1,15 @@
 include <lib/element.scad>
 
 // dimensions
-h = 0.4;
-w1 = 3;
-w2 = 2;
-l = 6;
+h = 0.4;   // foundation height
+w1 = 3;    // base width
+w2 = 2;    // roof width
+l = 6;     // length
+fhh = 3.5; // frame height high
+fhl = 3;   // frame height low
+cc = 0.6;  // center-center distance frames
 
-// Corners
+// calculate corners
 c1 = [0, 0, 0];
 c2 = [w1, 0, 0];
 c3 = [w1, l, 0];
@@ -71,9 +74,6 @@ module frame(w1, w2, h1, h2) {
 }
 
 // frames
-fhh = 3.5; // frame height high
-fhl = 3;   // frame height low
-cc = 0.6;
 nbr_frames = floor(l/cc);
 echo("nbr frames", nbr_frames);
 for (i = [0 : nbr_frames])
