@@ -2,13 +2,14 @@ include <lib/element.scad>
 
 // dimensions
 h = 0.4;
-w = 3;
-l = 5;
+w1 = 3;
+w2 = 2;
+l = 6;
 
 // Corners
 c1 = [0, 0, 0];
-c2 = [w, 0, 0];
-c3 = [w, l, 0];
+c2 = [w1, 0, 0];
+c3 = [w1, l, 0];
 c4 = [0, l, 0];
 
 // module wall
@@ -76,5 +77,16 @@ cc = 0.6;
 nbr_frames = floor(l/cc);
 echo("nbr frames", nbr_frames);
 for (i = [0 : nbr_frames])
-    translate([w/2, i*cc, h])
-    frame(w, w - 1, fhl, fhh);
+    translate([w1/2, i*cc, h])
+    frame(w1, w2, fhl, fhh);
+
+// lengthwise beams
+translate([w1/2, 0, h + fhh])
+rotate([90, 0, 90])
+beam2(l);
+translate([(w1 - w2)/2, 0, h + fhl])
+rotate([45, 0, 90])
+beam2(l);
+translate([w2 + (w1 - w2)/2, 0, h + fhl])
+rotate([135, 0, 90])
+beam2(l);
