@@ -1,6 +1,14 @@
-digraph building {
-  node [shape=box]; test1; test2; test3
-  test1 -> test2
-  test2 -> test3
-  test1 -> test3
+digraph building_dependencies {
+  // Important tasks
+  node [shape=box, style=filled, fillcolor = "lightblue"];
+  sealed [label="Väder säkert hus"]
+  roof [label="Tak, regntätt"]
+  walls [label="Väggar"]
+  // Tasks
+  node [shape=ellipse, style=""]
+  apply_building [label="Ansök, bygglov"]
+  // Dependencies
+  sealed -> roof
+  roof -> walls
+  walls -> apply_building
 }
