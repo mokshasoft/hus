@@ -41,14 +41,13 @@ union() {
 
 // module beam
 module beam2(length, width = 0.095, thickness = 0.045) {
-    cube([length, width, thickness]);
+    cube([length, width, thickness]); // center = true?
 }
 
 // module frame
 module frame(w1, w2, h1, h2) {
     module oneside() {
-    let ( x = (w1 - w2)/2
-        , x1 = (w1 - w2)/2
+    let ( x1 = (w1 - w2)/2
         , y1 = h1
         , x2 = w1/2
         , y2 = h2
@@ -67,6 +66,14 @@ module frame(w1, w2, h1, h2) {
         }
     }
     union() {
+        translate([-w2/2, 0, h1])
+        rotate([90, 0, 0])
+        union() {
+            beam2(w2);
+            translate([w2/2 + 0.045, 0, 0])
+            rotate([0, 0, 90])
+            beam2(h2 - h1);
+        }
         mirror([1, 0, 0])
         oneside();
         oneside();
@@ -90,3 +97,8 @@ beam2(l);
 translate([w2 + (w1 - w2)/2, 0, h + fhl])
 rotate([135, 0, 90])
 beam2(l);
+
+// calculations
+echo("area", l*w1, "m2");
+echo("base angle", atan(fhh/((w1 - w2)/2)));
+echo("base angle", atan((fhh - fhl)/(w1/2 - (w1 - w2)/2)));
