@@ -1,4 +1,5 @@
 module beam(l, w = 0.095, t = 0.045) {
+    echo("beam ", t, w, "length", l);
     color("lightblue")
     rotate([90, 0, 90])
     cube([l, w, t]);
