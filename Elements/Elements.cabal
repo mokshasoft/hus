@@ -32,9 +32,10 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , implicit
   default-language: Haskell2010
 
-executable Elements-exe
+executable Elements
   main-is: Main.hs
   other-modules:
       Paths_Elements
@@ -44,6 +45,7 @@ executable Elements-exe
   build-depends:
       Elements
     , base >=4.7 && <5
+    , implicit
   default-language: Haskell2010
 
 test-suite Elements-test
@@ -57,4 +59,5 @@ test-suite Elements-test
   build-depends:
       Elements
     , base >=4.7 && <5
+    , implicit
   default-language: Haskell2010
