@@ -60,6 +60,8 @@ module truss(p1, p2, height) {
         )
         echo("angle", angle(c + z(ch) - (p1 + z(h)), p2 - p1))
         echo("angle", angle(c + z(ch) - (p2 + z(h)), p1 - p2))
+        echo("length", p1 - (c + z(height)))
+        echo("length", p2 - (c + z(height)))
         union() {
             beam(p1 + z(h), c + z(ch), logd);
             beam(c + z(ch), p2 + z(h), logd);
