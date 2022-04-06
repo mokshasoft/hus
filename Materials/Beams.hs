@@ -26,6 +26,23 @@ ccx = 0.6
 ccy :: Float
 ccy = 1.2
 
+-- | Standard beams
+newtype BeamSize =
+  BeamSize (Float, Float)
+  deriving (Show)
+
+b2by4 :: BeamSize
+b2by4 = (0.045, 0.095)
+
+b2by5 :: BeamSize
+b2by5 = (0.045, 0.120)
+
+b2by6 :: BeamSize
+b2by6 = (0.045, 0.145)
+
+b2by8 :: BeamSize
+b2by8 = (0.045, 0.195)
+
 -- | Building elements
 frame :: Float -> Float -> Material
 frame w h =
@@ -39,6 +56,13 @@ frame w h =
 
 frame' :: Float -> Float -> Float -> Material
 frame' w h1 h2 = frame w ((h1 + h2) / 2)
+
+solid :: BeamSize -> Float -> Float -> Material
+solid (th, wd) w h =
+  Material {cost = 0, area = w * h, beamLength = w * h * (1 / wd)}
+
+solid' :: BeamSize -> Float -> Float -> Float -> Material
+solid' b w h1 h2 = solid b w ((h1 + h2) / 2)
 
 -- | Helpers
 printMaterial :: String -> Material -> IO ()
