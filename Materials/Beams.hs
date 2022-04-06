@@ -44,7 +44,7 @@ frame' w h1 h2 = frame w ((h1 + h2) / 2)
 printMaterial :: String -> Material -> IO ()
 printMaterial str m = do
   putStr $ str ++ ": "
-  putStrLn $ showFFloat (Just 2) (beamLength m) "m"
+  putStrLn $ showFFloat (Just 2) (beamLength m) "m"
 
 -- | Specific building elements
 bedroom :: Material
@@ -76,6 +76,6 @@ main = do
   printMaterial "load-bearing:       2\"5" loadBearingWall
   printMaterial "inner ceiling:      2\"5" innerCeiling
   printMaterial "winter garden roof: 2\"6" gardenRoof
-  putStrLn $    "winter garden wall: 2\"6: " ++ show (11 * 3) ++ "m"
+  putStrLn $ "winter garden wall: 2\"6: " ++ show (11 * 3) ++ "m"
   printMaterial "garage inner roof:  2\"5" garageInnerRoof
   printMaterial "garage wall:        2\"4" garageWall
