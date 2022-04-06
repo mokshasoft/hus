@@ -1,3 +1,5 @@
+import Numeric
+
 data Material =
   Material
     { cost :: Float
@@ -38,6 +40,12 @@ frame w h =
 frame' :: Float -> Float -> Float -> Material
 frame' w h1 h2 = frame w ((h1 + h2) / 2)
 
+-- | Helpers
+printMaterial :: String -> Material -> IO ()
+printMaterial str m = do
+  putStr $ str ++ ": "
+  putStrLn $ showFFloat (Just 2) (beamLength m) "m"
+
 -- | Specific building elements
 bedroom :: Material
 bedroom = frame' 3.0 4.2 4.8
@@ -46,20 +54,27 @@ bathroom :: Material
 bathroom = frame' 2.7 3.5 4.0 <> frame' 2.7 3.5 4.0 <> frame 2.5 4.0
 
 loadBearingWall :: Material
-loadBearingWall = frame 7500 4200
+loadBearingWall = frame 7.5 4.2
 
 innerCeiling :: Material
-innerCeiling = frame 7500 3000
+innerCeiling = frame 7.5 3.0
 
 gardenRoof :: Material
-gardenRoof = frame 3750 2500
+gardenRoof = frame 3.75 2.5
 
 garageInnerRoof :: Material
-garageInnerRoof = frame 6000 5000
+garageInnerRoof = frame 6.0 5.0
 
 garageWall :: Material
-garageWall = frame 22000 2800
+garageWall = frame 22.0 2.8
 
 -- | Run material calculation
 main :: IO ()
-main = print bedroom
+main = do
+  printMaterial "bedroom:            2\"4" bedroom
+  printMaterial "bathroom:           2\"4" bathroom
+  printMaterial "load-bearing:       2\"5" loadBearingWall
+  printMaterial "inner ceiling:      2\"5" innerCeiling
+  printMaterial "winter garden roof: 2\"5" gardenRoof
+  printMaterial "garage inner roof:  2\"5" garageInnerRoof
+  printMaterial "garage wall:        2\"4" garageWall
