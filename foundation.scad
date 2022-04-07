@@ -1,8 +1,7 @@
 flat = false;
 
-pw = 0.3; // plinth width
-ph = 0.6; // plinth height
-pd = 0.8; // plinth depth
+pw = 0.5; // plinth width
+ph = 0.25; // plinth height
 
 p2 = -0.05;
 
@@ -17,29 +16,20 @@ nw = [-p2, p2];
 
 module plinth(x, y) {
     echo("plinth position: ", [x, y])
-    // above ground
     if (flat) {
+        color("gray")
         translate([x, y])
-        square([pw, pw], center = true);
+        circle($fn = 20, r = pw/2);
     } else {
         color("gray")
         translate([x, y, ph/2])
-        cube([pw, pw, ph], center = true);
-    }
-        
-    // below ground
-    if (flat) {
-        translate([x, y])
-        square([pw, pw], center = true);
-    } else {
-        color("azure", 0.80)
-        translate([x, y, -pd/2])
-        cube([pw, pw, pd], center = true);
+        cylinder($fn = 20, h = ph, r = pw/2, center = true);
     }
 }
 
 // Corners
 wt = 0.5;
+wt2 = wt/2;
 c1 = [0 + wt, 0 + wt];
 c2 = [0 + wt, 9.2 - wt];
 c3 = [8.3 - wt, 9.2 - wt];
@@ -56,6 +46,7 @@ oc6 = [3.1, 0];
 
 // Outer surface area
 if (flat) {
+    color("blue", 0.3)
     difference() {
         polygon([oc1, oc2, oc3, oc4, oc5, oc6]);
         polygon([c1, c2, c3, c4, c5, c6]);
@@ -97,9 +88,10 @@ module doublebeam(p1, p2, width, height) {
 
 // Outer beams
 
-let ( th = 0.06
-    , h = 0.2
-    )
+if (!flat) {
+    let ( th = 0.06
+        , h = 0.2
+        )
     translate([0, 0, 0.8]) 
     union() {
         doublebeam(c1, c2, th, h);
@@ -109,28 +101,14 @@ let ( th = 0.06
         doublebeam(c5, c6, th, h);
         doublebeam(c6, c1, th, h);
     }
+}
 
 if (true) {
     // Wall plinths
-    plinth_line(c1 + ne, c2 + se, 5, "south wall");
-    plinth_line(c2 + se, c3 + sw, 4, "west wall");
-    plinth_line(c3 + sw, c4 + nw, 4, "north wall");
-    plinth_line(c4 + nw, c5 + nw, 3, "east wall");
-    plinth(c6[0] + nw[0], c6[1] + nw[1]);
-
-    // Center plinths
-    let ( c = (c2 + c4)/2
-        , d = 2.5
-        )
-        for (x=[0:1], y=[0:1])
-            plinth( c[0] + x*d - d/2
-                  , c[1] + y*d - d/2
-                  );
-
-    // Front porch plinths
-    let ( c = [(c4 + nw)[0], (c1 + ne)[1]]
-        )
-        plinth_line(c, c6 + nw, 3, "front porch");
+    plinth_line(oc1 + [wt2, wt2], oc2 + [wt2, -wt2], 5, "line 1");
+    plinth_line(oc1 + [2.8 - wt2, wt2], oc2 + [2.8 -wt2, -wt2], 5, "line 2");
+    plinth_line(oc1 + [5.0, wt2], oc2 + [5.0, -wt2], 5, "line 4");
+    plinth_line(oc1 + [8.3 - wt2, wt2], oc3 + [-wt2, -wt2], 5, "line 4");
 
     // Winter garden
     let ( l1 = 3.7
@@ -138,13 +116,4 @@ if (true) {
         , w = 2.5
         )
         plinth_line([-w, l1], [-w, l2 + l1], 3, "winter garden");
-    
-    // Measurements
-    let ( nbr = 21
-        )
-        echo("concrete m3", nbr*pw*pw*(ph + pd));
-    let ( area = (c2[1] - c4[1])*(c4[0] - c1[0]) + 
-                 (c5[1] - c1[1])*(c5[0] - c1[0])
-        )
-        echo("area m2", area);
     }
