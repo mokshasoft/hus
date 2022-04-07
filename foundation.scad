@@ -56,6 +56,7 @@ if (flat) {
         polygon([c1, c2, c3, c4, c5, c6]);
     }
 } else {
+    color("blue", 0.3)
     translate([0, 0, ph])
     linear_extrude(0.01)
     difference() {
@@ -145,6 +146,4 @@ if (logs) {
     translate([-2.5, 3.7, ph + 0.12]) log(3.75);
     translate([-2.7, 3.8, ph + 0.3]) rotate([0, 0, -90]) log(3);
     translate([-2.7, 3.8 + 3.5, ph + 0.3]) rotate([0, 0, -90]) log(3);
-
-
 }
