@@ -1,5 +1,5 @@
 flat = false;
-floorFrame = false;
+floorFrame = true;
 logs = true;
 
 pw = 0.5; // plinth width
@@ -87,8 +87,8 @@ module beam(p1, p2, width, height, color = "yellow") {
 }
 
 module doublebeam(p1, p2, width, height) {
-    beam(p1, p2, width, height);
-    translate([0, 0, height]) beam(p1, p2, width, height, "gray");
+    beam(p1, p2, width, height, "brown");
+    translate([0, 0, height]) beam(p1, p2, width, height, "green");
 }
 
 // Outer beams
@@ -99,12 +99,23 @@ if (floorFrame) {
         )
     translate([0, 0, 0.8]) 
     union() {
-        doublebeam(c1, c2, th, h);
-        doublebeam(c2, c3, th, h);
-        doublebeam(c3, c4, th, h);
-        doublebeam(c4, c5, th, h);
-        doublebeam(c5, c6, th, h);
-        doublebeam(c6, c1, th, h);
+        // outer ring
+        doublebeam(oc1, oc2, th, h);
+        doublebeam(oc2, oc3, th, h);
+        doublebeam(oc3, oc4, th, h);
+        doublebeam(oc4, oc5, th, h);
+        doublebeam(oc5, oc6, th, h);
+        doublebeam(oc6, oc1, th, h);
+        // bottom layer
+        for (i=[1:4])
+            translate([0.6*i, 0, 0]) beam(oc1, oc2, th, h, "red");
+        for (i=[0:8])
+            translate([0.6*i, 0, 0]) beam(oc5, [oc5[0], oc2[1]], th, h, "red");
+        // top layer
+        for (i=[1:13])
+            translate([0, -i*0.6, 0.2]) beam(oc2, oc3, th, h, "green");
+        for (i=[1:3])
+            translate([0, i*0.6, 0.2]) beam(oc1, oc6, th, h, "green");
     }
 }
 
