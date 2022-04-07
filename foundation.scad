@@ -1,7 +1,11 @@
 flat = false;
+floorFrame = false;
+logs = true;
 
 pw = 0.5; // plinth width
 ph = 0.25; // plinth height
+sx = 8.3; // house width
+sy = 10.2; // house length
 
 p2 = -0.05;
 
@@ -31,15 +35,15 @@ module plinth(x, y) {
 wt = 0.5;
 wt2 = wt/2;
 c1 = [0 + wt, 0 + wt];
-c2 = [0 + wt, 9.2 - wt];
-c3 = [8.3 - wt, 9.2 - wt];
-c4 = [8.3 - wt, 1.7 + wt];
+c2 = [0 + wt, sy - wt];
+c3 = [sx - wt, sy - wt];
+c4 = [sx - wt, 1.7 + wt];
 c5 = [3.1 - wt, 1.7 + wt];
 c6 = [3.1 - wt, 0 + wt];
 oc1 = [0, 0];
-oc2 = [0, 9.2];
-oc3 = [8.3, 9.2];
-oc4 = [8.3, 1.7];
+oc2 = [0, sy];
+oc3 = [sx, sy];
+oc4 = [sx, 1.7];
 oc5 = [3.1, 1.7];
 oc6 = [3.1, 0];
 
@@ -88,7 +92,7 @@ module doublebeam(p1, p2, width, height) {
 
 // Outer beams
 
-if (!flat) {
+if (floorFrame) {
     let ( th = 0.06
         , h = 0.2
         )
@@ -116,4 +120,13 @@ if (true) {
         , w = 2.5
         )
         plinth_line([-w, l1], [-w, l2 + l1], 3, "winter garden");
-    }
+}
+    
+module log(l) {
+    rotate([-90, 0, 0])
+    cylinder($fn = 20, h = l, r = 0.125);
+}
+ 
+if (logs) {
+    translate([wt2, 0, ph + 0.12]) log(10.2);
+}
