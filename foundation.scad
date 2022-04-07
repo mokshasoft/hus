@@ -128,5 +128,23 @@ module log(l) {
 }
  
 if (logs) {
-    translate([wt2, 0, ph + 0.12]) log(10.2);
+    // bottom layer
+    translate([wt2, 0, ph + 0.12]) log(sy);
+    translate([2.8 - wt2, 0, ph + 0.12]) log(sy);
+    translate([5.0, 0, ph + 0.12]) log(sy);
+    translate([8.3 - wt2, 0, ph + 0.12]) log(sy);
+    
+    // top layer
+    translate([0, wt2, ph + 0.3]) rotate([0, 0, -90]) log(sx);
+    translate([0, 2.675, ph + 0.3]) rotate([0, 0, -90]) log(sx);
+    translate([0, 5.1, ph + 0.3]) rotate([0, 0, -90]) log(sx);
+    translate([0, 7.525, ph + 0.3]) rotate([0, 0, -90]) log(sx);
+    translate([0, 9.95, ph + 0.3]) rotate([0, 0, -90]) log(sx);
+    
+    // winter garden
+    translate([-2.5, 3.7, ph + 0.12]) log(3.75);
+    translate([-2.7, 3.8, ph + 0.3]) rotate([0, 0, -90]) log(3);
+    translate([-2.7, 3.8 + 3.5, ph + 0.3]) rotate([0, 0, -90]) log(3);
+
+
 }
