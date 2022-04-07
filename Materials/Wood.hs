@@ -27,9 +27,7 @@ ccy :: Float
 ccy = 1.2
 
 -- | Standard beams
-newtype BeamSize =
-  BeamSize (Float, Float)
-  deriving (Show)
+type BeamSize = (Float, Float)
 
 b2by4 :: BeamSize
 b2by4 = (0.045, 0.095)
@@ -68,7 +66,9 @@ solid' b w h1 h2 = solid b w ((h1 + h2) / 2)
 printMaterial :: String -> Material -> IO ()
 printMaterial str m = do
   putStr $ str ++ ": "
-  putStrLn $ showFFloat (Just 2) (beamLength m) "m"
+  putStrLn $
+    showFFloat (Just 2) (beamLength m) "m" ++
+    ", " ++ showFFloat (Just 2) (area m) "m2"
 
 -- | Specific building elements
 bedroom :: Material
@@ -92,6 +92,15 @@ garageInnerRoof = frame 6.0 5.0
 garageWall :: Material
 garageWall = frame 22.0 2.8
 
+-- | Outer wall size
+outerHouseWall :: Material
+outerHouseWall =
+  let beam = (0.025, 0.195)
+   in solid beam 10.2 4.5 <>
+      solid' beam 8.3 4.5 6.0 <>
+      solid beam 8.5 6.0 <>
+      solid' beam 5.2 6.0 5.0 <> solid beam 1.7 5 <> solid' beam 3.1 5.0 4.5
+
 -- | Run material calculation
 main :: IO ()
 main = do
@@ -103,3 +112,5 @@ main = do
   putStrLn $ "winter garden wall: 2\"6: " ++ show (11 * 3) ++ "m"
   printMaterial "garage inner roof:  2\"5" garageInnerRoof
   printMaterial "garage wall:        2\"4" garageWall
+  putStrLn "---------------"
+  printMaterial "House panel:        1\"8" outerHouseWall
