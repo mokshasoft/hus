@@ -85,13 +85,23 @@ bedroom = double $ solid' b1by4 3.0 4.2 4.8
 
 bathroom :: Material
 bathroom =
-  double $ solid' b1by4 2.7 3.5 4.0 <> solid' b1by4 2.7 3.5 4.0 <> solid b1by4 2.5 4.0
+  double $
+  solid' b1by4 2.7 3.5 4.0 <> solid' b1by4 2.7 3.5 4.0 <> solid b1by4 2.5 4.0
 
 loadBearingWall :: Material
 loadBearingWall = frame 7.5 4.2
 
+loadBearingWallOutside :: Material
+loadBearingWallOutside = double $ solid b1by4 7.5 4.2
+
 innerCeiling :: Material
 innerCeiling = frame 7.5 3.0
+
+-- the layers above and below the floor framework
+floorLayers :: Material
+floorLayers =
+  let layer = solid b1by4 8.3 8.5 <> solid b1by4 3.1 1.7 <> solid b1by4 2.5 3.75
+   in layer <> layer <> layer -- one layer below and two on-top
 
 gardenRoof :: Material
 gardenRoof = frame 3.75 2.5
@@ -114,9 +124,11 @@ outerHouseWall =
 printIndianWoods :: IO ()
 printIndianWoods = do
   putStrLn "-- IndianWoods --"
-  printMaterial "bedroom:            1\"4" bedroom
-  printMaterial "bathroom:           1\"4" bathroom
-  printMaterial "House panel:        1\"8" outerHouseWall
+  printMaterial "bedroom:              1\"4" bedroom
+  printMaterial "bathroom:             1\"4" bathroom
+  printMaterial "load bearing outside: 1\"4" loadBearingWallOutside
+  printMaterial "floors:               1\"4" floorLayers
+  printMaterial "House panel:          1\"8" outerHouseWall
   putStrLn "-----------------"
 
 -- | Run material calculation
