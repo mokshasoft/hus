@@ -132,13 +132,19 @@ printIndianWoods = do
   printMaterial "House panel:          1\"8" outerHouseWall
   putStrLn "-----------------"
 
--- | Run material calculation
-main :: IO ()
-main = do
-  printIndianWoods
+printKH :: IO ()
+printKH = do
+  putStrLn "-- KH          --"
   printMaterial "load-bearing:       2\"5" loadBearingWall
   printMaterial "inner ceiling:      2\"5" innerCeiling
   printMaterial "winter garden roof: 2\"6" gardenRoof
   putStrLn $ "winter garden wall: 2\"6: " ++ show (11 * 3) ++ "m"
   printMaterial "garage inner roof:  2\"5" garageInnerRoof
   printMaterial "garage wall:        2\"4" garageWall
+  putStrLn "-----------------"
+
+-- | Run material calculation
+main :: IO ()
+main = do
+  printIndianWoods
+  printKH
