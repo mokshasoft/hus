@@ -128,6 +128,7 @@ printIndianWoods = do
   printMaterial "bathroom:             1\"4" bathroom
   printMaterial "load bearing outside: 1\"4" loadBearingWallOutside
   printMaterial "floors:               1\"4" floorLayers
+  printMaterial "total 1\"4:               " $ bedroom <> bathroom <> loadBearingWallOutside <> floorLayers
   printMaterial "House panel:          1\"8" outerHouseWall
   putStrLn "-----------------"
 
