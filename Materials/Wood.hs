@@ -57,7 +57,9 @@ frame' w h1 h2 = frame w ((h1 + h2) / 2)
 
 solid :: BeamSize -> Float -> Float -> Material
 solid (th, wd) w h =
-  Material {cost = 0, area = w * h, beamLength = w * h * (1 / wd)}
+  let area = w * h
+      beamLength = area / wd
+   in Material {cost = 0, area = area, beamLength = beamLength}
 
 solid' :: BeamSize -> Float -> Float -> Float -> Material
 solid' b w h1 h2 = solid b w ((h1 + h2) / 2)
