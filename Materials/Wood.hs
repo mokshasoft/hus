@@ -29,6 +29,9 @@ ccy = 1.2
 -- | Standard beams
 type BeamSize = (Float, Float)
 
+b1by4 :: BeamSize
+b1by4 = (0.025, 0.100)
+
 b2by4 :: BeamSize
 b2by4 = (0.045, 0.095)
 
@@ -40,6 +43,10 @@ b2by6 = (0.045, 0.145)
 
 b2by8 :: BeamSize
 b2by8 = (0.045, 0.195)
+
+-- | Helpers
+double :: Material -> Material
+double m = m <> m
 
 -- | Building elements
 frame :: Float -> Float -> Material
@@ -74,10 +81,11 @@ printMaterial str m = do
 
 -- | Specific building elements
 bedroom :: Material
-bedroom = frame' 3.0 4.2 4.8
+bedroom = double $ solid' b1by4 3.0 4.2 4.8
 
 bathroom :: Material
-bathroom = frame' 2.7 3.5 4.0 <> frame' 2.7 3.5 4.0 <> frame 2.5 4.0
+bathroom =
+  double $ solid' b1by4 2.7 3.5 4.0 <> solid' b1by4 2.7 3.5 4.0 <> solid b1by4 2.5 4.0
 
 loadBearingWall :: Material
 loadBearingWall = frame 7.5 4.2
@@ -103,16 +111,21 @@ outerHouseWall =
       solid beam 8.5 6.0 <>
       solid' beam 5.2 6.0 5.0 <> solid beam 1.7 5 <> solid' beam 3.1 5.0 4.5
 
+printIndianWoods :: IO ()
+printIndianWoods = do
+  putStrLn "-- IndianWoods --"
+  printMaterial "bedroom:            1\"4" bedroom
+  printMaterial "bathroom:           1\"4" bathroom
+  printMaterial "House panel:        1\"8" outerHouseWall
+  putStrLn "-----------------"
+
 -- | Run material calculation
 main :: IO ()
 main = do
-  printMaterial "bedroom:            2\"4" bedroom
-  printMaterial "bathroom:           2\"4" bathroom
+  printIndianWoods
   printMaterial "load-bearing:       2\"5" loadBearingWall
   printMaterial "inner ceiling:      2\"5" innerCeiling
   printMaterial "winter garden roof: 2\"6" gardenRoof
   putStrLn $ "winter garden wall: 2\"6: " ++ show (11 * 3) ++ "m"
   printMaterial "garage inner roof:  2\"5" garageInnerRoof
   printMaterial "garage wall:        2\"4" garageWall
-  putStrLn "---------------"
-  printMaterial "House panel:        1\"8" outerHouseWall
