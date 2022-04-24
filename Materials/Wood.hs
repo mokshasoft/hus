@@ -134,6 +134,14 @@ innerRoof = solid b1by4 10.2 8.3
 
 outerRoof = solid b1by4 (10.2 + 1) (8.3 + 1)
 
+roofBeams :: Material
+roofBeams =
+  Material
+    { cost = 0
+    , area = 0
+    , beamLength = 10 * (10.2 + 1)/0.6
+    }
+
 -- | Outer wall size
 outerHouseWall :: Material
 outerHouseWall =
@@ -161,6 +169,7 @@ printIndianWoods = do
 printKH :: IO ()
 printKH = do
   putStrLn "-- KH          --"
+  printMaterial "roof beams          2\"4" roofBeams
   printMaterial "load-bearing:       2\"4" loadBearingWall
   printMaterial "inner ceiling:      2\"5" innerCeiling
   printMaterial "floor framework:    2\"8" floorFramework
