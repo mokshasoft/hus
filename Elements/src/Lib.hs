@@ -4,6 +4,7 @@ module Lib
 
 import Graphics.Implicit
 import Graphics.Implicit.Definitions
+import Element
 
 model = union [cube False (pure 20), translate (pure 20) $ sphere 15]
 
