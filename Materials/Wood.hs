@@ -97,6 +97,9 @@ loadBearingWallOutside = double $ solid b1by4 7.5 4.2
 innerCeiling :: Material
 innerCeiling = frame 7.5 3.0
 
+floorLoft :: Material
+floorLoft = solid b1by4 7.5 3.0
+
 -- the layers above and below the floor framework
 floorLayers :: Material
 floorLayers =
@@ -152,6 +155,7 @@ printIndianWoods = do
   printMaterial "total 1\"4:               " $
     bedroom <> bathroom <> loadBearingWallOutside <> floorLayers <> innerRoof <> outerRoof
   printMaterial "House panel:          1\"8" outerHouseWall
+  printMaterial "Floor loft:           1\"?" floorLoft
   putStrLn "-----------------"
 
 printKH :: IO ()
