@@ -126,6 +126,11 @@ garageInnerRoof = frame 6.0 5.0
 garageWall :: Material
 garageWall = frame 22.0 2.8
 
+-- | Roof
+innerRoof = solid b1by4 10.2 8.3
+
+outerRoof = solid b1by4 (10.2 + 1) (8.3 + 1)
+
 -- | Outer wall size
 outerHouseWall :: Material
 outerHouseWall =
@@ -142,8 +147,10 @@ printIndianWoods = do
   printMaterial "bathroom:             1\"4" bathroom
   printMaterial "load bearing outside: 1\"4" loadBearingWallOutside
   printMaterial "floors:               1\"4" floorLayers
+  printMaterial "inner roof            1\"4" innerRoof
+  printMaterial "outer roof            1\"4" outerRoof
   printMaterial "total 1\"4:               " $
-    bedroom <> bathroom <> loadBearingWallOutside <> floorLayers
+    bedroom <> bathroom <> loadBearingWallOutside <> floorLayers <> innerRoof <> outerRoof
   printMaterial "House panel:          1\"8" outerHouseWall
   putStrLn "-----------------"
 
