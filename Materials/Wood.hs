@@ -103,6 +103,20 @@ floorLayers =
   let layer = solid b1by4 8.3 8.5 <> solid b1by4 3.1 1.7 <> solid b1by4 2.5 3.75
    in layer <> layer <> layer -- one layer below and two on-top
 
+floorFramework :: Material
+floorFramework =
+  let w = 8.3
+      h = 10.2
+   in Material
+        { cost = 0
+        , area = 8.3 * 8.5 + 3.1 * 1.7
+        , beamLength
+            -- Approximate by including the entry porch
+           =
+            h * fromInteger (1 + ceiling (w / 0.6)) +
+            w * fromInteger (1 + ceiling (h / 0.6))
+        }
+
 gardenRoof :: Material
 gardenRoof = frame 3.75 2.5
 
@@ -128,15 +142,17 @@ printIndianWoods = do
   printMaterial "bathroom:             1\"4" bathroom
   printMaterial "load bearing outside: 1\"4" loadBearingWallOutside
   printMaterial "floors:               1\"4" floorLayers
-  printMaterial "total 1\"4:               " $ bedroom <> bathroom <> loadBearingWallOutside <> floorLayers
+  printMaterial "total 1\"4:               " $
+    bedroom <> bathroom <> loadBearingWallOutside <> floorLayers
   printMaterial "House panel:          1\"8" outerHouseWall
   putStrLn "-----------------"
 
 printKH :: IO ()
 printKH = do
   putStrLn "-- KH          --"
-  printMaterial "load-bearing:       2\"5" loadBearingWall
+  printMaterial "load-bearing:       2\"4" loadBearingWall
   printMaterial "inner ceiling:      2\"5" innerCeiling
+  printMaterial "floor framework:    2\"8" floorFramework
   putStrLn "-----------------"
 
 -- | Run material calculation
