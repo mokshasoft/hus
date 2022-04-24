@@ -100,6 +100,9 @@ innerCeiling = frame 7.5 3.0
 floorLoft :: Material
 floorLoft = solid b1by4 7.5 3.0
 
+bedroomCeiling :: Material
+bedroomCeiling = solid b1by4 7.5 3.0
+
 -- the layers above and below the floor framework
 floorLayers :: Material
 floorLayers =
@@ -160,8 +163,9 @@ printIndianWoods = do
   printMaterial "floors:               1\"4" floorLayers
   printMaterial "inner roof            1\"4" innerRoof
   printMaterial "outer roof            1\"4" outerRoof
+  printMaterial "bedroom ceiling       1\"4" bedroomCeiling
   printMaterial "total 1\"4:               " $
-    bedroom <> bathroom <> loadBearingWallOutside <> floorLayers <> innerRoof <> outerRoof
+    bedroom <> bathroom <> loadBearingWallOutside <> floorLayers <> innerRoof <> outerRoof <> bedroomCeiling
   printMaterial "House panel:          1\"8" outerHouseWall
   printMaterial "Floor loft:           1\"?" floorLoft
   putStrLn "-----------------"
