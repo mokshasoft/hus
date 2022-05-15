@@ -180,42 +180,45 @@ printKH = do
   putStrLn "-----------------"
 
 -- | Room walls
-toilett :: Material
-toilett = frame w h <> frame w h <> frame w h <> frame w h
+toilettW :: Material
+toilettW = double $ (frame 1.6 3.8 <> frame 2.1 3.8)
 
-bathroom :: Material
-bathroom = frame w h <> frame w h <> frame w h <> frame w h
+bathroomW :: Material
+bathroomW = double $ (frame 2.3 3.9 <> frame 2.5 3.9)
 
-hall :: Material
-hall = frame w h <> frame w h <> frame w h <> frame w h
+hallW :: Material
+hallW = double $ (frame 2.5 4.2 <> frame 1.4 4.2)
 
-livingroom :: Material
-livingroom = frame w h <> frame w h <> frame w h <> frame w h
+livingroomW :: Material
+livingroomW = (double $ frame' 4.3 3.4 4.2) <> frame 5 3.4 <> frame 5 4.2
 
-bedroom :: Material
-bedroom = frame w h <> frame w h <> frame w h <> frame w h
+bedroomW :: Material
+bedroomW = double $ (frame 2.9 2.5 <> frame 3.9 2.5)
 
-office :: Material
-office = frame w h <> frame w h <> frame w h <> frame w h
+officeW :: Material
+officeW = double $ (frame 2.9 2.5 <> frame 3.4 2.5)
 
-medroom :: Material
-medroom = frame w h <> frame w h <> frame w h <> frame w h
+medroomW :: Material
+medroomW = (double $ frame' 2.9 1.6 2.1) <> frame 3.6 2.1
 
-storage :: Material
-storage = frame w h <> frame w h <> frame w h <> frame w h
+storageW :: Material
+storageW = (double $ frame' 2.9 1.6 2.1) <> frame 3.9 2.1 <> frame 3.9 1.6
 
 printClay :: IO ()
 printClay = do
   putStrLn "-- Clay          --"
+  printMaterial "orange:               " $
+    toilettW <> bathroomW
   printMaterial "yellow:               " $
-    toilett <> bathroom <> hall <> livingroom <> medroom <> storage
+    hallW <> livingroomW <> medroomW <> storageW
   printMaterial "liliac:               " $
-    bedroom
+    bedroomW
   printMaterial "green:               " $
-    office
+    officeW
 
 -- | Run material calculation
 main :: IO ()
 main = do
   printIndianWoods
   printKH
+  printClay
