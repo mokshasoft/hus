@@ -179,6 +179,41 @@ printKH = do
   printMaterial "floor framework:    2\"8" floorFramework
   putStrLn "-----------------"
 
+-- | Room walls
+toilett :: Material
+toilett = frame w h <> frame w h <> frame w h <> frame w h
+
+bathroom :: Material
+bathroom = frame w h <> frame w h <> frame w h <> frame w h
+
+hall :: Material
+hall = frame w h <> frame w h <> frame w h <> frame w h
+
+livingroom :: Material
+livingroom = frame w h <> frame w h <> frame w h <> frame w h
+
+bedroom :: Material
+bedroom = frame w h <> frame w h <> frame w h <> frame w h
+
+office :: Material
+office = frame w h <> frame w h <> frame w h <> frame w h
+
+medroom :: Material
+medroom = frame w h <> frame w h <> frame w h <> frame w h
+
+storage :: Material
+storage = frame w h <> frame w h <> frame w h <> frame w h
+
+printClay :: IO ()
+printClay = do
+  putStrLn "-- Clay          --"
+  printMaterial "yellow:               " $
+    toilett <> bathroom <> hall <> livingroom <> medroom <> storage
+  printMaterial "liliac:               " $
+    bedroom
+  printMaterial "green:               " $
+    office
+
 -- | Run material calculation
 main :: IO ()
 main = do
