@@ -48,6 +48,9 @@ b2by8 = (0.045, 0.195)
 double :: Material -> Material
 double m = m <> m
 
+nbrBeams :: Float -> Float -> Float
+nbrBeams width cc = fromInteger (1 + ceiling (width / cc))
+
 -- | Building elements
 frame :: Float -> Float -> Material
 frame w h =
@@ -139,11 +142,13 @@ outerRoof = solid b1by4 (10.2 + 1) (8.3 + 1)
 
 roofBeams :: Material
 roofBeams =
-  Material
-    { cost = 0
-    , area = 0
-    , beamLength = 10 * (10.2 + 1)/0.6
-    }
+  let w = 10.2 + 1
+      h = 8.3 + 1
+   in Material
+        { cost = 0
+        , area = 0
+        , beamLength = h * nbrBeams w 0.9 + w * nbrBeams h 0.9
+        }
 
 -- | Outer wall size
 outerHouseWall :: Material
