@@ -48,6 +48,9 @@ b2by8 = (0.045, 0.195)
 double :: Material -> Material
 double m = m <> m
 
+tripple :: Material -> Material
+tripple m = m <> m
+
 nbrBeams :: Float -> Float -> Float
 nbrBeams width cc = fromInteger (1 + ceiling (width / cc))
 
@@ -221,9 +224,24 @@ printClay = do
   printMaterial "green:               " $
     officeW
 
+-- The carport
+
+carportWalls :: Material
+carportWalls = (tripple $ frame 5 2.8) <> (double $ double $ frame 3 2.8)
+
+carportCeilingFloor :: Material
+carportCeilingFloor = double $ frame 6 5
+
+printCarport :: IO ()
+printCarport = do
+  putStrLn "-- Carport          --"
+  printMaterial "walls:              2\"4" carportWalls
+  printMaterial "floor and ceiling:  2\"5" carportWalls
+
 -- | Run material calculation
 main :: IO ()
 main = do
   printIndianWoods
   printKH
   printClay
+  printCarport
