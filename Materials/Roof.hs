@@ -28,6 +28,10 @@ nbrBeams width cc = fromInteger (1 + ceiling (width / cc))
 fotBrada :: Float
 fotBrada = 10.2 + 2*oh
 
+-- The number of joins needed to cover the roof north/south with the ccy1 sheets
+joinsPerLine1 :: Float
+joinsPerLine1 = fromInteger $ floor (l / ccy1)
+
 -- | Building elements
 
 printRoof :: IO ()
@@ -36,6 +40,7 @@ printRoof = do
   putStrLn $ "nbr sheets main roof: " ++ show nbr
   putStrLn $ "length of sheets main roof: " ++ show len
   putStrLn $ "length of 'fotbräda' and 'pulpet nock': " ++ show fotBrada
+  putStrLn $ "nbr joins: " ++ show joinsPerLine1
  where
   nbr = ceiling (w / ccx)
   len = l * fromInteger nbr
