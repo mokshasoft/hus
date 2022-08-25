@@ -23,6 +23,11 @@ ccy2 = 1.955
 nbrBeams :: Float -> Float -> Float
 nbrBeams width cc = fromInteger (1 + ceiling (width / cc))
 
+-- | Elements
+
+fotBrada :: Float
+fotBrada = 10.2 + 2*oh
+
 -- | Building elements
 
 printRoof :: IO ()
@@ -30,6 +35,7 @@ printRoof = do
   putStrLn "-- Roof          --"
   putStrLn $ "nbr sheets main roof: " ++ show nbr
   putStrLn $ "length of sheets main roof: " ++ show len
+  putStrLn $ "length of 'fotbräda' and 'pulpet nock': " ++ show fotBrada
  where
   nbr = ceiling (w / ccx)
   len = l * fromInteger nbr
