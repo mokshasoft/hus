@@ -31,6 +31,12 @@ nbrBeams width cc = fromInteger (1 + ceiling (width / cc))
 
 -- | Elements
 
+linesBigRoof :: Float
+linesBigRoof = nbrBeams w ccx
+
+linesSmallRoof :: Float
+linesSmallRoof = nbrBeams w2 ccx
+
 fotBrada :: Float
 fotBrada = 10.2 + 2*oh
 
@@ -61,8 +67,8 @@ lakt = spikTatningsband + w * nbrBeams l ccSparY + w2 * nbrBeams l2 ccSparY
 printRoof :: IO ()
 printRoof = do
   putStrLn "-- Roof          --"
-  putStrLn $ "nbr sheets main roof: " ++ show nbr
-  putStrLn $ "length of sheets main roof: " ++ show len
+  putStrLn $ "nbr lines main roof: " ++ show (linesBigRoof + linesSmallRoof)
+  putStrLn $ "total number of 3.3 sheets main roof:" ++ show ((3*linesBigRoof) + linesSmallRoof)
   putStrLn $ "length of 'fotbräda' and 'pulpet nock': " ++ show fotBrada
   putStrLn $ "gavelbeslag: " ++ show (2*w)
   putStrLn $ "spiktätningsband: " ++ show spikTatningsband
@@ -70,9 +76,6 @@ printRoof = do
   putStrLn $ "nbr joins line1: " ++ show joinsPerLine1
   putStrLn $ "nbr joins line2: " ++ show joinsPerLine2
   putStrLn $ "nbr joins total: " ++ show joins
- where
-  nbr = ceiling (w / ccx)
-  len = l * fromInteger nbr
 
 -- | Run material calculation
 main :: IO ()
