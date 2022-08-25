@@ -47,6 +47,7 @@ printRoof = do
   putStrLn $ "nbr sheets main roof: " ++ show nbr
   putStrLn $ "length of sheets main roof: " ++ show len
   putStrLn $ "length of 'fotbräda' and 'pulpet nock': " ++ show fotBrada
+  putStrLn $ "gavelbeslag: " ++ show (2*w)
   putStrLn $ "nbr joins line1: " ++ show joinsPerLine1
   putStrLn $ "nbr joins line2: " ++ show joinsPerLine2
  where
