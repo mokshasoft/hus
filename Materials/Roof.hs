@@ -18,6 +18,12 @@ ccy1 = 3.3
 ccy2 :: Float
 ccy2 = 1.955
 
+ccSparX :: Float
+ccSparX = 0.6
+
+ccSparY :: Float
+ccSparY = 0.35
+
 -- | Helpers
 
 nbrBeams :: Float -> Float -> Float
@@ -39,6 +45,9 @@ joinsPerLine2 = fromInteger $ floor (leftOver / ccy1) + 1
  where
   leftOver = l - ccy2
 
+spikTatningsband :: Float
+spikTatningsband = l * nbrBeams w ccSparX + l2 * nbrBeams w2 ccSparX
+
 -- | Building elements
 
 printRoof :: IO ()
@@ -48,6 +57,7 @@ printRoof = do
   putStrLn $ "length of sheets main roof: " ++ show len
   putStrLn $ "length of 'fotbräda' and 'pulpet nock': " ++ show fotBrada
   putStrLn $ "gavelbeslag: " ++ show (2*w)
+  putStrLn $ "spiktätningsband: " ++ show spikTatningsband
   putStrLn $ "nbr joins line1: " ++ show joinsPerLine1
   putStrLn $ "nbr joins line2: " ++ show joinsPerLine2
  where
