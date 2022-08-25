@@ -48,6 +48,10 @@ joinsPerLine2 = fromInteger $ floor (leftOver / ccy1) + 1
 spikTatningsband :: Float
 spikTatningsband = l * nbrBeams w ccSparX + l2 * nbrBeams w2 ccSparX
 
+-- Läkt
+lakt :: Float
+lakt = spikTatningsband + w * nbrBeams l ccSparY + w2 * nbrBeams l2 ccSparY
+
 -- | Building elements
 
 printRoof :: IO ()
@@ -58,6 +62,7 @@ printRoof = do
   putStrLn $ "length of 'fotbräda' and 'pulpet nock': " ++ show fotBrada
   putStrLn $ "gavelbeslag: " ++ show (2*w)
   putStrLn $ "spiktätningsband: " ++ show spikTatningsband
+  putStrLn $ "läkt: " ++ show lakt
   putStrLn $ "nbr joins line1: " ++ show joinsPerLine1
   putStrLn $ "nbr joins line2: " ++ show joinsPerLine2
  where
