@@ -45,6 +45,10 @@ joinsPerLine2 = fromInteger $ floor (leftOver / ccy1) + 1
  where
   leftOver = l - ccy2
 
+-- note: No joins needed over the bathroom
+joins :: Float
+joins = (joinsPerLine1 + joinsPerLine2) * nbrBeams w (2*ccx)
+
 spikTatningsband :: Float
 spikTatningsband = l * nbrBeams w ccSparX + l2 * nbrBeams w2 ccSparX
 
@@ -65,6 +69,7 @@ printRoof = do
   putStrLn $ "läkt: " ++ show lakt
   putStrLn $ "nbr joins line1: " ++ show joinsPerLine1
   putStrLn $ "nbr joins line2: " ++ show joinsPerLine2
+  putStrLn $ "nbr joins total: " ++ show joins
  where
   nbr = ceiling (w / ccx)
   len = l * fromInteger nbr
