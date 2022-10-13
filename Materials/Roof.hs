@@ -8,6 +8,9 @@ l = 8.3 + 2*oh
 w2 = 1.7 + oh
 l2 = 3.0 + 2*oh
 
+w3 = 4.2
+l3 = 3.2
+
 -- | Metal roof sheets
 ccx :: Float
 ccx = 0.466
@@ -56,7 +59,10 @@ joins :: Float
 joins = (joinsPerLine1 + joinsPerLine2) * nbrBeams w (2*ccx)
 
 spikTatningsband :: Float
-spikTatningsband = l * nbrBeams w ccSparX + l2 * nbrBeams w2 ccSparX
+spikTatningsband =
+    l * nbrBeams w ccSparX
+  + l2 * nbrBeams w2 ccSparX
+  + l3 * nbrBeams w3 ccSparX
 
 -- Läkt
 lakt :: Float
