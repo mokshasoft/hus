@@ -158,3 +158,14 @@ Litet träd som får stora skördar av små mörkblåa frukter. Självfertil. B�
 Litet, svagväxande träd med smal krona och upprätta grenar. Sorten ger rikligt med medelstora, runda och mörkblåa frukter med saftigt, sött fruktkött.
 
 Ger bäst skörd i soligt läge på väldränerad, näringsrik och mullrik jord. Bör kartgallras. Beskär endast skadade grenar och grenar som växer inåt kronan, detta görs i JAS (juli, augusti, september) efter skörd. Självfertil.
+
+## Småblommig schersmin - Philadelphus Lemoinei-Gruppen
+
+### 'Mont Blanc'
+Läge: Sol till halvskugga
+
+Odlingszon: 1 - 5
+
+En nätt schersmin som blommar rikligt med enkla vita doftande blommor. Mindre än doftschersminen, men med ännu rikare blomning.
+
+Lättodlad buske, mindre än andra schersminer men mycket rikblommande. Vita blommor, som doftar underbart av smultron. Gallras ur för att bli frodig och blomma rikt. Mycket odlingsvärd.
