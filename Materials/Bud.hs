@@ -80,8 +80,42 @@ page2 =
   , I "alex 4:de v" 500 JC ""
   ]
 
+page3 :: [Item]
+page3 =
+  [ I "lantmäteriet lagfart" 825 JAD "8/6"
+  , I "lindtech (takplåt)" 23998 JAD "8/6"
+  , I "perkolationstest" 594 JC "10/6"
+  , I "varbergsträ (fönster)" 23354 JAD "14/6"
+  , I "lis 3,3" 340 JAD ""
+  , I "karl hedin" 480 JC "17/6"
+  , I "spik" 817 JC ""
+  , I "diesel" 430 JC "27/6"
+  , I "bits" 195 JC ""
+  , I "aur 25" 3000 JC ""
+  , I "aur 27" 4500 JC ""
+  , I "aur 26" 500 JC ""
+  , I "värdering" 4000 JC "15/7"
+  , I "spik" 1944 JC "16/7"
+  , I "diesel" 470 JC "17/7"
+  , I "diesel" 531 JC "20/7"
+  , I "diesel" 432 JC ""
+  , I "i-beams" (-545) JC ""
+  , I "stuv tjära mm" 744 JAD "25/7"
+  , I "edsvallaträ" 29500 JAD "27/7"
+  , I "aur 1.5" 140 JAD ""
+  , I "mat kollektiv" 1000 JAD ""
+  , I "thor" 2711 JC "31/7"
+  , I "BNA åter" (-3680) JC "18/10"
+  , I "aur" 12350 JC "4/8"
+  , I "taklyft KH" 5231 JC "10/8"
+  , I "fuktmätare" (-1609) JC "10/8"
+  , I "karmskruv mm" 1363 JC "15/8"
+  , I "bits jula" (-347) JC "23/8"
+  , I "m bv" 1900 JAD ""
+  , I "isoleringslandslaget" 9735 JAD "25/8"
+  ]
 
-items = page1 ++ page2
+items = page1 ++ page2 ++ page3
 
 total :: [Item] -> Int
 total = sum . map cost
