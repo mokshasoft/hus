@@ -1,7 +1,7 @@
 import Data.List
 
 data Payer = JC | JAD | KK
-  deriving (Show, Eq)
+  deriving (Show, Eq, Ord)
 
 data Item =
   I
@@ -50,7 +50,10 @@ total :: [Item] -> Int
 total = sum . map cost
 
 eachTotal :: [Item] -> [(Int, Payer)]
-eachTotal is = map (\i -> (total i, payer $ head i)) $ groupBy (\a b -> payer a == payer b) is
+eachTotal is = map (\i -> (total i, payer $ head i)) $ groupBy group $ sortBy order is
+ where
+  group = \a b -> payer a == payer b
+  order = \a b -> compare (payer a) (payer b)
 
 main :: IO ()
 main = do
