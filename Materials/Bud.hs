@@ -115,7 +115,41 @@ page3 =
   , I "isoleringslandslaget" 9735 JAD "25/8"
   ]
 
-items = page1 ++ page2 ++ page3
+page4 :: [Item]
+page4 =
+  [ I "edsvalla trä" 13470 JAD "27/8"
+  , I "dörr" 3000 JC "4/9"
+  , I "låskista" 150 JC "4/9"
+  , I "spik" 1239 JC "5/9"
+  , I "m bv" 1700 JAD ""
+  , I "lantmäteriet" 3000 JAD "10/9"
+  , I "sandprov" 182 JC "20/9"
+  , I "l" 1000 JC "26/9"
+  , I "spik" 1176 JC "27/9"
+  , I "l bv" 5375 JAD "7/10"
+  , I "jula" 1395 JC "19/10"
+  , I "biltema" 3501 JC "19/10"
+  , I "aur" 1000 JC "22/10"
+  , I "biltema vvs" 3500 JC "24/20"
+  , I "indanwood" 38500 KK "24/10"
+  , I "lindtech" 1575 JC "31/10"
+  , I "lindtech" 1067 JC "31/10"
+  , I "aur" 3500 JC "5/11"
+  , I "bj" 11500 JC "8/11"
+  , I "värmlandsschakt" 36500 KK "8/11"
+  , I "värmlandsschakt" 12609 JC "8/11"
+  , I "isolering" 3395 JC "13/11"
+  , I "imkanal" 6547 JC "13/11"
+  , I "värmlandsschakt" 8750 JAD "14/11"
+  , I "diesel" 518 JC "22/11"
+  , I "joc" 1000 JC "4/12"
+  , I "biltema" 1988 JC "3/12"
+  , I "traktorspegel" 425 JC "5/12"
+  , I "verktyg" 5508 JC "5/12"
+  , I "svetsgas" 1581 JC "5/12"
+  ]
+
+items = page1 ++ page2 ++ page3 ++ page4
 
 total :: [Item] -> Int
 total = sum . map cost
