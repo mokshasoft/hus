@@ -2,38 +2,39 @@ module Lib
   ( someFunc
   ) where
 
+import Control.Monad.Writer
 import Graphics.Implicit
 import Graphics.Implicit.Definitions
-import Element
 
-model = union [cube False (pure 20), translate (pure 20) $ sphere 15]
+-- Shortest brick side
+bs = 0.07
+
+brick :: SymbolicObj3
+brick = cube False (V3 (2 * bs) (4 * bs) bs)
+
+brickLift :: Writer [String] SymbolicObj3
+brickLift = writer (brick, ["Add a brick"])
+
+unionL :: [Writer [String] SymbolicObj3] -> Writer [String] SymbolicObj3
+unionL [] = writer (emptySpace, [])
+unionL (x:xs) = do
+  m1 <- x
+  mRest <- unionL xs
+  writer (union [m1, mRest], [])
+
+translateL ::
+     V3 ℝ -> Writer [String] SymbolicObj3 -> Writer [String] SymbolicObj3
+translateL vec wm = do
+  m <- wm
+  writer (translate vec m, [])
+
+brickLayer :: Writer [String] SymbolicObj3
+brickLayer =
+  unionL $ [translateL (V3 (2 * 1.1 * bs * x) 0 0) brickLift | x <- [0 .. 4]]
 
 someFunc :: IO ()
 someFunc = do
   putStrLn "Generating model.stl"
-  writeSTL 1 "model.stl" model
-
-data ConfigBeam =
-  ConfigBeam
-    { thickness :: Double
-    , width :: Double
-    }
-  deriving (Show)
-
-data ConfigCc =
-  ConfigCc
-    { x :: Double
-    , y :: Double
-    }
-  deriving (Show)
-
-
-defaultBeam :: ConfigBeam
-defaultBeam = ConfigBeam 0.045 0.095
-
-beam :: ConfigBeam -> Double -> SymbolicObj3
-beam cfgBeam length =
-  cube False (V3 length (width cfgBeam) (thickness cfgBeam))
-
-wall :: ConfigBeam -> ConfigCc -> Double -> Double -> SymbolicObj3
-wall cfgBeam cfgCc width height = undefined
+  let (model, parts) = runWriter brickLayer
+  putStrLn $ show parts
+  writeSTL 0.01 "model.stl" model
