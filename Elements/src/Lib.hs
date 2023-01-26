@@ -6,16 +6,18 @@ import Control.Monad.Writer
 import Graphics.Implicit
 import Graphics.Implicit.Definitions
 
+type PartsObj3 = Writer [String] SymbolicObj3
+
 -- Shortest brick side
 bs = 0.07
 
 brick :: SymbolicObj3
 brick = cube False (V3 (2 * bs) (4 * bs) bs)
 
-brickLift :: Writer [String] SymbolicObj3
+brickLift :: PartsObj3
 brickLift = writer (brick, ["Add a brick"])
 
-unionL :: [Writer [String] SymbolicObj3] -> Writer [String] SymbolicObj3
+unionL :: [PartsObj3] -> PartsObj3
 unionL [] = writer (emptySpace, [])
 unionL (x:xs) = do
   m1 <- x
@@ -23,12 +25,12 @@ unionL (x:xs) = do
   writer (union [m1, mRest], [])
 
 translateL ::
-     V3 ℝ -> Writer [String] SymbolicObj3 -> Writer [String] SymbolicObj3
+     V3 ℝ -> PartsObj3 -> PartsObj3
 translateL vec wm = do
   m <- wm
   writer (translate vec m, [])
 
-brickLayer :: Writer [String] SymbolicObj3
+brickLayer :: PartsObj3
 brickLayer =
   unionL $ [translateL (V3 (2 * 1.1 * bs * x) 0 0) brickLift | x <- [0 .. 4]]
 
