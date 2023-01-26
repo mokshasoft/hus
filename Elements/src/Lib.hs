@@ -24,8 +24,7 @@ unionL (x:xs) = do
   mRest <- unionL xs
   writer (union [m1, mRest], [])
 
-translateL ::
-     V3 ℝ -> PartsObj3 -> PartsObj3
+translateL :: V3 ℝ -> PartsObj3 -> PartsObj3
 translateL vec wm = do
   m <- wm
   writer (translate vec m, [])
@@ -38,5 +37,5 @@ someFunc :: IO ()
 someFunc = do
   putStrLn "Generating model.stl"
   let (model, parts) = runWriter brickLayer
-  putStrLn $ show parts
+  print parts
   writeSTL 0.01 "model.stl" model
