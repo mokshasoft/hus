@@ -1,33 +1,19 @@
 // constants
-bs = 0.07; // The length of the shortest side of the brick
+ob = [0.056, 0.108, 0.228]; // Size of ordinary brick
+fb = [0.065, 0.125, 0.228]; // Size of firebrick
 mt = 0.005; // The mortar thickness
 
-module brick(s = bs) {
-    let (s2 = 2*s)
-    let (s3 = 4*s)
+module brick() {
     color("orange")
-    cube([s2, s3, s]);
+    cube([ob[1], ob[2], ob[0]]);
 }
 
 module layer(i) {
-    translate([0, 0, i*(bs + mt)]) children();
+    translate([0, 0, i*(ob[0] + mt)]) children();
 }
 
 module full_layer(x, y) {
     for (xx=[0:x-1])
         for (yy=[0:y-1])
-            translate([xx*(2*bs + mt), yy*(4*bs + mt), 0]) brick();
-}
-
-module compose2() {
-    union() {
-        children();
-        color("gray")
-        difference() {
-            hull() {
-                children();
-            }
-            children();
-        }
-    }
+            translate([xx*(2*ob[0] + mt), yy*(4*ob[0] + mt), 0]) brick();
 }
