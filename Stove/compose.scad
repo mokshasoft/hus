@@ -17,3 +17,24 @@ module full_layer(x, y) {
         for (yy=[0:y-1])
             translate([xx*(2*ob[0] + mt), yy*(4*ob[0] + mt), 0]) brick();
 }
+
+module line(nbr) {
+    for (i=[0:nbr-1])
+        translate([0, i*(ob[2] + mt), 0]) children();
+}
+
+module ash_layer_odd() {
+    line(2) brick();
+    translate([ob[1] + ob[2] + 2*mt, 0, 0]) line(2) brick();
+    translate([ob[1] + mt, ob[1], 0]) rotate([0, 0, -90]) brick();
+    translate([ob[1] + mt, 2*ob[2] + mt, 0]) rotate([0, 0, -90]) brick();
+}
+
+module ash_layer_even() {
+    translate([2*ob[2] + mt, 0, 0]) rotate([0, 0, 90]) ash_layer_odd();
+}
+
+module join() {
+    children(0);
+    translate([0, ob[2] + mt, 0]) children(1);
+}
