@@ -39,7 +39,7 @@
     <node id="n2">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="133.01244824016612" x="1031.9433790545202" y="0.0"/>
+          <y:Geometry height="30.0" width="133.01244824016612" x="827.6675854037264" y="0.0"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="87.89453125" x="22.55895849508306" xml:space="preserve" y="5.93359375">Fixa golvhålen<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
@@ -50,7 +50,7 @@
     <node id="n3">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="120.0" x="1038.4496031746032" y="61.0"/>
+          <y:Geometry height="30.0" width="120.0" x="834.1738095238095" y="61.0"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="63.888671875" x="28.0556640625" xml:space="preserve" y="5.93359375">Insektsnät<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
@@ -72,17 +72,6 @@
     <node id="n5">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="133.01244824016612" x="848.2989346100757" y="61.0"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
-          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="73.287109375" x="29.86266943258306" xml:space="preserve" y="5.93359375">Innerväggar<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-          <y:Shape type="rectangle"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n6">
-      <data key="d6">
-        <y:ShapeNode>
           <y:Geometry height="30.0" width="163.52173913043475" x="634.1454796411318" y="0.0"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
@@ -91,7 +80,7 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n7">
+    <node id="n6">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="124.06315843656694" x="564.7410398293356" y="61.0"/>
@@ -102,37 +91,13 @@
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n8">
+    <node id="n7">
       <data key="d6">
         <y:ShapeNode>
           <y:Geometry height="30.0" width="133.01244824016612" x="471.13266476880585" y="0.0"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="84.865234375" x="24.07360693258306" xml:space="preserve" y="5.93359375">Sjövattenfilter<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-          <y:Shape type="rectangle"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n9">
-      <data key="d5"/>
-      <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="174.27583969130933" x="827.6672388845041" y="0.0"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
-          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="152.224609375" x="11.025615158154665" xml:space="preserve" y="5.93359375">Bestämma hall/tank form<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-          <y:Shape type="rectangle"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n10">
-      <data key="d5"/>
-      <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="142.0" x="843.8051587301587" y="111.0"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
-          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="84.23828125" x="28.880859375" xml:space="preserve" y="5.93359375">Sätta upp kök<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -147,7 +112,7 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e1" source="n6" target="n7">
+    <edge id="e1" source="n5" target="n6">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="15.0" tx="31.015789609141734" ty="-15.0">
@@ -160,7 +125,7 @@
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e2" source="n8" target="n7">
+    <edge id="e2" source="n7" target="n6">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="15.0" tx="-31.015789609141734" ty="-15.0">
@@ -174,28 +139,6 @@
       </data>
     </edge>
     <edge id="e3" source="n2" target="n3">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="15.0" tx="0.0" ty="-15.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e4" source="n9" target="n5">
-      <data key="d9"/>
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="15.0" tx="0.0" ty="-15.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e5" source="n5" target="n10">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="15.0" tx="0.0" ty="-15.0"/>
