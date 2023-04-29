@@ -1,6 +1,9 @@
 import Data.List
 
-data Payer = JC | JAD | KK
+data Payer
+  = JC
+  | JAD
+  | KK
   deriving (Show, Eq, Ord)
 
 data Item =
@@ -147,18 +150,50 @@ page4 =
   , I "traktorspegel" 425 JC "5/12"
   , I "verktyg" 5508 JC "5/12"
   , I "svetsgas" 1581 JC "5/12"
+  , I "musfälla" 1377 JC "8/12"
+  , I "insektsnät" 674 JC "9/12"
+  , I "Lindtech" 1800 JAD "17/12"
+  , I "lumppapp" 558 JC "3/1"
   ]
 
-items = page1 ++ page2 ++ page3 ++ page4
+page5 :: [Item]
+page5 =
+  [ I "sågspån mm" 2766 JC "28/1"
+  , I "fuktmätare" 518 JC "16/2"
+  , I "drev" 1459 JC "16/2"
+  , I "libv" 3549 JAD "26/1"
+  , I "ottossons färg" 374 JAD "18/2"
+  , I "deposition kök" 2000 JAD "24/2"
+  , I "kennet" 5000 JC "8/3"
+  , I "kennet" 5000 JAD ""
+  , I "släp" 519 JC "19/3"
+  , I "bensin" 1696 JC "19/3"
+  , I "bauhaus" 1363 JC "19/3"
+  , I "handfat" 100 JC "19/3"
+  , I "kök" 10000 JC "19/3"
+  , I "ottossons färg" 1683 JAD "27/3"
+  , I "malin" 400 JAD "27/3"
+  , I "eldningsfat" 1100 JC "1/4"
+  , I "betongblandare" 249 JC "31/3"
+  , I "tegelsten" 4725 JC "1/4"
+  , I "förskott blandare" 3000 JAD "4/4"
+  , I "blandare" 12000 JC "7/4"
+  , I "innerdörrar" 15170 JC "12/4"
+  , I "takskruv" 600 JAD "22/4"
+  , I "solceller" 151363 JC "29/4"
+  ]
+
+items = page1 ++ page2 ++ page3 ++ page4 ++ page5
 
 total :: [Item] -> Int
 total = sum . map cost
 
 eachTotal :: [Item] -> [(Int, Payer)]
-eachTotal is = map (\i -> (total i, payer $ head i)) $ groupBy group $ sortBy order is
- where
-  group = \a b -> payer a == payer b
-  order = \a b -> compare (payer a) (payer b)
+eachTotal is =
+  map (\i -> (total i, payer $ head i)) $ groupBy group $ sortBy order is
+  where
+    group = \a b -> payer a == payer b
+    order = \a b -> compare (payer a) (payer b)
 
 main :: IO ()
 main = do
