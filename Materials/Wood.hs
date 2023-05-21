@@ -173,7 +173,10 @@ printIndianWoods = do
   printMaterial "outer roof            1\"4" outerRoof
   printMaterial "bedroom ceiling       1\"4" bedroomCeiling
   printMaterial "total 1\"4:               " $
-    bedroom <> bathroom <> loadBearingWallOutside <> floorLayers <> innerRoof <> outerRoof <> bedroomCeiling
+    bedroom <>
+    bathroom <>
+    loadBearingWallOutside <>
+    floorLayers <> innerRoof <> outerRoof <> bedroomCeiling
   printMaterial "House panel:          1\"8" outerHouseWall
   printMaterial "Floor loft:           1\"?" floorLoft
   putStrLn "-----------------"
@@ -204,7 +207,7 @@ bedroomW :: Material
 bedroomW = double $ (frame 2.9 2.5 <> frame 3.9 2.5)
 
 officeW :: Material
-officeW = double $ (frame 2.9 2.5 <> frame 3.4 2.5)
+officeW = double $ (frame 2.9 2.5 <> frame 3.4 2.5)
 
 medroomW :: Material
 medroomW = (double $ frame' 2.9 1.6 2.1) <> frame 3.6 2.1
@@ -215,17 +218,13 @@ storageW = (double $ frame' 2.9 1.6 2.1) <> frame 3.9 2.1 <> frame 3.9 1.6
 printClay :: IO ()
 printClay = do
   putStrLn "-- Clay          --"
-  printMaterial "orange:               " $
-    toilettW <> bathroomW
+  printMaterial "orange:               " $ toilettW <> bathroomW
   printMaterial "yellow:               " $
     hallW <> livingroomW <> medroomW <> storageW
-  printMaterial "liliac:               " $
-    bedroomW
-  printMaterial "green:               " $
-    officeW
+  printMaterial "liliac:               " $ bedroomW
+  printMaterial "green:               " $ officeW
 
 -- The carport
-
 carportWalls :: Material
 carportWalls = (tripple $ frame 5 2.8) <> (double $ double $ frame 3 2.8)
 
