@@ -181,9 +181,52 @@ page5 =
   , I "innerdörrar" 15170 JC "12/4"
   , I "takskruv" 600 JAD "22/4"
   , I "solceller" 151363 JC "29/4"
+  , I "stuv" 507 JC "9/5"
+  , I "elmaterial" 3877 JC "9/5"
+  , I "isolerglas" 3500 JC "13/5"
+  , I "isolerglas x4" 2000 JC "13/5"
+  , I "vikfönster" 18000 JC "14/5"
+  , I "kamitak" 12341 JC "15/5"
+  , I "vattenrör" 2763 JC "15/5"
+  , I "golvvärme" 23459 JC "15/5"
+  , I "flexrör" 700 JC "17/5"
   ]
 
-items = page1 ++ page2 ++ page3 ++ page4 ++ page5
+page6 :: [Item]
+page6 =
+  [ I "avgift miljö & bygg" 4400 JAD "19/5"
+  , I "fasadfärg" 18375 JAD "19/5"
+  , I "avlopp" 55000 JAD "29/5"
+  , I "avlopp" 36261 JC "29/5"
+  , I "hyvelspån" 1855 JC "30/5"
+  , I "bits" 388 JC "5/6"
+  , I "elmaterial" 2875 JC "9/6"
+  , I "murhinkar" 1119 JC "9/6"
+  , I "handskar" 339 JC "9/6"
+  , I "brunn, pump" 38669 JC "12/6"
+  , I "hönsnät" 1197 JC "11/6"
+  , I "diesel" 483 JC "11/6"
+  , I "AsCy" 3754 JC "15/6"
+  , I "sand" 12826 JC "15/6"
+  , I "diesel" 486 JC "16/6"
+  , I "fönster" 7500 JC "25/6"
+  , I "armering jute" 2845 JAD "27/6"
+  , I "väg gemensam" 4361 JAD "juni-23"
+  , I "spån" 374 JC "27/6"
+  , I "takdosor" 90 JC "30/6"
+  , I "kontroll Håkan" 4700 JC "1/7"
+  , I "kuskhuset" 6609 JAD "28/6"
+  , I "spån" 1812 JC "13/7"
+  , I "diesel" 420 JC "13/7"
+  , I "fibercementskiva" 1100 JC "16/7"
+  , I "spån" 525 JC "18/7"
+  , I "badkar" 300 JAD "12/7"
+  , I "badkar" 700 JC "14/7"
+  , I "tak/golv" 8400 JC "25/7"
+  , I "el" 12331 JC "25/7"
+  ]
+
+items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6
 
 total :: [Item] -> Int
 total = sum . map cost
