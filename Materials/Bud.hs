@@ -226,7 +226,42 @@ page6 =
   , I "el" 12331 JC "25/7"
   ]
 
-items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6
+page7 :: [Item]
+page7 =
+  [ I "vik" 600 JC "26/7"
+  , I "el mtrl" 994 JC "30/7"
+  , I "Dan" 3000 JC "1/8"
+  , I "Bjarne" 12000 JC "1/8"
+  , I "Björn" 10000 JAD "1/8"
+  , I "stuv" 475 JC "3/8"
+  , I "diesel" 198 JC "11/8"
+  , I "diesel" 210 JC "18/8"
+  , I "skottskärra" 500 JC "18/8"
+  , I "BNA" 5930 JC "24/8"
+  , I "kh" 11602 JAD "3/9"
+  , I "tejp" 330 JC "23/8"
+  , I "diesel" 233 JC "30/8"
+  , I "tejp" 660 JC "5/9"
+  , I "isoleko" 47600 JAD "11/9"
+  , I "stuv-dusch" 7500 JAD "17/9"
+  , I "betong" 328 JC "25/9"
+  , I "roller" 180 JC "10/10"
+  , I "diesel" 405 JC "13/10"
+  , I "djupvattenpump" 5000 JC "15/10"
+  , I "pem slag" 500 JC "15/10"
+  , I "" 9000 JAD "17/10"
+  , I "" 31778 JAD "18/10"
+  , I "skorsten" 6563 JC "23/10"
+  , I "spis" 1500 JAD "1/11"
+  , I "skorstens isolering" 990 JAD "?/10"
+  , I "vvs" 3795 JC "31/10"
+  , I "stuv" 943 JC "17/10"
+  , I "isolering" 1425 JC "23/10"
+  , I "tejp" 209 JC "1/11"
+  , I "p-strip" 190 JC "31/10"
+  ]
+
+items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7
 
 total :: [Item] -> Int
 total = sum . map cost
