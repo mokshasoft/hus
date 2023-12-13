@@ -234,8 +234,8 @@ carportCeilingFloor = double $ frame 6 5
 printCarport :: IO ()
 printCarport = do
   putStrLn "-- Carport          --"
-  printMaterial "walls:              2\"4" carportWalls
-  printMaterial "floor and ceiling:  2\"5" carportWalls
+  printMaterial "walls:              2\"8" carportWalls
+  printMaterial "floor and ceiling:  2\"8" carportCeilingFloor
 
 -- | Run material calculation
 main :: IO ()
