@@ -261,7 +261,25 @@ page7 =
   , I "p-strip" 190 JC "31/10"
   ]
 
-items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7
+page8 :: [Item]
+page8 =
+  [ I "altandörr förskott" 500 JC "16/11"
+  , I "altandörr" 2500 JAD "16/11"
+  , I "släp" 1170 JAD "16/11"
+  , I "med" 2600 JAD "17/10"
+  , I "vik" 500 JC "20/11"
+  , I "sjunktimmer" 6200 JC "23/11"
+  , I "släp" 350 JC "23/11"
+  , I "sim" 1000 JC "8/12"
+  , I "edsvalla" 37763 JC "26/12"
+  , I "multiblad" 369 JC "3/1"
+  , I "bauhaus" 4652 JC "6/1"
+  , I "pardörr" 8000 JC "14/1"
+  , I "fönster" 6000 JC "14/1"
+  , I "släp" 230 JC "14/1"
+  ]
+
+items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8
 
 total :: [Item] -> Int
 total = sum . map cost
