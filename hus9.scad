@@ -5,9 +5,9 @@ gr = 1.61803; // golden ration
 
 // configure the house
 wt =   0.6;  // wall thickness
-corners = 10; // number of house corners
+corners = 11; // number of house corners
 mrr = 4;     // house radius
-fh = 4;     // floor height
+fh = 3.65;     // floor height
 
 // calculate the coordinates for the corners
 function p(i, r) = point(i, r, corners);
@@ -39,4 +39,4 @@ module floor() {
 }
 
 floor();
-translate([0, 0, 4.1]) floor();
+translate([0, 0, fh + 0.1]) floor();
