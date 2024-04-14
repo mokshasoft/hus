@@ -4,6 +4,7 @@ use <lib/element.scad>
 gr = 1.61803; // golden ration
 
 // configure the house
+floors = 2;
 wt =   0.6;  // wall thickness
 corners = 11; // number of house corners
 mrr = 4;     // house radius
@@ -26,17 +27,22 @@ module floor() {
     for (i = [1:corners])
         let (p1 = p(i, mrr))
         let (p2 = p(i+1, mrr))
-        let (w1 = norm(p1 - p2))
-        let (h1 = fh)
-        let (d1 = sqrt(w1^2 + h1^2))
-        let (ww = sqrt(d1^2 - h1^2)/gr)
-        let (wh = sqrt(d1^2 - w1^2)/gr)
-        let (ratio = max(ww, wh)/min(ww, wh))
-        echo ("ratio =", ratio)
-        echo ("ratio in % to GR = ", 100*(ratio - gr)/gr)
         wi(p1, p2, 50, 2, ww, wh)
         w(p1, p2, fh);
 }
 
-floor();
-translate([0, 0, fh + 0.1]) floor();
+// calculate constants
+p1 = p(0, mrr);
+p2 = p(1, mrr);
+w1 = norm(p1 - p2);
+h1 = fh;
+d1 = sqrt(w1^2 + h1^2);
+ww = sqrt(d1^2 - h1^2)/gr;
+wh = sqrt(d1^2 - w1^2)/gr;
+ratio = max(ww, wh)/min(ww, wh);
+echo ("ratio =", ratio);
+echo ("ratio in % to GR = ", 100*(ratio - gr)/gr);
+
+// draw the house
+for (i = [0:floors-1])
+    translate([0, 0, i*(fh + 0.1)]) floor();
