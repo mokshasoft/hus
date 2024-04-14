@@ -23,12 +23,12 @@ module wi(p1, p2, pos, height, sizex, sizey) {
     children();
 }
 
-module floor() {
+module floor(f_height, w_width, w_height) {
     for (i = [1:corners])
         let (p1 = p(i, mrr))
         let (p2 = p(i+1, mrr))
-        wi(p1, p2, 50, 2, ww, wh)
-        w(p1, p2, fh);
+        wi(p1, p2, 50, f_height/2, w_width, w_height)
+        w(p1, p2, f_height);
 }
 
 // calculate constants
@@ -45,4 +45,5 @@ echo ("ratio in % to GR = ", 100*(ratio - gr)/gr);
 
 // draw the house
 for (i = [0:floors-1])
-    translate([0, 0, i*(fh + 0.1)]) floor();
+    translate([0, 0, i*(fh + 0.1)])
+    floor(fh, ww, wh);
