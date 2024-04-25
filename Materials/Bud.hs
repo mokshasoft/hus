@@ -277,6 +277,20 @@ page8 =
   , I "pardörr" 8000 JC "14/1"
   , I "fönster" 6000 JC "14/1"
   , I "släp" 230 JC "14/1"
+  , I "panna" 5000 JAD "27/1"
+  , I "panna" 10000 JC "27/1"
+  , I "släp" 250 JC "27/1"
+  , I "IBC" 1400 JC "27/1"
+  , I "flytt panna" 7794 JAD "10/2"
+  , I "spik" 489 JC "6/3"
+  , I "hönsnät" 1323 JC "6/3"
+  , I "skorstenshuv" 5396 JAD "6/3"
+  , I "ytterdörr" 3990 JC "7/3"
+  , I "svanströms" 263 JC "7/3"
+  , I "KH" 782 JC "14/3"
+  , I "kaminlucka" 6509 JC "30/3"
+  , I "sjunktimmer" 2000 JC "13/4"
+  , I "KH" 303 JC "19/4"
   ]
 
 items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8
