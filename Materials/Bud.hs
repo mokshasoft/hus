@@ -302,8 +302,8 @@ eachTotal :: [Item] -> [(Int, Payer)]
 eachTotal is =
   map (\i -> (total i, payer $ head i)) $ groupBy group $ sortBy order is
   where
-    group = \a b -> payer a == payer b
-    order = \a b -> compare (payer a) (payer b)
+    group a b = payer a == payer b
+    order a b = compare (payer a) (payer b)
 
 main :: IO ()
 main = do
