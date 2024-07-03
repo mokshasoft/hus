@@ -1,5 +1,20 @@
 # Sorter
 
+## Bärhäggmispel - Amelanchier alnifolia
+
+### Bärhäggmispel fk ALVDAL
+Läge: Halvskugga till skugga, Sol
+
+Odlingszon: 1 - 6
+
+Tålig sort med brett, upprätt och ovalt växtsätt. Friskt mörkgrönt bladverk som får orange till röda höstfärger. Blommar rikligt med små, svagt doftande, vita blommor i klasar. Bildar rödlila, lätt söta, ätliga bär. Anspråkslös och trivs i sol till skugga på de flesta jordar.
+
+Härdig buske med brett, upprätt och ovalt växtsätt. Bladen är ovala, lätt spetsiga och vid bladutspring lätt bronsfärgade för att övergå till friskt mörkgrönt under sommaren. Praktfulla höstfärger i gyllengult, lysande orange och orangeröda nyanser. Vid gynnsamma lägen blir höstfärgerna mer intensiva. Blomningen är riklig och sker under våren med svagt doftande, små, vita blommor som sitter i klasar. Uppskattas av våra pollinatörer. Under sensommaren bildas mängder av rödlila bär som mognar efterhand. Bären är lätt söta med viss strävhet och saknar syra. Påminner lite om blåbär i smaken och är rika på vitaminer och mineraler, kan ätas direkt från busken eller användas till sylt, saft, eller gelé. Bären uppskattas även av våra fåglar. För att få en god skörd bör minst två olika sorter planteras för bästa pollinering. 
+
+Anspråkslös och kan växa på de flesta jordar från sol till skuggiga lägen. Klarar både tunga, blöta lerjordar och lätta, torra sandjordar. Utvecklas och ger bäst skörd och vackrast höstfärger i soligt läge på näringsrik och fuktighetshållande jord. Planteras som solitär eller som i grupper för att bilda buskage. Användbar som landskapsväxt och som friväxande lähäckar. Kan med fördel formklippas och är vacker som formklippt häck.
+
+Anses mindre smaklig för rådjur.
+
 ## Rabarber - Rheum rhabarbarum
 
 ### 'Canada Red'
