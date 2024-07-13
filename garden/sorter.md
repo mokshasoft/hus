@@ -15,6 +15,20 @@ Anspråkslös och kan växa på de flesta jordar från sol till skuggiga lägen.
 
 Anses mindre smaklig för rådjur.
 
+### Bärhäggmispel Martin
+Läge: Sol/Halvskugga
+
+Odlingszon: 1 - 7
+
+"Martin" är en kanadensisk sort som mognar tidigt. Bären är i genomsnitt 1,4 cm breda. När de är mogna är de lilasvarta/mörkblå till färgen.
+
+### Bärhäggmispel Smokey
+Läge: Sol/Halvskugga
+
+Odlingszon: 1 - 6
+
+"Smokey" är en kanadensisk sort som mognar tidigt. Bären är i genomsnitt 1,5 cm, runda. När de är mogna är de blåsvarta till färgen.
+
 ## Rabarber - Rheum rhabarbarum
 
 ### 'Canada Red'
@@ -152,6 +166,30 @@ Utvecklas bäst på varm, solig och luftig plats i väldränerad, mullrik, gärn
 Beskärs efter skörd genom att gallra ut enstaka äldre grenar på olika höjder. Detta görs med 3-5 års mellanrum. Röda vinbär ger bär på äldre ved jämfört med svarta vinbär som får bär på yngre ved, därför föryngringsbeskär man inte röda vinbär lika ofta. Klipp alltid bort skadade, korsade och inåtväxande grenar. Röda vinbär tål beskärning året om men man bör undvika att beskära på våren. Äldre exemplar kan behöva stöd.
 
 Röda vinbär har odlats i Norden sedan medeltiden och har använts som medicinalväxt.
+
+## Blåbärstry - Lonicera caerulea var. kamtschatica
+
+Blåbärstry är ett mycket nyttigt bär, kallas inte för inte för superbär. Blåbärstry är mycket rikt på C-vitamin, skall ligga strax under C-vitaminhalten för svarta vinbär. Förutom C-vitamin innehåller blåbärstry även stora mängder av A-vitamin, calcium och järn.
+
+Efter att bären på blåbärstrybusken har fått en mörkblå utsida, och ser mogna ut, får du vänta en till två veckor innan bären är riktigt mogna och goda. De ska då släppa väldigt lätt när du plockar dem.
+
+### Honeybee
+Läge: Sol till halvskugga
+
+Odlingszon: 1 - 7
+
+"Honeybee" är en kanadensisk sort, en blåbärstry som mognar i månadsskiftet juni/juli. 
+
+Syrliga, saftiga och välsmakande bär upp till 4-5 kg per buske. Cylindriska bär, 1,9 gram. 
+
+### Aurora
+Läge: Sol till halvskugga
+
+Odlingszon: 1 - 7
+
+"Aurora" är en kanadensisk sort, en blåbärstry som mognar i månadsskiftet juni/juli. 
+
+Söta, välsmakande bär månadsskiftet juni/juli, 4 till 5 kg per buske. Ovala och långsträckta bär, vikt cirka 1,9 - max 2,1 gram. 
 
 ## Surkörsbär - Prunus cerasus SKUGGMORELL
 

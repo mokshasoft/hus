@@ -4,11 +4,16 @@
 
 |    |    |    |    |
 |----|----|----|----|
+| 14 | 15 |    |    |
+| 14 | 15 |    |    |
+| 14 | 15 |    |    |
+| 14 | 15 |    |    |
+| 14 | 15 |    |    |
 | 11 | 13 |    |    |
 | 11 | 13 |    |    |
 | 10 | 12 |    |    |
-| 10 | 12 |    |    |
-|    |    |    |    |
+| 10 | 12 | 17 |    |
+|    |    | 16 |    |
 |    |    |  7 |    |
 |    |    |  7 |  9 |
 |    |    |  7 |  9 |
@@ -32,6 +37,10 @@
 11. Röda vinbär, Jonkheer van Tets
 12. Svarta vinbär, Polar E?
 13. Svarta vinbär, Titania
+14. Bärhäggmispel, Martin
+15. Bärhäggmispel, Smokey
+16. Blåbärstry, Aurora el Honeybee
+17. Blåbärstry, Honeybee el Aurora
 
 ## Rabarber
 
