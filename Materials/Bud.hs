@@ -315,6 +315,7 @@ page9 =
   , I "säkring" 209 JC "22/7"
   , I "byggmax" 411 JAD "22/7"
   , I "vitvaror" 10799 JAD "15/7"
+  , I "cirkelsåg" 2475 JC "13/7"
   ]
 
 items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9
