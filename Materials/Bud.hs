@@ -291,9 +291,33 @@ page8 =
   , I "kaminlucka" 6509 JC "30/3"
   , I "sjunktimmer" 2000 JC "13/4"
   , I "KH" 303 JC "19/4"
+  , I "Bauhaus" 437 JC "27/4"
+  , I "Bauhaus" 1198 JAD "27/4"
+  , I "golvskruv" 364 JC "21/5"
+  , I "AsCy" 5649 JC "26/5"
   ]
 
-items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8
+page9 :: [Item]
+page9 =
+  [ I "batterikablar" 1521 JC "30/5"
+  , I "stuv" 665 JC "12/6"
+  , I "Byggmax" 398 JC "30/5"
+  , I "häftklamrar" 329 JAD "29/6"
+  , I "linolja" 2141 JC "4/7"
+  , I "DC-kablar" 1144 JAD "?/6"
+  , I "bensin" 99 JC "1/7"
+  , I "vindpapp" 725 JC "4/7"
+  , I "organowood" 779 JC "3/7"
+  , I "betong" 4250 JC "5/7"
+  , I "bensin" 100 JC "11/7"
+  , I "borrhammare" 1500 JC "15/7"
+  , I "eldkraft" 1240 JC "20/7"
+  , I "säkring" 209 JC "22/7"
+  , I "byggmax" 411 JAD "22/7"
+  , I "vitvaror" 10799 JAD "15/7"
+  ]
+
+items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9
 
 total :: [Item] -> Int
 total = sum . map cost
