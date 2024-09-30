@@ -6,14 +6,12 @@ data Payer
   | KK
   deriving (Show, Eq, Ord)
 
-data Item =
-  I
-    { description :: String
-    , cost :: Int
-    , payer :: Payer
-    , date :: String
-    }
-  deriving (Show)
+data Item = I
+  { description :: String
+  , cost :: Int
+  , payer :: Payer
+  , date :: String
+  } deriving (Show)
 
 page1 :: [Item]
 page1 =
@@ -329,7 +327,8 @@ page9 =
   , I "linolja 20l" 2063 JAD "30/9"
   ]
 
-items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9
+items =
+  page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9
 
 left :: [Item]
 left =
