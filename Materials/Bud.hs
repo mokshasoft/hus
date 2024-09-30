@@ -331,6 +331,27 @@ page9 =
 
 items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9
 
+left :: [Item]
+left =
+  [ I "Tankar" 40000 JC ""
+  , I "El" 30000 JC ""
+  , I "Skorsten" 6000 JC ""
+  , I "tätning skorsten" 2000 JC ""
+  , I "Isolering skorsten" 2000 JC ""
+  , I "Hydrofor + jetpump" 16000 JC ""
+  , I "Köksbänk" 10000 JC ""
+  , I "Jordkabel" 5000 JC ""
+  , I "Cellolosa primer eller färg, pris?" 2000 JC ""
+  , I "Vattentest" 1000 JC ""
+  ]
+
+after :: [Item]
+after =
+  [ I "Stuprör mm" 20000 JC ""
+  , I "Fönsterbleck" 5000 JC ""
+  , I "Altan" 20000 JC ""
+  ]
+
 total :: [Item] -> Int
 total = sum . map cost
 
@@ -345,3 +366,5 @@ main :: IO ()
 main = do
   putStrLn $ "cost " ++ show (total items)
   putStrLn $ "each payed " ++ show (eachTotal items)
+  putStrLn $ "cost left before moving in " ++ show (total left)
+  putStrLn $ "cost after moving in " ++ show (total after)
