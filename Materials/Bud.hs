@@ -316,6 +316,17 @@ page9 =
   , I "byggmax" 411 JAD "22/7"
   , I "vitvaror" 10799 JAD "15/7"
   , I "cirkelsåg" 2475 JC "13/7"
+  , I "termometer" 129 JAD "30/7"
+  , I "Le Tonkinois" 888 JAD "30/7"
+  , I "Grävning Benjamin" 3610 JAD "9/8"
+  , I "timer" 149 JC "17/8"
+  , I "isoleringsjobb" 27498 JAD "27/8"
+  , I "Bauhaus" 946 JAD "26/8"
+  , I "Linolja" 548 JAD "26/8"
+  , I "VVS butiken" 4489 JAD "13/8"
+  , I "Murhinkar" 392 JC "14/9"
+  , I "Lampa" 353 JC "14/9"
+  , I "linolja 20l" 2063 JAD "30/9"
   ]
 
 items = page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9
