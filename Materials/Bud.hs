@@ -333,6 +333,8 @@ items =
 left :: [Item]
 left =
   [ I "Tankar" 40000 JC ""
+  , I "Toalett + inredning" 12000 JC ""
+  , I "madrass" 30000 JC ""
   , I "El" 30000 JC ""
   , I "Skorsten" 6000 JC ""
   , I "tätning skorsten" 2000 JC ""
