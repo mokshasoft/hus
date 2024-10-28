@@ -329,8 +329,13 @@ page9 =
   , I "linolja 20l" 1992 JC "25/10"
   ]
 
+page10 :: [Item]
+page10 =
+  [ I "gräv ROT" 1546 JAD "28/10"
+  ]
+
 items =
-  page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9
+  page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9 ++ page10
 
 left :: [Item]
 left =
