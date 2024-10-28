@@ -325,6 +325,8 @@ page9 =
   , I "Murhinkar" 392 JC "14/9"
   , I "Lampa" 353 JC "14/9"
   , I "linolja 20l" 2063 JAD "30/9"
+  , I "kulvert" 18288 JAD "5/10"
+  , I "linolja 20l" 1992 JC "25/10"
   ]
 
 items =
