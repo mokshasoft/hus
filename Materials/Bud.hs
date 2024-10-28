@@ -337,13 +337,13 @@ left =
   , I "El" 30000 JC ""
   , I "Hydrofor + jetpump" 16000 JC ""
   , I "Toalett + inredning" 12000 JC ""
-  , I "Köksbänk" 10000 JC ""
+  , I "Köksbänk" 30000 JC ""
   , I "Skorsten" 6000 JC ""
   , I "Jordkabel" 5000 JC ""
   , I "tätning skorsten" 2000 JC ""
   , I "Isolering skorsten" 2000 JC ""
   , I "Cellolosa primer eller färg, pris?" 2000 JC ""
-  , I "Vattentest" 1000 JC ""
+  , I "Vattentest" 2000 JC ""
   ]
 
 after :: [Item]
