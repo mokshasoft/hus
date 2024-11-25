@@ -24,14 +24,17 @@ yta_fonster=12  # Yta fönster i m²
 volym_byggnad=300  # Volym av byggnaden i m³
 ventilation_omsattning=0.35  # Luftflöde i l/s
 
-# Omvandla ventilationsomsättningen från l/s till m³/h
-ventilation_omsattning_m3_h = ventilation_omsattning * 3600 / 1000 # Luftflöde i m3/h
+# Omvandla ventilationsomsättningen från l/s till m³/timme (1 l/s = 3.6 m³/h)
+ventilation_omsattning_m3_h = ventilation_omsattning * 3.6  # Luftflöde i m³/h
 
-# Beräkna värmeförluster genom väggar, tak och golv
-q_byggnad = atemp * (u_vagg * yta_vagg * delta_t + u_tak * yta_tak * delta_t + u_golv * yta_golv * delta_t)
+# Bryt ut delta_t för ventilationsberäkningen
+vent_delta_t = delta_t  # Temperaturdifferens för ventilation (°C)
+
+# Beräkna värmeförluster genom väggar, tak och golv (bryt ut delta_t)
+q_byggnad = delta_t * (u_vagg * yta_vagg + u_tak * yta_tak + u_golv * yta_golv)
 
 # Beräkna värmeförluster genom dörrar och fönster
-q_dorr_fonster = (u_dorr * yta_dorr * delta_t) + (u_fonster * yta_fonster * delta_t)
+q_dorr_fonster = delta_t * (u_dorr * yta_dorr + u_fonster * yta_fonster)
 
 # Beräkna värmeförluster genom ventilation (ventilationsförluster)
 q_ventilation = volym_byggnad * ventilation_omsattning_m3_h * delta_t * 0.33  # 0.33 är en approximativ konstant för luftens värmeöverföring
