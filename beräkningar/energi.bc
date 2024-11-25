@@ -42,10 +42,6 @@ q_ventilation = volym_byggnad * ventilation_omsattning_m3_h * delta_t * 0.33  # 
 # Total värmeförlust (utan att beakta solens effekt och solpanelernas produktion)
 q_totalt = q_byggnad + q_dorr_fonster + q_ventilation
 
-# Solinstrålning på fönster (uppskattat genomsnittligt värde)
-solinstralning_per_m2=150  # Solinstrålning i W/m² (genomsnittligt värde, kan variera beroende på läge och årstid)
-solinstralning_total=solinstralning_per_m2 * yta_fonster  # Total solinstrålning på fönster
-
 # Resultat
 q_totalt
 
