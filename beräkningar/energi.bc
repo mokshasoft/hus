@@ -36,4 +36,12 @@ q_ventilation = volym_byggnad * ventilation_omsattning * delta_t * 0.33  # 0.33 
 # Total värmeförlust
 q_totalt = q_byggnad + q_dorr_fonster + q_ventilation
 
-q_totalt
+# Primärenergifaktor för ved (1,2)
+vedfaktor=1.2
+
+# Beräkna EPpet
+ep_pet = q_totalt * vedfaktor / atemp
+
+# Skriv ut resultatet
+ep_pet
+
