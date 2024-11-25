@@ -2,7 +2,7 @@
 
 # Parametrar
 atemp=80   # Boarea i m²
-u_vagg=0.129  # U-värde för väggarna (W/m²K)
+u_vagg=0.131  # U-värde för väggarna (W/m²K)
 u_tak=0.097   # U-värde för taket (W/m²K)
 u_golv=0.105  # U-värde för golvet (W/m²K)
 u_dorr=1.1    # U-värde för dörrarna (W/m²K)
@@ -33,15 +33,36 @@ q_dorr_fonster = (u_dorr * yta_dorr * delta_t) + (u_fonster * yta_fonster * delt
 # Beräkna värmeförluster genom ventilation (ventilationsförluster)
 q_ventilation = volym_byggnad * ventilation_omsattning * delta_t * 0.33  # 0.33 är en approximativ konstant för luftens värmeöverföring
 
-# Total värmeförlust
+# Total värmeförlust (utan att beakta solens effekt och solpanelernas produktion)
 q_totalt = q_byggnad + q_dorr_fonster + q_ventilation
+
+# Solpaneler
+solpaneler_kw=10  # 10 kW solpaneler (kW)
+
+# Antal soliga timmar per år (uppskattad)
+soliga_timmar_per_ar=1000  # Genomsnittligt antal soliga timmar per år
+
+# Solinstrålning på fönster (uppskattat genomsnittligt värde)
+solinstralning_per_m2=150  # Solinstrålning i W/m² (genomsnittligt värde, kan variera beroende på läge och årstid)
+solinstralning_total=solinstralning_per_m2 * yta_fonster  # Total solinstrålning på fönster
+
+# Beräkna solpanelernas årliga energiutbyte (i kWh)
+solpaneler_energi_utbyte=solpaneler_kw * soliga_timmar_per_ar  # Energi i kWh per år
+
+# Subtrahera solpanelernas produktion från den totala årliga värmeförlusten
+q_totalt_sol = q_totalt - solpaneler_energi_utbyte
+
+# Resultat
+q_totalt
+q_totalt_sol
 
 # Primärenergifaktor för ved (1,2)
 vedfaktor=1.2
 
 # Beräkna EPpet
 ep_pet = q_totalt * vedfaktor / atemp
+ep_pet_sol = q_totalt_sol * vedfaktor / atemp
 
 # Skriv ut resultatet
 ep_pet
-
+ep_pet_sol
