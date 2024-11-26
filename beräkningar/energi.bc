@@ -5,7 +5,7 @@ atemp=80   # Boarea i m²
 u_vagg=0.131  # U-värde för väggarna (W/m²K)
 u_tak=0.097   # U-värde för taket (W/m²K)
 u_golv=0.105  # U-värde för golvet (W/m²K)
-u_dorr=1.1    # U-värde för dörrarna (W/m²K)
+u_dorr=0.9    # U-värde för dörrarna (W/m²K)
 u_fonster=0.9 # U-värde för fönstren (W/m²K)
 
 # Temperaturer
@@ -15,8 +15,8 @@ delta_t=t_inomhus-t_utm  # Temperaturdifferens (°C)
 
 # Ytor
 yta_vagg=123    # Väggyta i m²
-yta_tak=80      # Takyta i m²
-yta_golv=80     # Golvyta i m²
+yta_tak=60      # Takyta i m²
+yta_golv=60     # Golvyta i m²
 yta_dorr=4      # Yta dörrar i m²
 yta_fonster=12  # Yta fönster i m²
 
@@ -37,7 +37,8 @@ q_byggnad = delta_t * (u_vagg * yta_vagg + u_tak * yta_tak + u_golv * yta_golv)
 q_dorr_fonster = delta_t * (u_dorr * yta_dorr + u_fonster * yta_fonster)
 
 # Beräkna värmeförluster genom ventilation (ventilationsförluster)
-q_ventilation = volym_byggnad * ventilation_omsattning_m3_h * delta_t * 0.33  # 0.33 är en approximativ konstant för luftens värmeöverföring
+varmeatervinnings_faktor = 1.0 # Ingen energi återvinns av utluften
+q_ventilation = volym_byggnad * ventilation_omsattning_m3_h * delta_t * varmeatervinnings_faktor
 
 # Total värmeförlust (utan att beakta solens effekt och solpanelernas produktion)
 q_totalt = q_byggnad + q_dorr_fonster + q_ventilation
@@ -53,3 +54,5 @@ ep_pet = q_totalt * vedfaktor / atemp
 
 # Skriv ut resultatet
 ep_pet
+
+halt
