@@ -3,18 +3,18 @@
 scale=2   # Ställ in antalet decimaler till 2
 
 # Parametrar
-atemp=80   # Boarea i m²
+atemp=80      # Boarea i m²
 u_vagg=0.131  # U-värde för väggarna (W/m²K)
 u_dorr=0.9    # U-värde för dörrarna (W/m²K)
 u_fonster=0.9 # U-värde för fönstren (W/m²K)
-t_cellulosa=0.51   # Tjocklek på cellulosa isolering i meter
+t_cellulosa=0.51       # Tjocklek på cellulosa isolering i meter
 lambda_cellulosa=0.04  # Värmeledningsförmåga för cellulosa isolering i W/m·K
-t_traull=0.4    # Tjocklek på träull i meter
-lambda_traull=0.04  # Värmeledningsförmåga för träull i W/m·K
-t_bradlager=0.028  # Tjocklek på brädlager i meter
+t_traull=0.4           # Tjocklek på träull i meter
+lambda_traull=0.04     # Värmeledningsförmåga för träull i W/m·K
+t_bradlager=0.028      # Tjocklek på brädlager i meter
 lambda_bradlager=0.13  # Värmeledningsförmåga för trä i W/m·K
-t_lerlager=0.06    # Tjocklek på lerlager i meter
-lambda_lerlager=1.1  # Värmeledningsförmåga för lera i W/m·K
+t_lerlager=0.06        # Tjocklek på lerlager i meter
+lambda_lerlager=1.1    # Värmeledningsförmåga för lera i W/m·K
 
 # Beräkna resistanser
 r_cellulosa = t_cellulosa / lambda_cellulosa
