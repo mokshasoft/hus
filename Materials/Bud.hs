@@ -332,6 +332,17 @@ page9 =
 page10 :: [Item]
 page10 =
   [ I "gräv ROT" 1546 JAD "28/10"
+  , I "bauhaus" 596 JC "30/10"
+  , I "stuvbutiken" 4859 JAD "30/10"
+  , I "byggåterbruk" 480 JAD "30/10"
+  , I "vvs" 50000 JC "3/11"
+  , I "Ramirent" 2148 JAD "4/11"
+  , I "rörbärare" 859 JAD "12/11"
+  , I "gasolkamin" 5071 JC "15/11"
+  , I "plåtjobb" 2905 JC "20/11"
+  , I "linolja 10l" 998 JC "23/11"
+  , I "hydrofor" 2500 JC "23/11"
+  , I "ventilation" 3529 JC "23/11"
   ]
 
 items =
@@ -342,7 +353,6 @@ left =
   [ I "Installation" 20000 JC ""
   , I "madrass" 30000 JC ""
   , I "El" 30000 JC ""
-  , I "Hydrofor + jetpump" 16000 JC ""
   , I "Köksbänk" 30000 JC ""
   , I "Skorsten" 6000 JC ""
   , I "Jordkabel" 5000 JC ""
