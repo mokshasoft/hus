@@ -350,23 +350,21 @@ items =
 
 left :: [Item]
 left =
-  [ I "Installation" 20000 JC ""
-  , I "madrass" 30000 JC ""
-  , I "El" 30000 JC ""
+  [ I "Installation" 25000 JC ""
+  , I "El" 135000 JC ""
   , I "Köksbänk" 30000 JC ""
-  , I "Skorsten" 6000 JC ""
-  , I "Jordkabel" 5000 JC ""
+  , I "Skorsten" 5000 JC ""
   , I "tätning skorsten" 2000 JC ""
-  , I "Isolering skorsten" 2000 JC ""
   , I "Cellolosa primer eller färg, pris?" 2000 JC ""
-  , I "Vattentest" 2000 JC ""
   ]
 
 after :: [Item]
 after =
   [ I "Stuprör mm" 20000 JC ""
+  , I "madrass" 30000 JC ""
   , I "Altan" 20000 JC ""
   , I "Fönsterbleck" 5000 JC ""
+  , I "Vattentest" 2000 JC ""
   ]
 
 total :: [Item] -> Int
