@@ -5,6 +5,7 @@ sx = 2000;
 h = 500 + wd;
 nbr = 20;
 fh = 150;
+inset = 150;
 
 module stick(l) {
     cube([th, th, l], center = true);
@@ -39,10 +40,11 @@ translate([0, -th/2, h - th]) rotate([0, 90, 0]) stick(sx);
 
 // Bed feet left
 fl = fh + wd;
+xoff = sx/2 - th;
 yoff = (wd - fl)/2;
-translate([sx/2 - th, th, yoff]) foot(fl);
-translate([sx/2 - th, sy - 2*th, yoff]) foot(fl);
+translate([xoff, th + inset, yoff]) foot(fl);
+translate([xoff, sy - 2*th - inset, yoff]) foot(fl);
 
 // Bed feet right
-translate([-sx/2 + th, th, yoff]) foot(fl);
-translate([-sx/2 + th, sy - 2*th, yoff]) foot(fl);
+translate([-xoff, th + inset, yoff]) foot(fl);
+translate([-xoff, sy - 2*th - inset, yoff]) foot(fl);
