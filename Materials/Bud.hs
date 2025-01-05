@@ -343,6 +343,17 @@ page10 =
   , I "linolja 10l" 998 JC "23/11"
   , I "hydrofor" 2500 JC "23/11"
   , I "ventilation" 3529 JC "23/11"
+  , I "bitförlängare" 207 JC "7/12"
+  , I "tryckströmbrytare" 630 JC "7/12"
+  , I "vvs" 3200 JC "7/12"
+  , I "skorstensisolering" 1165 JC "9/12"
+  , I "Claessons trätjära" 4504 JAD "10/12"
+  , I "Hans K stolar" 6500 JAD "25/12"
+  , I "Bauhaus lampor etc" 964 JAD "28/12"
+  , I "Ljusexperten" 5235 JAD "28/12"
+  , I "köksbänk" 15000 JC "30/12"
+  , I "köksbänk" 9375 JAD "30/12"
+  , I "vvs" 4710 JC "5/1"
   ]
 
 items =
@@ -352,16 +363,16 @@ left :: [Item]
 left =
   [ I "Installation" 25000 JC ""
   , I "El" 135000 JC ""
-  , I "Köksbänk" 30000 JC ""
+  , I "taksäkerhet" 10_000 JC ""
   , I "Skorsten" 5000 JC ""
   , I "tätning skorsten" 2000 JC ""
-  , I "Cellolosa primer eller färg, pris?" 2000 JC ""
   ]
 
 after :: [Item]
 after =
   [ I "Stuprör mm" 20000 JC ""
   , I "madrass" 30000 JC ""
+  , I "Cellolosa primer eller färg, pris?" 2000 JC ""
   , I "Altan" 20000 JC ""
   , I "Fönsterbleck" 5000 JC ""
   , I "Vattentest" 2000 JC ""
