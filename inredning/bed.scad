@@ -8,14 +8,17 @@ fh = 150;
 inset = 150;
 
 module stick(l) {
+    echo("stick l =", l);
     cube([th, th, l], center = true);
 }
 
 module plank(l) {
+    echo("plank l =", l);
     cube([l, th, wd], center = true);
 }
 
 module foot(l) {
+    echo("foot l =", l);
     cube([2*th, 2*th, l], center = true);
 }
 
