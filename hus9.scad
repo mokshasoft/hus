@@ -47,3 +47,5 @@ echo ("ratio in % to GR = ", 100*(ratio - gr)/gr);
 for (i = [0:floors-1])
     translate([0, 0, i*(fh + 0.1)])
     floor(fh, ww, wh);
+translate([0, 0, 2*(fh + 0.1)])
+floor(fh/gr, ww/gr, wh/gr);
