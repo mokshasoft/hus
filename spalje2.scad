@@ -7,15 +7,22 @@ fw = 3285;
 fbw = 200;
 fbt = 17;
 
-// center => 185,61
-// l = 12;
-// r = 10;
-// dist = 98.47;
+// center => 1854.61
+//l = 12;
+//r = 10;
+//dist = 98.47;
 
-// center => 171,13
+// center => 1713.14
 l = 11;
 r = 11;
 dist = 98.47;
+
+// center => 1777,91
+//l = 12;
+//r = 11;
+//dist = 92.57;
+
+cc = dist + bt;
 
 // Trästolpar
 module stick() {
@@ -47,10 +54,13 @@ rs = [for (i = [0:r-1])
       center + bt2/2 + dist + bt/2 + i*(dist + bt)];
 
 // Skriv ut koordinater
+echo("vänster/höger", l, r - 1);
 echo("vänster", ls);
 echo(last);
 echo("center", center);
 echo("höger", rs);
+echo("5x7", 3*cc + bt);
+echo("9x5", 6*cc + bt);
 
 // Rendera
 for (i = ls)
