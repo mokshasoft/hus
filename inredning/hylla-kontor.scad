@@ -10,10 +10,15 @@ f2b = base + th;
 offset_x = margin_x + th/2;
 diff_x = (open_x - 2*offset_x)/(columns - 1);
 st = [for (x = [0 : columns - 1]) offset_x + x*diff_x];
-c1 = [0, 300, 600, 1200];
-c2 = [for (z = [0 : 7]) 100 + z*300];
-c3 = [for (z = [0 : 7]) z*300];
+c1 = [300, 600, 1200, 1800];
+c2 = [for (z = [1 : 7]) 100 + z*300];
+c3 = [for (z = [1 : 7]) z*300];
 c4 = c2;
+// 350 pärmar
+// 250 lådor
+// bryggutrustning
+// hurts
+// backar
 
 module plank(l) {
     echo("plank l =", l);
@@ -30,7 +35,7 @@ module section(s, c) {
         , w = st[s + 1] - st[s] )
     translate([x + w/2, 0, 0])
     for(i = c)
-        translate([0, 0, i])
+        translate([0, 0, i + f2b + th/2])
         plank(w);
 }
 // Opening
