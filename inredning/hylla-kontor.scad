@@ -5,6 +5,8 @@ margin_y = 15;
 columns = 5;
 th = 18;
 wd = 450;
+base = 100;
+f2b = base + th;
 offset_x = margin_x + th/2;
 diff_x = (open_x - 2*offset_x)/(columns - 1);
 st = [for (x = [0 : columns - 1]) offset_x + x*diff_x];
@@ -45,10 +47,16 @@ union() {
 }
 
 // Create columns
-translate([0, 0, open_y/2])
+let (l = open_y - margin_y - f2b)
+translate([0, 0, l/2 + f2b])
 for(i = st)
     translate([i, 0, 0])
-    standing_plank(open_y);
+    standing_plank(l);
+
+// Create base
+let (w = open_x - 2*margin_x)
+    translate([w/2 + margin_x, 0, base + th/2])
+    plank(w);
 
 // Create shelves
 section(0, c1);
