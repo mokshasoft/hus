@@ -1,8 +1,13 @@
 open_x = 2460;
 open_y = 2430;
+margin_x = 15;
+margin_y = 15;
+columns = 5;
 th = 18;
 wd = 450;
-st = [0, 600, 1200, 1800, 2400];
+offset_x = margin_x + th/2;
+diff_x = (open_x - 2*offset_x)/(columns - 1);
+st = [for (x = [0 : columns - 1]) offset_x + x*diff_x];
 c1 = [0, 300, 600, 1200];
 c2 = [for (z = [0 : 7]) 100 + z*300];
 c3 = [for (z = [0 : 7]) z*300];
