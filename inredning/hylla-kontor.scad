@@ -32,8 +32,8 @@ module standing_plank(l) {
 module section(s, c) {
     // Create shelves in column 1
     let ( x = st[s]
-        , w = st[s + 1] - st[s] )
-    translate([x + w/2, 0, 0])
+        , w = st[s + 1] - st[s] - th)
+    translate([x + w/2 + th/2, 0, 0])
     for(i = c)
         translate([0, 0, i + f2b + th/2])
         plank(w);
