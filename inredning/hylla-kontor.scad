@@ -17,12 +17,6 @@ module standing_plank(l) {
     rotate([0, 90, 0]) plank(l);
 }
 
-// Create columns
-translate([0, 0, open_y/2])
-for(i = st)
-    translate([i, 0, 0])
-    standing_plank(open_y);
-
 module section(s, c) {
     // Create shelves in column 1
     let ( x = st[s]
@@ -32,7 +26,26 @@ module section(s, c) {
         translate([0, 0, i])
         plank(w);
 }
+// Opening
+color("gray", 0.5)
+union() {
+    translate([-th/2, 0, open_y/2])
+        standing_plank(open_y);
+    translate([th/2 + open_x, 0, open_y/2])
+        standing_plank(open_y);
+    translate([open_x/2, 0, -th/2])
+        plank(open_x);
+    translate([open_x/2, 0, open_y + th/2])
+        plank(open_x);
+}
 
+// Create columns
+translate([0, 0, open_y/2])
+for(i = st)
+    translate([i, 0, 0])
+    standing_plank(open_y);
+
+// Create shelves
 section(0, c1);
 section(1, c2);
 section(2, c3);
