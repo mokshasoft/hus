@@ -1,17 +1,19 @@
 open_x = 2460;
 open_y = 2430;
+th = 18;
+wd = 450;
 st = [0, 300, 600, 1200, 1800, 2400, 3000];
 c1 = [0, 300, 600, 1200];
 c2 = [for (z = [0 : 7]) 100 + z*300];
 c3 = [for (z = [0 : 7]) z*300];
 c4 = c2;
 
-module plank(l, wd = 140, th = 18) {
+module plank(l) {
     echo("plank l =", l);
     cube([l, wd, th], center = true);
 }
 
-module standing_plank(l, wd = 140, th = 18) {
+module standing_plank(l) {
     rotate([0, 90, 0]) plank(l);
 }
 
