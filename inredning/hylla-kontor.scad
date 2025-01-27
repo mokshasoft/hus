@@ -2,7 +2,9 @@ open_x = 2460;
 open_y = 2430;
 st = [0, 300, 600, 1200, 1800, 2400, 3000];
 c1 = [0, 300, 600, 1200];
-c2 = [200, 400, 1200, 1800];
+c2 = [for (z = [0 : 7]) 100 + z*300];
+c3 = [for (z = [0 : 7]) z*300];
+c4 = c2;
 
 module plank(l, wd = 140, th = 18) {
     echo("plank l =", l);
@@ -31,3 +33,5 @@ module section(s, c) {
 
 section(0, c1);
 section(1, c2);
+section(2, c3);
+section(3, c4);
