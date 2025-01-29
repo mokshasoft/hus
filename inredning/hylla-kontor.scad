@@ -11,15 +11,17 @@ f2b = base + th;
 offset_x = margin_x + th/2;
 diff_x = (open_x - 2*offset_x)/(columns - 1);
 st = [for (x = [0 : columns - 1]) offset_x + x*diff_x];
-c1 = [300, 600, 1200, 1800, top];
-c2 = [for (z = [1 : 7]) 100 + z*300];
-c3 = [for (z = [1 : 7]) z*300];
-c4 = c2;
+c1 = [300, 300];
+c2 = [250, 250];
+c3 = [100,1];
+c4 = [0];
 // 350 pärmar
 // 250 lådor
 // bryggutrustning
 // hurts
 // backar
+
+function sum(v, i = 0, r = 0) = i < len(v) ? sum(v, i + 1, r + v[i]) : r;
 
 module plank(l) {
     echo("plank l =", l);
@@ -33,12 +35,15 @@ module standing_plank(l) {
 module section(s, c) {
     // Create shelves in column 1
     let ( x = st[s]
-        , w = st[s + 1] - st[s] - th)
+        , w = st[s + 1] - st[s] - th
+        , t = [for (ii = [0 : 1]) c[ii]])
     translate([x + w/2 + th/2, 0, 0])
-    for(i = c)
-        translate([0, 0, i + f2b + th/2])
+    for(i = [0:len(c)-1])
+        let (v = [for (ii = [0 : i]) c[ii]])
+        translate([0, 0, th*(len(v) - 1) + sum(v) + f2b + th/2])
         plank(w);
 }
+
 // Opening
 color("gray", 0.5)
 union() {
