@@ -6,7 +6,6 @@ columns = 5;
 th = 18;
 wd = 450;
 base = 100;
-top = open_y - margin_y - 350;
 f2b = base + th;
 offset_x = margin_x + th/2;
 diff_x = (open_x - 2*offset_x)/(columns - 1);
@@ -64,11 +63,6 @@ for(i = st)
     translate([i, 0, 0])
     standing_plank(l);
 
-// Create base
-let (w = open_x - 2*margin_x)
-    translate([w/2 + margin_x, 0, base + th/2])
-    plank(w);
-
 // Create shelves
 section(0, c1);
 section(1, c2);
@@ -80,3 +74,15 @@ section(0, [open_y - 350]);
 section(1, [open_y - 350]);
 section(2, [open_y - 350]);
 section(3, [open_y - 350]);
+
+// Create base
+let (w = open_x - 2*margin_x)
+    echo("bottom plank of length", w)
+    translate([w/2 + margin_x, 0, base + th/2])
+    plank(w);
+
+// Material
+let (nbr_shelves = len(c1) + len(c2) + len(c3) + len(c4))
+echo( "nbr of shelves ", nbr_shelves
+    , "of width", st[1] - st[0] - th
+    );
