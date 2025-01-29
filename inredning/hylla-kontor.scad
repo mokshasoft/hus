@@ -11,15 +11,15 @@ f2b = base + th;
 offset_x = margin_x + th/2;
 diff_x = (open_x - 2*offset_x)/(columns - 1);
 st = [for (x = [0 : columns - 1]) offset_x + x*diff_x];
-c1 = [300, 300];
-c2 = [250, 250];
-c3 = [100,1];
-c4 = [0];
-// 350 pärmar
-// 250 lådor
-// bryggutrustning
-// hurts
-// backar
+c1 = [ 250, 250, 250
+     , 660 // hurts
+     , 300
+     ];
+c2 = [ 300, 300, 300 // 6st backar
+     , 750 // bryggare
+     ];
+c3 = [350, 350, 350, 350, 350];
+c4 = [250, 250, 250, 250, 250, 250, 250];
 
 function sum(v, i = 0, r = 0) = i < len(v) ? sum(v, i + 1, r + v[i]) : r;
 
@@ -74,3 +74,9 @@ section(0, c1);
 section(1, c2);
 section(2, c3);
 section(3, c4);
+
+// Top shelves
+section(0, [open_y - 350]);
+section(1, [open_y - 350]);
+section(2, [open_y - 350]);
+section(3, [open_y - 350]);
