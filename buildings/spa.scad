@@ -1,19 +1,21 @@
 s_x = 4000;
 s_y = 5000;
 
-module outer_shape(x, y) {
+module outer_shape(x, y, th) {
     difference() {
         scale([1, y/x]) circle(d=x);
-        translate([0, 1.2*y/2]) circle(d=y);
+        translate([0, 1.2*y/2]) circle(d = y + th);
     }
 }
 
 union() {
     difference() {
-        linear_extrude(height = 4000)
         difference() {
-            outer_shape(s_x, s_y);
-            scale(0.90) outer_shape(s_x, s_y);
+            linear_extrude(height = 4000)
+            outer_shape(s_x, s_y, 0);
+            scale(0.9)
+            linear_extrude(height = 4000, center = true)
+            outer_shape(s_x, s_y, 300);
         }
 
         translate([0, 0, 3000])
