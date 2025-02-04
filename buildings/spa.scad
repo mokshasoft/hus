@@ -1,5 +1,7 @@
 s_x = 4000;
 s_y = 5000;
+height = 3000;
+roof_th = 400;
 
 module outer_shape(x, y, th) {
     difference() {
@@ -8,26 +10,34 @@ module outer_shape(x, y, th) {
     }
 }
 
-union() {
-    difference() {
-        difference() {
-            linear_extrude(height = 4000)
-            outer_shape(s_x, s_y, 0);
-            scale(0.9)
-            linear_extrude(height = 4000, center = true)
-            outer_shape(s_x, s_y, 300);
-        }
-
-        translate([0, 0, 3000])
+module add_roof(x, y, th, show = true) {
+    module roof(h, th) {
+        translate([0, 0, h])
         rotate([11, 0, 0])
-        linear_extrude(2000)
-        scale(1.2) scale([1, s_y/s_x]) circle(d=s_x);
+        linear_extrude(th)
+        scale(1.3) scale([1, y/x]) circle(d=x);
     }
 
-    translate([0, 0, 3000])
-    rotate([11, 0, 0])
-    linear_extrude(400)
-    scale(1.2) scale([1, s_y/s_x]) circle(d=s_x);
+    if (show) {
+        union() {    
+            difference() {
+                children();
+                roof(3000, 4000);
+            }
+            roof(3000, th);
+        }
+    } else {
+        children();
+    }
+}
+
+add_roof(s_x, s_y, roof_th)
+difference() {
+    linear_extrude(height = height + 2000)
+    outer_shape(s_x, s_y, 0);
+    scale(0.9)
+    linear_extrude(height = 3 * (height + 2000), center = true)
+    outer_shape(s_x, s_y, 300);
 }
 
 translate([900, 2200, 0])
