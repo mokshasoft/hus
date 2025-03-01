@@ -12,6 +12,7 @@ STL= \
   hus7.scad \
   plan1_1.scad \
   plan1_2.scad \
+  inredning/hylla-kontor.scad \
   hus8.scad
 
 all: stl
