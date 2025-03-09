@@ -82,3 +82,31 @@ let (nbr_shelves = len(c1) + len(c2) + len(c3) + len(c4))
 echo( "nbr of shelves ", nbr_shelves
     , "of width", st[1] - st[0] - th
     );
+
+// Column measurments
+function accumulate(arr, i=0, total=0, result=[]) =
+    i < len(arr)
+    ? accumulate(arr, i+1, total + arr[i], concat(result, [total + arr[i]]))
+    : result;
+
+function merge_sorted(arr1, arr2, i=0, j=0, result=[]) =
+    (i < len(arr1) && (j >= len(arr2) || arr1[i] < arr2[j]))
+    ? merge_sorted(arr1, arr2, i+1, j, concat(result, [arr1[i]]))
+    : (j < len(arr2))
+    ? merge_sorted(arr1, arr2, i, j+1, concat(result, [arr2[j]]))
+    : result;
+
+echo("column 1");
+echo(accumulate(c1));
+
+echo("column 2");
+echo(accumulate(merge_sorted(c1, c2)));
+
+echo("column 3");
+echo(accumulate(merge_sorted(c2, c3)));
+
+echo("column 4");
+echo(accumulate(merge_sorted(c3, c4)));
+
+echo("column 5");
+echo(accumulate(c4));
