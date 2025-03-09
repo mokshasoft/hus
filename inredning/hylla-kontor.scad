@@ -83,11 +83,11 @@ echo( "nbr of shelves ", nbr_shelves
     , "of width", st[1] - st[0] - th
     );
 
-// Column measurments
-function accumulate(arr, i=0, total=0, result=[]) =
+function accumulate(arr, i=0, total=th/2) =
     i < len(arr)
-    ? accumulate(arr, i+1, total + arr[i], concat(result, [total + arr[i]]))
-    : result;
+    ? let (acc = total + arr[i])
+        concat([acc], accumulate(arr, i+1, acc + th))
+    : [];
 
 function merge_sorted(arr1, arr2, i=0, j=0, result=[]) =
     (i < len(arr1) && (j >= len(arr2) || arr1[i] < arr2[j]))
@@ -95,6 +95,27 @@ function merge_sorted(arr1, arr2, i=0, j=0, result=[]) =
     : (j < len(arr2))
     ? merge_sorted(arr1, arr2, i, j+1, concat(result, [arr2[j]]))
     : result;
+
+module print_text( txt, x=0, y=0
+                 , size=50, height=1
+                 , font="Liberation Sans") {
+    translate([x, -wd/2, y])
+    rotate([90, 0, 0])
+    linear_extrude(height)
+    text(txt, size=size, font=font, halign="center", valign="center");
+}
+
+module print_text_array(arr, y=0) {
+    let (a = accumulate(arr))
+    for (i = [0 : len(a) - 1]) {
+        print_text(str(a[i]), y, f2b - 50 + a[i]);
+    }
+}
+
+print_text_array(c1, 300);
+print_text_array(c2, 930);
+print_text_array(c3, 1550);
+print_text_array(c4, 2150);
 
 echo("column 1");
 echo(accumulate(c1));
