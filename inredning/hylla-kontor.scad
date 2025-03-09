@@ -10,15 +10,17 @@ f2b = base + th;
 offset_x = margin_x + th/2;
 diff_x = (open_x - 2*offset_x)/(columns - 1);
 st = [for (x = [0 : columns - 1]) offset_x + x*diff_x];
-c1 = [ 250, 250, 250
-     , 660 // hurts
-     , 300
+c1 = [ 690 // hurts
+     , 200, 200
+     , 250, 250, 250
      ];
 c2 = [ 300, 300, 300 // 6st backar
-     , 750 // bryggare
+     , 790 // bryggare
+     , 200
      ];
-c3 = [350, 350, 350, 350, 350];
-c4 = [250, 250, 250, 250, 250, 250, 250];
+c3 = [ 220, 220
+     , 350, 350, 350, 350];
+c4 = [250, 300, 300, 250, 250, 250, 250];
 
 function sum(v, i = 0, r = 0) = i < len(v) ? sum(v, i + 1, r + v[i]) : r;
 
@@ -68,12 +70,6 @@ section(0, c1);
 section(1, c2);
 section(2, c3);
 section(3, c4);
-
-// Top shelves
-section(0, [open_y - 350]);
-section(1, [open_y - 350]);
-section(2, [open_y - 350]);
-section(3, [open_y - 350]);
 
 // Create base
 let (w = open_x - 2*margin_x)
