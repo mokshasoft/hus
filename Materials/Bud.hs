@@ -354,10 +354,34 @@ page10 =
   , I "köksbänk" 15000 JC "30/12"
   , I "köksbänk" 9375 JAD "30/12"
   , I "vvs" 4710 JC "5/1"
+  , I "blandare" 5811 JAD "29/1"
+  , I "Provburkar färg" 460 JAD "29/1"
+  , I "Bauhaus" 298 JC "26/1"
+  , I "vvs" 324 JC "11/2"
+  , I "slip" 378 JC "11/2"
+  ]
+
+page11 :: [Item]
+page11 =
+  [ I "vvs" 1179 JC "11/2"
+  , I "plåt" 2000 JC "12/2"
+  , I "gips" 765 JC "12/2"
+  , I "KH" 1690 JC "24/2"
+  , I "Men" 15000 JC "9/3"
+  , I "Madrass" 5132 JAD "9/3"
+  , I "taksteg" 3220 JC "14/3"
+  , I "Pet" 6300 JC "17/3"
+  , I "men" 15500 JC "17/3"
+  , I "ikea" 4666 JAD "30/3"
+  , I "Håkan Fallqvist" 5050 JAD "2/4"
+  , I "Takskena" 2335 JC "19/4"
+  , I "Låskolvar" 2248 JC "15/5"
+  , I "Badrumslampor" 4550 JC "14/5"
+  , I "låsgrejer" 941 JC "2/5"
   ]
 
 items =
-  page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9 ++ page10
+  page1 ++ page2 ++ page3 ++ page4 ++ page5 ++ page6 ++ page7 ++ page8 ++ page9 ++ page10 ++ page11
 
 left :: [Item]
 left =
