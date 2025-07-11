@@ -378,6 +378,14 @@ page11 =
   , I "Låskolvar" 2248 JC "15/5"
   , I "Badrumslampor" 4550 JC "14/5"
   , I "låsgrejer" 941 JC "2/5"
+  , I "gasolgrejer" 1466 JC "28/5"
+  , I "Bauhaus" 2555 JC "28/5"
+  , I "plintar" 1673 JC "30/5"
+  , I "plintar" 796 JC "10/6"
+  , I "reglar" 7470 JC "13/6"
+  , I "takvatten" 15241 JC "16/6"
+  , I "reglar" 7500 JC "3/7"
+  , I "elräkning" 126_552 JC "11/7"
   ]
 
 items =
@@ -385,19 +393,12 @@ items =
 
 left :: [Item]
 left =
-  [ I "Installation" 25000 JC ""
-  , I "El" 135000 JC ""
-  , I "taksäkerhet" 10_000 JC ""
-  , I "Skorsten" 5000 JC ""
-  , I "tätning skorsten" 2000 JC ""
+  [
   ]
 
 after :: [Item]
 after =
-  [ I "Stuprör mm" 20000 JC ""
-  , I "madrass" 30000 JC ""
-  , I "Cellolosa primer eller färg, pris?" 2000 JC ""
-  , I "Altan" 20000 JC ""
+  [ I "madrass" 30000 JC ""
   , I "Fönsterbleck" 5000 JC ""
   , I "Vattentest" 2000 JC ""
   ]
