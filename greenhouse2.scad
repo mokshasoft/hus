@@ -2,14 +2,14 @@
 depth = 3;               // Depth into the hill (m)
 south_height = 3;        // Height at the front
 north_height = 2.5;      // Height at the back
-num_windows = 4;         // Number of windows in width
+num_windows = 5;         // Number of windows in width
 num_window_rows = 2;     // Number of window rows (vertically)
 
-window_size = 1.2;       // Windows are 1.2 x 1.2 m
+window_size = 1.1;       // Windows are 1.2 x 1.2 m
 wall_thickness = 0.2;    // Wall thickness (m)
 roof_thickness = 0.1;    // Roof thickness
 ws = window_size;
-wg = 0.1; // window gap
+wg = 0.15; // window gap
 
 // ==== Parameters for the hill ====
 hill_width = 5;          // Width of the hill (m)
@@ -76,6 +76,7 @@ module greenhouse() {
 
 module greenhouse2() {
     width = spacing(num_windows, ws, wg);
+    echo("width = ", width);
     // windows
     rotate([30, 0, 0]) front_window_section();
     // front wall
