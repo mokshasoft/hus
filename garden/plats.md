@@ -1,5 +1,14 @@
 # Plats
 
+## Norr om grönsakslandet
+Från väst:
+1. Päron
+2. Päron
+3. Blomträd
+
+## Söder om pumphuset
+Sibiriskt björnbär 'Sonja' - Rubus Allegheniensis
+
 ## Bärodlingen
 
 |    |    |    |    |
