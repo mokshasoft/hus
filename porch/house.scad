@@ -325,9 +325,9 @@ module railing_west() {
         }
     }
 
-    // Räcke ovanpå låga delen
-    translate([x_pos, -porch_depth, base_z + railing_height_low]) {
-        cube([railing_post_size, low_length, railing_top_height]);
+    // Räcke ovanpå låga delen (2x4)
+    translate([x_pos - (railing_top_width - railing_post_size)/2, -porch_depth, base_z + railing_height_low]) {
+        cube([railing_top_width, low_length, railing_top_height]);
     }
 
     // Hög del: från y = transition_y till y = house_depth
@@ -367,9 +367,9 @@ module railing_west() {
         }
     }
 
-    // Räcke ovanpå höga delen
-    translate([x_pos, transition_y, base_z + railing_height_high]) {
-        cube([railing_post_size, high_length, railing_top_height]);
+    // Räcke ovanpå höga delen (2x4)
+    translate([x_pos - (railing_top_width - railing_post_size)/2, transition_y, base_z + railing_height_high]) {
+        cube([railing_top_width, high_length, railing_top_height]);
     }
 }
 
@@ -410,9 +410,9 @@ module railing_north() {
         }
     }
 
-    // Räcke ovanpå
-    translate([-deck_total_width, y_pos, base_z + railing_height_high]) {
-        cube([rail_length, railing_post_size, railing_top_height]);
+    // Räcke ovanpå (2x4)
+    translate([-deck_total_width, y_pos - (railing_top_width - railing_post_size)/2, base_z + railing_height_high]) {
+        cube([rail_length, railing_top_width, railing_top_height]);
     }
 }
 
