@@ -25,6 +25,17 @@ deck_board_thickness = 0.05; // 2 tum ≈ 50 mm
 deck_board_gap = 0.01;       // 1 cm mellanrum
 deck_board_count = 19;       // Antal plankor
 
+// Staket
+railing_post_size = 0.05;    // 2x2 tum ≈ 50 mm
+railing_top_width = 0.1;     // 2x4 tum, bredd 100 mm
+railing_top_height = 0.05;   // 2x4 tum, höjd 50 mm
+railing_height_low = 1.1;    // Låg del av staketet
+railing_height_high = 2.2;   // Hög del (dubbla)
+railing_transition = 3.0;    // 3 meter från norr börjar höga delen
+railing_gap_low = 0.1;       // 10 cm öppning på låga delen
+railing_cc_low = railing_gap_low + railing_post_size;  // CC-avstånd låg del
+railing_cc_high = railing_cc_low / 2;                   // Halva CC på höga delen
+
 // Beräknade värden
 roof_drop = tan(roof_angle) * house_depth;
 house_height_south = house_height_north - roof_drop;
@@ -294,6 +305,72 @@ module deck_risers() {
     }
 }
 
+// Staket på västra sidan av terrassen
+module railing_west() {
+    base_z = deck_height + deck_board_thickness;
+    x_pos = -deck_total_width;
+    transition_y = house_depth - railing_transition;  // Där höjden ökar
+
+    // Låg del: från y = -porch_depth till y = transition_y
+    low_length = transition_y - (-porch_depth);
+    low_post_count = floor(low_length / railing_cc_low) + 1;
+
+    for (i = [0 : low_post_count - 1]) {
+        y = -porch_depth + i * railing_cc_low;
+        if (y <= transition_y) {
+            translate([x_pos, y, base_z]) {
+                cube([railing_post_size, railing_post_size, railing_height_low]);
+            }
+        }
+    }
+
+    // Räcke ovanpå låga delen
+    translate([x_pos, -porch_depth, base_z + railing_height_low]) {
+        cube([railing_post_size, low_length, railing_top_height]);
+    }
+
+    // Hög del: från y = transition_y till y = house_depth
+    high_length = house_depth - transition_y;
+    high_post_count = floor(high_length / railing_cc_high) + 1;
+
+    for (i = [0 : high_post_count - 1]) {
+        y = transition_y + i * railing_cc_high;
+        if (y <= house_depth) {
+            translate([x_pos, y, base_z]) {
+                cube([railing_post_size, railing_post_size, railing_height_high]);
+            }
+        }
+    }
+
+    // Räcke ovanpå höga delen
+    translate([x_pos, transition_y, base_z + railing_height_high]) {
+        cube([railing_post_size, high_length, railing_top_height]);
+    }
+}
+
+// Staket på norra sidan av terrassen (hög del)
+module railing_north() {
+    base_z = deck_height + deck_board_thickness;
+    y_pos = house_depth - railing_post_size;
+    rail_length = deck_total_width;
+
+    post_count = floor(rail_length / railing_cc_high) + 1;
+
+    for (i = [0 : post_count - 1]) {
+        x = -deck_total_width + i * railing_cc_high;
+        if (x <= 0) {
+            translate([x, y_pos, base_z]) {
+                cube([railing_post_size, railing_post_size, railing_height_high]);
+            }
+        }
+    }
+
+    // Räcke ovanpå
+    translate([-deck_total_width, y_pos, base_z + railing_height_high]) {
+        cube([rail_length, railing_post_size, railing_top_height]);
+    }
+}
+
 // === KOMPLETT MODELL ===
 module complete_house() {
     color("white") house_walls();
@@ -306,6 +383,8 @@ module complete_house() {
     color("burlywood") deck_step_1();
     color("burlywood") deck_step_2();
     color("burlywood") deck_risers();
+    color("black") railing_west();
+    color("black") railing_north();
 }
 
 // Rendera huset
