@@ -371,20 +371,24 @@ module railing_north() {
     }
 }
 
+// === FÄRGER ===
+organowood = [0.9, 0.88, 0.85];       // Silvergrå/vit (organowood-behandlat)
+burnt_wood = [0.25, 0.18, 0.12];      // Bränt trä (shou sugi ban)
+
 // === KOMPLETT MODELL ===
 module complete_house() {
-    color("white") house_walls();
+    color(organowood) house_walls();
     color("darkgray") house_roof();
     color("lightblue", 0.5) porch();
     color("gray") porch_roof();
-    color("burlywood") deck();
-    color("burlywood") deck_to_porch();
-    color("burlywood") deck_south_edge();
-    color("burlywood") deck_step_1();
-    color("burlywood") deck_step_2();
-    color("burlywood") deck_risers();
-    color("black") railing_west();
-    color("black") railing_north();
+    color(organowood) deck();
+    color(organowood) deck_to_porch();
+    color(organowood) deck_south_edge();
+    color(organowood) deck_step_1();
+    color(organowood) deck_step_2();
+    color(organowood) deck_risers();
+    color(burnt_wood) railing_west();
+    color(burnt_wood) railing_north();
 }
 
 // Rendera huset
