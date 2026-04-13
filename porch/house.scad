@@ -18,9 +18,17 @@ porch_depth = 3;         // Nord-syd (Y)
 porch_height = 3.0;      // Höjd på verandan
 porch_overhang = 0.2;    // Takutskjut veranda (20 cm)
 
+// Terrass (västra sidan)
+deck_height = 1.0;           // Höjd från mark
+deck_board_width = 0.2;      // 8 tum ≈ 200 mm
+deck_board_thickness = 0.05; // 2 tum ≈ 50 mm
+deck_board_gap = 0.01;       // 1 cm mellanrum
+deck_board_count = 19;       // Antal plankor
+
 // Beräknade värden
 roof_drop = tan(roof_angle) * house_depth;
 house_height_south = house_height_north - roof_drop;
+deck_total_width = deck_board_count * deck_board_width + (deck_board_count - 1) * deck_board_gap;
 
 // === MODULER ===
 
@@ -149,12 +157,155 @@ module porch_roof() {
     }
 }
 
+// Terrass på västra sidan
+module deck() {
+    // Terrassen går från husets västra vägg (x=0) västerut
+    // och från verandans södra linje (y=-porch_depth) till husets norra vägg
+    deck_length = house_depth + porch_depth;  // Från y=-porch_depth till y=house_depth
+
+    translate([0, -porch_depth, deck_height]) {
+        for (i = [0 : deck_board_count - 1]) {
+            // Varje planka går i nord-sydlig riktning (Y)
+            x_pos = -(i * (deck_board_width + deck_board_gap) + deck_board_width);
+            translate([x_pos, 0, 0]) {
+                cube([deck_board_width, deck_length, deck_board_thickness]);
+            }
+        }
+    }
+}
+
+// Plankor mellan terrassen och inglasade verandan
+module deck_to_porch() {
+    porch_x_offset = (house_width - porch_width) / 2;
+    // Börja med 1 cm gap från terrassen (x=0)
+    connection_width = porch_x_offset - deck_board_gap;
+    board_count = floor(connection_width / (deck_board_width + deck_board_gap));
+
+    translate([deck_board_gap, -porch_depth, deck_height]) {
+        for (i = [0 : board_count - 1]) {
+            // Varje planka går i nord-sydlig riktning (Y)
+            x_pos = i * (deck_board_width + deck_board_gap);
+            translate([x_pos, 0, 0]) {
+                cube([deck_board_width, porch_depth, deck_board_thickness]);
+            }
+        }
+    }
+}
+
+// Plankor i öst-västlig riktning söder om verandan och terrassen
+module deck_south_edge() {
+    porch_x_offset = (house_width - porch_width) / 2;
+    // Från terrassens västra kant till verandans östra kant
+    board_length = deck_total_width + porch_x_offset + porch_width;
+    south_board_count = 3;
+
+    translate([-deck_total_width, -porch_depth - deck_board_gap, deck_height]) {
+        for (i = [0 : south_board_count - 1]) {
+            // Varje planka går i öst-västlig riktning (X)
+            y_pos = -(i * (deck_board_width + deck_board_gap) + deck_board_width);
+            translate([0, y_pos, 0]) {
+                cube([board_length, deck_board_width, deck_board_thickness]);
+            }
+        }
+    }
+}
+
+// Gemensamma värden för trappsteg
+step_drop = 0.3;              // 30 cm mellan nivåer
+step_board_count = 3;         // 3 plankor per nivå
+riser_thickness = 0.02;       // 20 mm tjocka vertikala brädor
+riser_board_height = (step_drop - deck_board_gap) / 2;  // Två brädor med 1 cm mellanrum
+
+// Plankor i öst-västlig riktning, första steget (30 cm ner)
+module deck_step_1() {
+    porch_x_offset = (house_width - porch_width) / 2;
+    board_length = deck_total_width + porch_x_offset + porch_width;
+
+    // Börja söder om deck_south_edge (3 plankor + mellanrum)
+    upper_boards_depth = 3 * deck_board_width + 2 * deck_board_gap;
+    y_start = -porch_depth - deck_board_gap - upper_boards_depth - deck_board_gap;
+
+    translate([-deck_total_width, y_start, deck_height - step_drop]) {
+        for (i = [0 : step_board_count - 1]) {
+            y_pos = -(i * (deck_board_width + deck_board_gap) + deck_board_width);
+            translate([0, y_pos, 0]) {
+                cube([board_length, deck_board_width, deck_board_thickness]);
+            }
+        }
+    }
+}
+
+// Plankor i öst-västlig riktning, andra steget (60 cm ner)
+module deck_step_2() {
+    porch_x_offset = (house_width - porch_width) / 2;
+    board_length = deck_total_width + porch_x_offset + porch_width;
+
+    // Börja söder om deck_step_1
+    upper_boards_depth = 3 * deck_board_width + 2 * deck_board_gap;
+    y_start = -porch_depth - deck_board_gap - 2 * (upper_boards_depth + deck_board_gap);
+
+    translate([-deck_total_width, y_start, deck_height - 2 * step_drop]) {
+        for (i = [0 : step_board_count - 1]) {
+            y_pos = -(i * (deck_board_width + deck_board_gap) + deck_board_width);
+            translate([0, y_pos, 0]) {
+                cube([board_length, deck_board_width, deck_board_thickness]);
+            }
+        }
+    }
+}
+
+// Vertikala plankor mellan nivåerna (sättsteg)
+module deck_risers() {
+    porch_x_offset = (house_width - porch_width) / 2;
+    board_length = deck_total_width + porch_x_offset + porch_width;
+    upper_boards_depth = 3 * deck_board_width + 2 * deck_board_gap;
+
+    // Sättsteg 1: mellan deck_south_edge och deck_step_1
+    y_pos_1 = -porch_depth - deck_board_gap - upper_boards_depth;
+    translate([-deck_total_width, y_pos_1 - riser_thickness, deck_height - step_drop + deck_board_thickness]) {
+        // Nedre bräda
+        cube([board_length, riser_thickness, riser_board_height]);
+        // Övre bräda
+        translate([0, 0, riser_board_height + deck_board_gap]) {
+            cube([board_length, riser_thickness, riser_board_height]);
+        }
+    }
+
+    // Sättsteg 2: mellan deck_step_1 och deck_step_2
+    y_pos_2 = -porch_depth - deck_board_gap - 2 * (upper_boards_depth + deck_board_gap);
+    translate([-deck_total_width, y_pos_2 - riser_thickness, deck_height - 2 * step_drop + deck_board_thickness]) {
+        // Nedre bräda
+        cube([board_length, riser_thickness, riser_board_height]);
+        // Övre bräda
+        translate([0, 0, riser_board_height + deck_board_gap]) {
+            cube([board_length, riser_thickness, riser_board_height]);
+        }
+    }
+
+    // Sättsteg 3: under deck_step_2 (ner till marken)
+    y_pos_3 = -porch_depth - deck_board_gap - 3 * (upper_boards_depth + deck_board_gap);
+    translate([-deck_total_width, y_pos_3 - riser_thickness, deck_board_thickness]) {
+        // Nedre bräda
+        cube([board_length, riser_thickness, riser_board_height]);
+        // Övre bräda
+        translate([0, 0, riser_board_height + deck_board_gap]) {
+            cube([board_length, riser_thickness, riser_board_height]);
+        }
+    }
+}
+
 // === KOMPLETT MODELL ===
 module complete_house() {
     color("white") house_walls();
     color("darkgray") house_roof();
     color("lightblue", 0.5) porch();
     color("gray") porch_roof();
+    color("burlywood") deck();
+    color("burlywood") deck_to_porch();
+    color("burlywood") deck_south_edge();
+    color("burlywood") deck_step_1();
+    color("burlywood") deck_step_2();
+    color("burlywood") deck_risers();
 }
 
 // Rendera huset
@@ -168,3 +319,5 @@ echo(str("Höjd norr: ", house_height_north, " m"));
 echo(str("Höjd söder: ", house_height_south, " m"));
 echo(str("Takfall: ", roof_drop, " m"));
 echo(str("Takutskjut: ", roof_overhang, " m"));
+echo(str("Terrass bredd: ", deck_total_width, " m"));
+echo(str("Terrass längd: ", house_depth + porch_depth, " m"));
