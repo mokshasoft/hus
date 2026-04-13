@@ -36,6 +36,8 @@ railing_gap_low = 0.1;       // 10 cm öppning på låga delen
 railing_cc_low = railing_gap_low + railing_post_size;  // CC-avstånd låg del
 railing_cc_high = railing_cc_low / 2;                   // Halva CC på höga delen
 railing_high_horizontal = false;  // true = liggande, false = stående
+railing_below_west = 0.6;         // Hur långt stolparna går under terrassen (väst)
+railing_below_north = 0.6;        // Hur långt stolparna går under terrassen (norr)
 
 // Beräknade värden
 roof_drop = tan(roof_angle) * house_depth;
@@ -319,8 +321,8 @@ module railing_west() {
     for (i = [0 : low_post_count - 1]) {
         y = -porch_depth + i * railing_cc_low;
         if (y <= transition_y) {
-            translate([x_pos, y, base_z]) {
-                cube([railing_post_size, railing_post_size, railing_height_low]);
+            translate([x_pos, y, base_z - railing_below_west]) {
+                cube([railing_post_size, railing_post_size, railing_height_low + railing_below_west]);
             }
         }
     }
@@ -338,11 +340,11 @@ module railing_west() {
         high_board_count = floor(railing_height_high / railing_cc_high) + 1;
 
         // Hörnstolpar för höga delen
-        translate([x_pos, transition_y, base_z]) {
-            cube([railing_post_size, railing_post_size, railing_height_high]);
+        translate([x_pos, transition_y, base_z - railing_below_west]) {
+            cube([railing_post_size, railing_post_size, railing_height_high + railing_below_west]);
         }
-        translate([x_pos, house_depth - railing_post_size, base_z]) {
-            cube([railing_post_size, railing_post_size, railing_height_high]);
+        translate([x_pos, house_depth - railing_post_size, base_z - railing_below_west]) {
+            cube([railing_post_size, railing_post_size, railing_height_high + railing_below_west]);
         }
 
         for (i = [0 : high_board_count - 1]) {
@@ -360,8 +362,8 @@ module railing_west() {
         for (i = [0 : high_post_count - 1]) {
             y = transition_y + i * railing_cc_high;
             if (y <= house_depth) {
-                translate([x_pos, y, base_z]) {
-                    cube([railing_post_size, railing_post_size, railing_height_high]);
+                translate([x_pos, y, base_z - railing_below_west]) {
+                    cube([railing_post_size, railing_post_size, railing_height_high + railing_below_west]);
                 }
             }
         }
@@ -384,8 +386,8 @@ module railing_north() {
         high_board_count = floor(railing_height_high / railing_cc_high) + 1;
 
         // Hörnstolpe (västra hörnet hanteras av railing_west)
-        translate([0 - railing_post_size, y_pos, base_z]) {
-            cube([railing_post_size, railing_post_size, railing_height_high]);
+        translate([0 - railing_post_size, y_pos, base_z - railing_below_north]) {
+            cube([railing_post_size, railing_post_size, railing_height_high + railing_below_north]);
         }
 
         for (i = [0 : high_board_count - 1]) {
@@ -403,8 +405,8 @@ module railing_north() {
         for (i = [0 : post_count - 1]) {
             x = -deck_total_width + i * railing_cc_high;
             if (x <= 0) {
-                translate([x, y_pos, base_z]) {
-                    cube([railing_post_size, railing_post_size, railing_height_high]);
+                translate([x, y_pos, base_z - railing_below_north]) {
+                    cube([railing_post_size, railing_post_size, railing_height_high + railing_below_north]);
                 }
             }
         }
