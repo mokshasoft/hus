@@ -451,3 +451,51 @@ echo(str("Takfall: ", roof_drop, " m"));
 echo(str("Takutskjut: ", roof_overhang, " m"));
 echo(str("Terrass bredd: ", deck_total_width, " m"));
 echo(str("Terrass längd: ", house_depth + porch_depth, " m"));
+
+// === MATERIALÅTGÅNG: 2x2 (50x50 mm) TILL RÄCKET ===
+// Räcke väst — låg del (stående stolpar)
+mat_transition_y = house_depth - railing_transition;
+mat_west_low_length = mat_transition_y + porch_depth;
+mat_west_low_posts = floor(mat_west_low_length / railing_cc_low) + 1;
+mat_west_low_post_len = railing_height_low + railing_below_west;
+mat_west_low_total = mat_west_low_posts * mat_west_low_post_len;
+
+// Räcke väst — hög del
+mat_west_high_length = railing_transition;
+mat_west_high_post_len = railing_height_high + railing_below_west;
+mat_west_high_posts = railing_high_horizontal
+    ? 2
+    : floor(mat_west_high_length / railing_cc_high) + 1;
+mat_west_high_horiz_count = railing_high_horizontal
+    ? floor(railing_height_high / railing_cc_high) + 1
+    : 0;
+mat_west_high_total = mat_west_high_posts * mat_west_high_post_len
+    + mat_west_high_horiz_count * mat_west_high_length;
+
+// Räcke norr (hög del)
+mat_north_length = deck_total_width;
+mat_north_post_len = railing_height_high + railing_below_north;
+mat_north_posts = railing_high_horizontal
+    ? 1
+    : floor(mat_north_length / railing_cc_high) + 1;
+mat_north_horiz_count = railing_high_horizontal
+    ? floor(railing_height_high / railing_cc_high) + 1
+    : 0;
+mat_north_total = mat_north_posts * mat_north_post_len
+    + mat_north_horiz_count * mat_north_length;
+
+mat_2x2_total = mat_west_low_total + mat_west_high_total + mat_north_total;
+
+echo("=== 2x2 ÅTGÅNG TILL RÄCKET ===");
+echo(str("Väst låg: ", mat_west_low_posts, " stolpar á ", mat_west_low_post_len, " m = ", mat_west_low_total, " m"));
+echo(str("Väst hög: ", mat_west_high_posts, " stolpar á ", mat_west_high_post_len, " m",
+    railing_high_horizontal
+        ? str(" + ", mat_west_high_horiz_count, " liggande reglar á ", mat_west_high_length, " m")
+        : "",
+    " = ", mat_west_high_total, " m"));
+echo(str("Norr: ", mat_north_posts, " stolpar á ", mat_north_post_len, " m",
+    railing_high_horizontal
+        ? str(" + ", mat_north_horiz_count, " liggande reglar á ", mat_north_length, " m")
+        : "",
+    " = ", mat_north_total, " m"));
+echo(str("TOTALT 2x2: ", mat_2x2_total, " m"));
