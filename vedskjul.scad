@@ -5,11 +5,10 @@
 
 // === Parametrar ===
 // Bottenyta (ytterkant, inklusive golvreglarnas utstick i norr/söder)
-base_length   = 10.0;  // längd (m)
+section_length = 1.5;  // längd per sektion (m)
+sections      = 6;     // antal sektioner längs långsidan
+base_length   = sections * section_length;  // total längd (m)
 base_width    = 1.5;   // djup (m)
-
-// Antal sektioner längs långsidan (ger reglar vid varje sektionsgräns)
-sections      = 5;
 
 // Höjd och tak
 wall_height   = 2.4;   // höjd från bottenramens underkant till stolparnas ovankant (m)
@@ -25,9 +24,6 @@ beam_w = 0.195; // bredd
 // Golvreglar (liggande 2x8 N-S)
 joist_gap      = 0.02;  // mellanrum mellan reglarna (m)
 joist_overhang = 0.05;  // utstick i norr respektive söder (m)
-
-// Takläkt / strö (liggande 2x8 N-S ovanpå sparrarna)
-roof_board_gap = 0.005;  // 5 mm mellanrum
 
 // Härledda mått
 base_frame_depth = base_width - 2*joist_overhang; // bottenramens djup N-S
@@ -199,34 +195,6 @@ module gable_rafters() {
     }
 }
 
-// Takläkt / strö — 2x8 liggande flatt, löper N-S över sparrarnas
-// ovankant och fascians ovankant. Jämnt fördelade i öst/väst med
-// roof_board_gap luft mellan varje, så att det syns att det är
-// individuella reglar.
-module roof_boards() {
-    h_total  = base_frame_depth + 2*overhang;
-    r_len    = h_total / cos(roof_angle);
-    w_total  = base_length + 2*overhang;                // takets E-W bredd
-    b_len    = r_len + 2*beam_t;                        // läktlängd (inkl. fascia)
-    pitch    = beam_w + roof_board_gap;
-    n        = floor((w_total + roof_board_gap) / pitch);
-    used     = n*beam_w + (n - 1)*roof_board_gap;
-    margin   = (w_total - used) / 2;
-    // 2x8 liggande flatt, längd N-S: samma orientering som golvreglarna
-    // (cyklisk permutation via rotate(120, [1,1,1])).
-    color("wheat")
-    for (i = [0 : n - 1]) {
-        x = -overhang + margin + i*pitch;
-        translate([0, 0, wall_height])
-        rotate([roof_angle, 0, 0])
-        translate([x, -overhang - beam_t, beam_w])
-        rotate(120, [1, 1, 1])
-        tum2x8(b_len, "takläkt");
-    }
-    echo("antal takläkt", n);
-    echo("takläkt-längd", b_len, "m");
-}
-
 // Takkant (fascia) i söder och norr — 2x8 på högkant som löper längs
 // hela takets bredd (väst till öst gavel). Följer takets lutning så
 // att ovankanten är koplanär med sparrarnas ovankant och bildar en
@@ -264,11 +232,12 @@ section_posts(base_frame_depth);
 rafters();
 gable_rafters();
 roof_fascia();
-// Takläkt ovanpå sparrar och fascia
-roof_boards();
 
 // === Info ===
 echo("bottenyta (ytterkant)", base_length * base_width, "m2");
 echo("bottenramens djup", base_frame_depth, "m");
 echo("sektionslängd", base_length / sections, "m");
 echo("norra takhöjd", wall_height + base_frame_depth * tan(roof_angle), "m");
+echo("golvhöjd (över mark)", beam_w + beam_t, "m");
+echo("fri höjd front (södra)", wall_height - (beam_w + beam_t), "m");
+echo("fri höjd bak (norra)", wall_height + base_frame_depth * tan(roof_angle) - (beam_w + beam_t), "m");
