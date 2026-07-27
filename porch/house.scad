@@ -12,6 +12,10 @@ roof_angle = 11;         // Taklutning i grader mot syd
 roof_overhang = 0.5;     // Takutskjut huvudhus (50 cm)
 roof_thickness = 0.15;   // Taktjocklek (15 cm)
 
+// Utbyggnad på sydöstra sidan
+ext_width = 1.7;                 // Hur långt byggnaden går ut åt öst
+ext_depth = house_depth - 5.2;   // Nord-sydlig längd, räknat från södra väggen
+
 // Veranda
 porch_width = 4;         // Öst-väst (X)
 porch_depth = 3;         // Nord-syd (Y)
@@ -84,6 +88,73 @@ module house_walls() {
         [1, 2, 6, 5],   // Östra väggen
         [2, 3, 7, 6],   // Norra väggen
         [0, 1, 5, 4]    // Södra väggen
+    ];
+
+    polyhedron(points=points, faces=faces, convexity=2);
+}
+
+// Takplanets underkant vid en given y. Samma plan över hela byggnaden, så
+// både huvudtaket och utbyggnadens tak ligger i liv med varandra.
+function roof_z(y) = house_height_south + tan(roof_angle) * y;
+
+// Utbyggnad i sydöstra hörnet — väggarna toppar mot samma takplan
+module house_east_ext() {
+    x0 = house_width;
+    x1 = house_width + ext_width;
+
+    points = [
+        // Golv (z=0)
+        [x0, 0, 0],                     // 0: SW
+        [x1, 0, 0],                     // 1: SE
+        [x1, ext_depth, 0],             // 2: NE
+        [x0, ext_depth, 0],             // 3: NW
+        // Toppen av väggarna, i takplanet
+        [x0, 0, roof_z(0)],             // 4: SW
+        [x1, 0, roof_z(0)],             // 5: SE
+        [x1, ext_depth, roof_z(ext_depth)], // 6: NE
+        [x0, ext_depth, roof_z(ext_depth)]  // 7: NW
+    ];
+
+    faces = [
+        [0, 1, 2, 3],   // Golv
+        [4, 5, 6, 7],   // Övre kant
+        [0, 4, 7, 3],   // Västra väggen (mot huvudhuset)
+        [1, 2, 6, 5],   // Östra väggen
+        [2, 3, 7, 6],   // Norra väggen
+        [0, 1, 5, 4]    // Södra väggen
+    ];
+
+    polyhedron(points=points, faces=faces, convexity=2);
+}
+
+// Utbyggnadens tak — samma plan och samma utskjut som huvudtaket.
+// Inget utskjut i väster, där möter det huvudtaket.
+module house_east_ext_roof() {
+    x0 = house_width;
+    x1 = house_width + ext_width + roof_overhang;
+    y0 = -roof_overhang;
+    y1 = ext_depth + roof_overhang;
+
+    points = [
+        // Undersida
+        [x0, y0, roof_z(y0)],                   // 0: SW
+        [x1, y0, roof_z(y0)],                   // 1: SE
+        [x1, y1, roof_z(y1)],                   // 2: NE
+        [x0, y1, roof_z(y1)],                   // 3: NW
+        // Ovansida
+        [x0, y0, roof_z(y0) + roof_thickness],  // 4: SW
+        [x1, y0, roof_z(y0) + roof_thickness],  // 5: SE
+        [x1, y1, roof_z(y1) + roof_thickness],  // 6: NE
+        [x0, y1, roof_z(y1) + roof_thickness]   // 7: NW
+    ];
+
+    faces = [
+        [3, 2, 1, 0],   // Undersida
+        [4, 5, 6, 7],   // Ovansida
+        [0, 4, 7, 3],   // Västra kanten
+        [1, 2, 6, 5],   // Östra kanten
+        [2, 3, 7, 6],   // Norra kanten
+        [0, 1, 5, 4]    // Södra kanten
     ];
 
     polyhedron(points=points, faces=faces, convexity=2);
@@ -581,6 +652,8 @@ burnt_wood = [0.25, 0.18, 0.12];      // Bränt trä (shou sugi ban)
 module complete_house() {
     color(organowood) house_walls();
     color("darkgray") house_roof();
+    color(organowood) house_east_ext();
+    color("darkgray") house_east_ext_roof();
     color("lightblue", 0.5) porch();
     color("gray") porch_roof();
     color(organowood) deck();
@@ -606,6 +679,8 @@ echo(str("Höjd norr: ", house_height_north, " m"));
 echo(str("Höjd söder: ", house_height_south, " m"));
 echo(str("Takfall: ", roof_drop, " m"));
 echo(str("Takutskjut: ", roof_overhang, " m"));
+echo(str("Utbyggnad öst: ", ext_width, " x ", ext_depth, " m, vägghöjd ",
+    roof_z(0), " m (syd) till ", roof_z(ext_depth), " m (norr)"));
 echo(str("Terrass bredd: ", deck_total_width, " m"));
 echo(str("Terrass längd: ", house_depth + porch_depth, " m"));
 
