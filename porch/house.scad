@@ -406,7 +406,9 @@ railing_transition_y = house_depth - railing_transition;
 railing_west_low_len  = railing_transition_y - deck_south_y;
 railing_west_high_len = house_depth - railing_transition_y;
 
-// Trappstegens västra kant — norra kanten och ovansidans höjd för varje nivå
+// Trappans nivåer — norra kanten och ovansidans höjd för varje nivå.
+// Översta nivån är terrassens sydkant, lika djup som ett trappsteg.
+step_top_y_north = deck_south_y + deck_upper_depth;
 step_1_y_north = deck_south_y - deck_board_gap;
 step_1_top_z   = deck_height - step_drop + deck_board_thickness;
 step_2_y_north = step_1_y_north - deck_upper_depth - deck_board_gap;
@@ -418,6 +420,15 @@ step_2_top_z   = deck_height - 2 * step_drop + deck_board_thickness;
 deck_top_z     = deck_height + deck_board_thickness;
 railing_foot_z = step_2_top_z;
 railing_below_deck = deck_top_z - railing_foot_z;
+
+// Trappstegen sträcker sig från terrassens västra kant ända fram till
+// verandans östra vägg. Östra kanten speglas kring trappans mittlinje:
+// x -> step_mirror_dx - x
+step_east_x    = (house_width - porch_width) / 2 + porch_width;
+step_mirror_dx = step_east_x - deck_total_width;
+// Bottenregel längs trappans östra kant — bara så lång som räcket där
+railing_east_bottom_y   = step_2_y_north - deck_upper_depth;
+railing_east_bottom_len = deck_south_y + railing_big_along - railing_east_bottom_y;
 
 // Bottenregel att fästa stolpfötterna i — samma 2x4 som handledaren, men
 // liggande under fötterna. Eftersom alla fötter ligger på railing_foot_z
@@ -533,10 +544,25 @@ module railing_step(y_north, base_z) {
     railing_rail_y(x_pos, y_north - length, sect_len, base_z + railing_height_low);
 }
 
-// Räcken på de två lägre trappstegen
+// Räcken på de två lägre trappstegen, längs både västra och östra kanten
 module railing_steps() {
     railing_step(step_1_y_north, step_1_top_z);
     railing_step(step_2_y_north, step_2_top_z);
+
+    // Östra kanten är en spegelbild av den västra, men har tre nivåer i
+    // stället för två: terrassens sydkant är lika djup som ett trappsteg och
+    // får ett eget räcke här. I väster täcks den nivån av terrassräckets
+    // låga del, som fortsätter norrut.
+    // Bottenregeln ritas också här, eftersom östsidan inte har någon
+    // genomgående sådan att ansluta till.
+    translate([step_mirror_dx, 0, 0]) mirror([1, 0, 0]) {
+        railing_step(step_top_y_north, deck_top_z);
+        railing_step(step_1_y_north, step_1_top_z);
+        railing_step(step_2_y_north, step_2_top_z);
+
+        railing_rail_y(-deck_total_width, railing_east_bottom_y,
+                       railing_east_bottom_len, railing_bottom_z);
+    }
 }
 
 // Bottenregel under samtliga stolpfötter — en genomgående per sida
@@ -599,6 +625,9 @@ mat_horiz_rails = floor(railing_height_high / railing_cc_high) + 1;
 
 // Trappstegsräckena (två lika sektioner, låsta till ett fack vardera)
 mat_step_bays  = 1;
+// Sektioner av trappstegstyp: steg 1 och steg 2 på båda sidor, plus trappans
+// översta nivå i öster. I väster täcks den nivån av terrassräckets låga del.
+mat_step_units = 5;
 // Sektionen mäts fram till den delade 2x4:an på nivån ovanför
 mat_step_rail  = deck_upper_depth + deck_board_gap + railing_big_along;
 mat_step_pitch = rs_free(mat_step_rail, true) / mat_step_bays;
@@ -629,10 +658,10 @@ mat_2x2_north_count = railing_high_horizontal
 mat_2x2_north_len = railing_high_horizontal ? mat_north_free : mat_len_high_north;
 mat_2x2_north_total = mat_2x2_north_count * mat_2x2_north_len;
 
-// Två trappsteg, railing_small_per_bay_step st 2x2 per fack
-mat_2x2_step_count = 2 * mat_step_bays * railing_small_per_bay_step;
+// Trappans sektioner, railing_small_per_bay_step st 2x2 per fack
+mat_2x2_step_count = mat_step_units * mat_step_bays * railing_small_per_bay_step;
 mat_2x2_step_total = mat_step_bays * railing_small_per_bay_step
-    * (mat_len_step_1 + mat_len_step_2);
+    * (2 * mat_len_step_1 + 2 * mat_len_step_2 + mat_len_low_west);
 
 mat_2x2_total = mat_2x2_low_total + mat_2x2_high_total + mat_2x2_north_total
     + mat_2x2_step_total;
@@ -648,8 +677,9 @@ mat_2x4_high_total = mat_high_bays * mat_len_high_west;
 // Norr: en stolpe i slutet av varje fack (sista mot husväggen)
 mat_2x4_north_total = mat_north_bays * mat_len_high_north;
 // Trappstegen: en 2x4 i södra änden på varje steg (norr delas med nivån ovanför)
-mat_2x4_step_count = 2 * mat_step_bays;
-mat_2x4_step_total = mat_step_bays * (mat_len_step_1 + mat_len_step_2);
+mat_2x4_step_count = mat_step_units * mat_step_bays;
+mat_2x4_step_total = mat_step_bays
+    * (2 * mat_len_step_1 + 2 * mat_len_step_2 + mat_len_low_west);
 
 mat_2x4_posts_count = mat_2x4_low_count + 1 + mat_high_bays + mat_north_bays
     + mat_2x4_step_count;
@@ -658,10 +688,11 @@ mat_2x4_posts_total = mat_2x4_low_total + mat_2x4_trans_total
 
 // Liggande handledare ovanpå räcket
 mat_2x4_top_total = railing_west_low_len + railing_west_high_len + deck_total_width
-    + 2 * mat_step_rail;
+    + mat_step_units * mat_step_rail;
 
 // Bottenregel: en genomgående per sida
-mat_2x4_bottom_total = railing_bottom_west_len + deck_total_width;
+mat_2x4_bottom_total = railing_bottom_west_len + deck_total_width
+    + railing_east_bottom_len;
 
 mat_2x4_total = mat_2x4_posts_total + mat_2x4_top_total + mat_2x4_bottom_total;
 
@@ -679,8 +710,10 @@ echo("=== 2x2 ÅTGÅNG TILL RÄCKET ===");
 echo(str("Väst låg: ", mat_2x2_low_count, " st á ", mat_len_low_west, " m = ", mat_2x2_low_total, " m"));
 echo(str("Väst hög: ", mat_2x2_high_count, " st á ", mat_2x2_high_len, " m = ", mat_2x2_high_total, " m"));
 echo(str("Norr: ", mat_2x2_north_count, " st á ", mat_2x2_north_len, " m = ", mat_2x2_north_total, " m"));
-echo(str("Trappsteg: ", mat_2x2_step_count/2, " st á ", mat_len_step_1, " m + ",
-    mat_2x2_step_count/2, " st á ", mat_len_step_2, " m = ", mat_2x2_step_total, " m"));
+echo(str("Trappan: ", 2 * railing_small_per_bay_step, " st á ", mat_len_step_1, " m + ",
+    2 * railing_small_per_bay_step, " st á ", mat_len_step_2, " m + ",
+    railing_small_per_bay_step, " st á ", mat_len_low_west,
+    " m (östra toppnivån) = ", mat_2x2_step_total, " m"));
 echo(str("TOTALT 2x2: ", mat_2x2_total, " m"));
 
 echo("=== 2x4 ÅTGÅNG TILL RÄCKET ===");
@@ -688,8 +721,8 @@ echo(str("Väst låg: ", mat_2x4_low_count, " stolpar á ", mat_len_low_west, " 
 echo(str("Övergång låg/hög: 1 stolpe á ", mat_len_high_west, " m"));
 echo(str("Väst hög: ", mat_high_bays, " stolpar á ", mat_len_high_west, " m = ", mat_2x4_high_total, " m"));
 echo(str("Norr: ", mat_north_bays, " stolpar á ", mat_len_high_north, " m = ", mat_2x4_north_total, " m"));
-echo(str("Trappsteg: ", mat_2x4_step_count/2, " stolpe á ", mat_len_step_1, " m + ",
-    mat_2x4_step_count/2, " stolpe á ", mat_len_step_2, " m = ", mat_2x4_step_total, " m"));
+echo(str("Trappan: 2 st á ", mat_len_step_1, " m + 2 st á ", mat_len_step_2,
+    " m + 1 st á ", mat_len_low_west, " m (östra toppnivån) = ", mat_2x4_step_total, " m"));
 echo(str("Stolpar totalt: ", mat_2x4_posts_count, " st = ", mat_2x4_posts_total, " m"));
 echo(str("Handledare ovanpå: ", mat_2x4_top_total, " m"));
 echo(str("Bottenregel: ", mat_2x4_bottom_total, " m"));
@@ -721,28 +754,31 @@ kl_2x2 = [
     [round(mat_len_low_west  * 1000), mat_2x2_low_count],
     [round(mat_2x2_high_len  * 1000), mat_2x2_high_count],
     [round(mat_2x2_north_len * 1000), mat_2x2_north_count],
-    [round(mat_len_step_1    * 1000), mat_step_bays * railing_small_per_bay_step],
-    [round(mat_len_step_2    * 1000), mat_step_bays * railing_small_per_bay_step]
+    [round(mat_len_step_1    * 1000), 2 * mat_step_bays * railing_small_per_bay_step],
+    [round(mat_len_step_2    * 1000), 2 * mat_step_bays * railing_small_per_bay_step],
+    [round(mat_len_low_west  * 1000), mat_step_bays * railing_small_per_bay_step]
 ];
 
 kl_2x4_posts = [
     [round(mat_len_low_west   * 1000), mat_2x4_low_count],
     [round(mat_len_high_west  * 1000), 1 + mat_high_bays],  // övergångsstolpe + höga delen
     [round(mat_len_high_north * 1000), mat_north_bays],
-    [round(mat_len_step_1     * 1000), mat_step_bays],
-    [round(mat_len_step_2     * 1000), mat_step_bays]
+    [round(mat_len_step_1     * 1000), 2 * mat_step_bays],
+    [round(mat_len_step_2     * 1000), 2 * mat_step_bays],
+    [round(mat_len_low_west   * 1000), mat_step_bays]
 ];
 
 kl_2x4_rails = [
     [round(railing_west_low_len  * 1000), 1],
     [round(railing_west_high_len * 1000), 1],
     [round(deck_total_width      * 1000), 1],
-    [round(mat_step_rail         * 1000), 2]
+    [round(mat_step_rail         * 1000), mat_step_units]
 ];
 
 kl_2x4_bottom = [
-    [round(railing_bottom_west_len * 1000), 1],
-    [round(deck_total_width        * 1000), 1]
+    [round(railing_bottom_west_len  * 1000), 1],
+    [round(deck_total_width         * 1000), 1],
+    [round(railing_east_bottom_len  * 1000), 1]
 ];
 
 echo("=== KAPLISTA: 2x2 (50x50 mm) ===");
