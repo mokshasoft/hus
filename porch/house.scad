@@ -304,6 +304,23 @@ module deck_east() {
     }
 }
 
+// Trappa från östra terrassen ner till marken. Öppna steg, ett 2x8 per steg,
+// som löper i nord-sydlig riktning över hela öppningens bredd.
+module stair_east() {
+    x0 = house_width + ext_width;
+
+    for (i = [1 : stair_east_treads]) {
+        z_top  = deck_top_z - i * stair_east_rise;
+        x_step = x0 + (i - 1) * stair_east_run;
+        for (b = [0 : stair_east_boards - 1]) {
+            translate([x_step + b * (deck_board_width + stair_east_gap),
+                       stair_east_y0, z_top - deck_board_thickness]) {
+                cube([deck_board_width, stair_east_width, deck_board_thickness]);
+            }
+        }
+    }
+}
+
 // Plankor mellan terrassen och inglasade verandan
 module deck_to_porch() {
     porch_x_offset = (house_width - porch_width) / 2;
@@ -542,6 +559,28 @@ deck_top_z     = deck_height + deck_board_thickness;
 railing_foot_z = step_2_top_z;
 railing_below_deck = deck_top_z - railing_foot_z;
 
+// Trappa ner från östra terrassen, i öppningen mellan räckessektionerna.
+// Dimensionerad efter trappformeln (Blondel): 2 x stighöjd + steg ska ligga
+// i intervallet 600-640 mm. Planstegen byggs av 2x8, och stegdjupet följer
+// av hur många brädor som läggs per steg — det är den enda fria variabeln,
+// eftersom brädbredden är given.
+stair_east_formula = 0.63;              // Målvärde för 2h + b
+stair_east_boards  = 1;                 // Antal 2x8 per plansteg
+stair_east_gap     = deck_board_gap;    // Mellanrum mellan brädorna i ett steg
+stair_east_run     = stair_east_boards * deck_board_width
+                   + (stair_east_boards - 1) * stair_east_gap;
+// Stighöjden ur formeln. Antalet avrundas så att trappan landar exakt på
+// marken; stighöjden justeras då marginellt och summan hamnar fortfarande
+// inom intervallet.
+stair_east_rise_ideal = (stair_east_formula - stair_east_run) / 2;
+stair_east_risers = max(1, round(deck_top_z / stair_east_rise_ideal));
+stair_east_rise   = deck_top_z / stair_east_risers;
+stair_east_treads = stair_east_risers - 1;   // marken är sista steget
+stair_east_sum    = 2 * stair_east_rise + stair_east_run;
+stair_east_y0     = deck_east_y0 + railing_east_stub_len;
+stair_east_y1     = house_depth - railing_east_south_len;
+stair_east_width  = stair_east_y1 - stair_east_y0;
+
 // Trappstegen sträcker sig från terrassens västra kant ända fram till
 // verandans östra vägg. Östra kanten speglas kring trappans mittlinje:
 // x -> step_mirror_dx - x
@@ -752,6 +791,7 @@ module complete_house() {
     color("gray") porch_roof();
     color(organowood) deck();
     color(organowood) deck_east();
+    color(organowood) stair_east();
     color(organowood) deck_to_porch();
     color(organowood) deck_south_edge();
     color(organowood) deck_step_1();
@@ -779,6 +819,12 @@ echo(str("Utbyggnad öst: ", ext_width, " x ", ext_depth, " m, vägghöjd ",
     roof_z(0), " m (syd) till ", roof_z(ext_depth), " m (norr)"));
 echo(str("Terrass öst: ", ext_width, " x ", deck_east_len, " m, ", deck_east_count,
     " plankor, mellanrum ", deck_east_gap * 1000, " mm"));
+echo(str("Trappa öst: ", stair_east_treads, " plansteg á ", stair_east_boards,
+    " st 2x8, bredd ", stair_east_width, " m"));
+echo(str("  stigning ", stair_east_rise * 1000, " mm, steg ", stair_east_run * 1000,
+    " mm, vinkel ", atan(stair_east_rise / stair_east_run), " grader"));
+echo(str("  trappformeln 2h+b = ", stair_east_sum * 1000, " mm (ska ligga 600-640)"));
+echo(str("  utsprång ", stair_east_treads * stair_east_run, " m österut"));
 echo(str("Terrass bredd: ", deck_total_width, " m"));
 echo(str("Terrass längd: ", house_depth + porch_depth, " m"));
 
