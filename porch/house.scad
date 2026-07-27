@@ -304,10 +304,42 @@ module deck_east() {
     }
 }
 
+// Utskjutande del av östra terrassen, i räckesöppningen framför trappan.
+// Plankorna fortsätter österut i samma delning som deck_east, alltså som om
+// terrassen hade haft stair_east_out_boards plankor till just här.
+module deck_east_tongue() {
+    for (i = [0 : stair_east_out_boards - 1]) {
+        x = stair_east_x_edge + deck_east_gap
+          + i * (deck_board_width + deck_east_gap);
+        translate([x, stair_east_y0, deck_height]) {
+            cube([deck_board_width, stair_east_width, deck_board_thickness]);
+        }
+    }
+}
+
+// Ramp längs terrassens östra kant, från marken i norr upp till tungan i söder.
+// Byggs i ett roterat koordinatsystem med origo i övre kanten: lokal +Y går
+// nedför lutningen och plankornas ovansida ligger i lokal z = 0, så att
+// gångytan möter tungan i liv.
+module ramp_east() {
+    translate([ramp_east_x0, ramp_east_y_top, deck_top_z]) {
+        rotate([-ramp_east_angle, 0, 0]) {
+            for (i = [0 : ramp_east_count - 1]) {
+                translate([0, i * (deck_board_width + ramp_east_gap),
+                           -deck_board_thickness]) {
+                    cube([ramp_east_width, deck_board_width,
+                          deck_board_thickness]);
+                }
+            }
+        }
+    }
+}
+
 // Trappa från östra terrassen ner till marken. Öppna steg, ett 2x8 per steg,
-// som löper i nord-sydlig riktning över hela öppningens bredd.
+// som löper i nord-sydlig riktning över hela öppningens bredd. Trappan börjar
+// vid tungans kant, inte vid terrassens.
 module stair_east() {
-    x0 = house_width + ext_width;
+    x0 = stair_east_x_top;
 
     for (i = [1 : stair_east_treads]) {
         z_top  = deck_top_z - i * stair_east_rise;
@@ -581,6 +613,48 @@ stair_east_y0     = deck_east_y0 + railing_east_stub_len;
 stair_east_y1     = house_depth - railing_east_south_len;
 stair_east_width  = stair_east_y1 - stair_east_y0;
 
+// Trappan är parallellförskjuten en bit österut, och glappet som uppstår
+// fylls av en utskjutande terrassdel — en tunga lika bred som räckesöppningen.
+// Tungan läggs med samma plankdelning som resten av östra terrassen, så
+// utskjutet följer av antalet plankor i stället för tvärtom; annars skulle
+// tungan få ett eget mellanrum och delningen bryta mot däcket innanför.
+stair_east_out_boards = 5;      // Antal plankor i tungan
+stair_east_out = stair_east_out_boards * (deck_board_width + deck_east_gap);
+stair_east_x_edge = house_width + ext_width;             // Terrassens gamla kant
+stair_east_x_top  = stair_east_x_edge + stair_east_out;  // Tungans kant = trappans topp
+
+// Räckeslinjerna längs öppningen. Konventionen är densamma som för de liggande
+// 2x4:orna: y_line är södra kanten på 2x2-linjen, och 2x4:an centreras över den.
+stair_rail_y_south = stair_east_y0;
+stair_rail_y_north = stair_east_y1 - railing_post_size;
+
+// Ramp i remsan närmast öster om terrassens ursprungliga kant, från marken vid
+// husets nordvägg upp till tungans norra kant. Lutningen följer av utrymmet i
+// stället för tvärtom — det finns bara ramp_east_run meter att fördela
+// fallhöjden på om rampen ska hålla sig innanför nordväggen.
+//
+// Västra kanten läggs i liv med terrassräckets stolpar, inte med terrassens
+// kant: stolparna sticker ut railing_big_offset österut och skulle annars
+// hamna mitt i rampens plank. Östra kanten går i liv med tungan.
+ramp_east_x0    = stair_east_x_edge + railing_big_offset;
+ramp_east_x1    = stair_east_x_top;
+ramp_east_width = ramp_east_x1 - ramp_east_x0;
+ramp_east_y_top = stair_east_y1;    // Möter tungans norra kant
+ramp_east_y_bot = house_depth;      // Marken, i liv med husets nordvägg
+ramp_east_run   = ramp_east_y_bot - ramp_east_y_top;
+ramp_east_rise  = deck_top_z;
+ramp_east_angle = atan(ramp_east_rise / ramp_east_run);
+ramp_east_slope = sqrt(pow(ramp_east_run, 2) + pow(ramp_east_rise, 2));
+// Plank tvärs rampen, alltså tvärs gångriktningen — springorna ger grepp i
+// stigningen i stället för att löpa med lutningen. Antalet räknas ut längs
+// lutningen, och mellanrummet justeras så att det går jämnt ut, som på däcket.
+ramp_east_count = floor((ramp_east_slope + deck_board_gap)
+                        / (deck_board_width + deck_board_gap));
+ramp_east_gap   = (ramp_east_slope - ramp_east_count * deck_board_width)
+                / (ramp_east_count - 1);
+// Räcket på östra sidan: 2x2-linjen dras in från kanten som på terrassräcket
+ramp_rail_x_line = ramp_east_x1 - railing_post_size;
+
 // Trappstegen sträcker sig från terrassens västra kant ända fram till
 // verandans östra vägg. Östra kanten speglas kring trappans mittlinje:
 // x -> step_mirror_dx - x
@@ -769,13 +843,30 @@ module railing_deck_east() {
                    railing_bottom_z);
 }
 
+// Räcke längs tungan, ett per sida. Vanlig låg räckessektion, men lagd längs
+// X i stället för Y. Ingen stolpe i väster: terrassräckets ändstolpe står
+// redan där. Ändstolpen i öster blir däremot trappans toppstolpe — där byter
+// handledaren riktning från vågrät till lutande och behöver stöd.
+module deck_east_tongue_railing(y_line) {
+    translate([stair_east_x_edge, y_line + railing_post_size, deck_top_z]) {
+        rotate([0, 0, -90]) {
+            railing_section_fit(stair_east_out, railing_height_low,
+                                railing_below_deck,
+                                start_post = false, end_post = true);
+        }
+    }
+    railing_rail_x(stair_east_x_edge, y_line, stair_east_out,
+                   deck_top_z + railing_height_low);
+    railing_rail_x(stair_east_x_edge, y_line, stair_east_out, railing_bottom_z);
+}
+
 // Räcke längs trappan, ett per sida. Handledaren följer trappans lutning
 // medan 2x2 står lodrätt, från gånglinjen (nosningarnas linje) upp till
-// handledarens undersida. Överst ansluter handledaren till terrassräckets
-// stolpe, som redan står där och har rätt höjd.
+// handledarens undersida. Överst ansluter handledaren till tungans ändstolpe,
+// som redan står där och har rätt höjd.
 // y_line = södra kanten på 2x2-linjen; 2x4 centreras över den som i övrigt.
 module stair_east_railing(y_line) {
-    x_top = house_width + ext_width;
+    x_top = stair_east_x_top;
     x_bot = x_top + stair_east_risers * stair_east_run;
     angle = atan(stair_east_rise / stair_east_run);
     rake  = sqrt(pow(x_bot - x_top, 2) + pow(deck_top_z, 2));
@@ -795,8 +886,8 @@ module stair_east_railing(y_line) {
         }
     }
 
-    // Stående 2x2 mellan terrassräckets stolpe och den nedre stolpen
-    x0 = x_top + railing_big_offset;          // östra sidan av övre stolpen
+    // Stående 2x2 mellan tungans ändstolpe och den nedre stolpen
+    x0 = x_top;                               // östra sidan av övre stolpen
     x1 = x_bot - railing_big_along;           // västra sidan av nedre stolpen
     clear = x1 - x0;
     n = rs_fit_small(clear, railing_gap_low);
@@ -810,9 +901,69 @@ module stair_east_railing(y_line) {
     }
 }
 
+// Räckena längs öppningen: vågrätt över tungan, sedan lutande ner för trappan.
+// Bara södra sidan av tungan får räcke — norra kanten är öppen, för det är där
+// rampen kommer upp.
 module stair_east_railings() {
-    stair_east_railing(stair_east_y0);                       // södra sidan
-    stair_east_railing(stair_east_y1 - railing_post_size);   // norra sidan
+    deck_east_tongue_railing(stair_rail_y_south);
+    stair_east_railing(stair_rail_y_south);
+    stair_east_railing(stair_rail_y_north);
+}
+
+// Hörnstolpe i tungans nordöstra hörn. Den bär tre saker som alla slutar där
+// och har samma överkant: trappräckets norra handledare, rampens handledare
+// och rampens övre ände. Fotavtrycket är detsamma som ändstolpen i tungans
+// norra räckessektion hade innan rampen tog över den kanten.
+module ramp_east_corner_post() {
+    translate([stair_east_x_top - railing_big_along,
+               stair_rail_y_north - railing_big_offset, railing_foot_z]) {
+        cube([railing_big_along, railing_big_across,
+              railing_below_deck + railing_height_low]);
+    }
+}
+
+// Räcke längs rampens östra kant. Samma uppbyggnad som trappräcket: handledaren
+// följer lutningen medan 2x2 står lodrätt från gångytan upp till dess undersida.
+// Upptill ansluter den till hörnstolpen, nedtill till en stolpe på marken.
+module ramp_east_railing() {
+    // Nedre stolpen kapas så att handledaren vilar på den. Rampen lutar mindre
+    // än trappan, så en stolpe på railing_height_low + railing_top_height skulle
+    // sticka upp genom handledaren i stället för att bära den.
+    post_len = deck_top_z + railing_height_low
+             - (ramp_east_y_bot - railing_big_along - ramp_east_y_top)
+               * ramp_east_rise / ramp_east_run;
+    translate([ramp_rail_x_line - railing_big_offset,
+               ramp_east_y_bot - railing_big_along, 0]) {
+        cube([railing_big_across, railing_big_along, post_len]);
+    }
+
+    // Handledare längs lutningen, roterad kring sin övre ände så att undersidan
+    // ligger railing_height_low lodrätt över gångytan hela vägen ner.
+    translate([ramp_rail_x_line - railing_big_offset, ramp_east_y_top,
+               deck_top_z + railing_height_low]) {
+        rotate([-ramp_east_angle, 0, 0]) {
+            cube([railing_big_across, ramp_east_slope, railing_top_height]);
+        }
+    }
+
+    // Stående 2x2 mellan hörnstolpen och den nedre stolpen
+    y0 = ramp_east_y_top + railing_big_offset;   // norra sidan av hörnstolpen
+    y1 = ramp_east_y_bot - railing_big_along;    // södra sidan av nedre stolpen
+    clear = y1 - y0;
+    n = rs_fit_small(clear, railing_gap_low);
+    g = (clear - n * railing_post_size) / (n + 1);
+    for (i = [0 : n - 1]) {
+        y = y0 + g + i * (railing_post_size + g);
+        z = deck_top_z - (y - ramp_east_y_top) * ramp_east_rise / ramp_east_run;
+        translate([ramp_rail_x_line, y, z]) {
+            cube([railing_post_size, railing_post_size, railing_height_low]);
+        }
+    }
+}
+
+module ramp_east_railings() {
+    ramp_east_corner_post();
+    ramp_east_railing();
 }
 
 // Bottenregel under samtliga stolpfötter — en genomgående per sida
@@ -837,6 +988,8 @@ module complete_house() {
     color("gray") porch_roof();
     color(organowood) deck();
     color(organowood) deck_east();
+    color(organowood) deck_east_tongue();
+    color(organowood) ramp_east();
     color(organowood) stair_east();
     color(organowood) deck_to_porch();
     color(organowood) deck_south_edge();
@@ -849,6 +1002,7 @@ module complete_house() {
     color(burnt_wood) railing_bottom();
     color(burnt_wood) railing_deck_east();
     color(burnt_wood) stair_east_railings();
+    color(burnt_wood) ramp_east_railings();
 }
 
 // Rendera huset
@@ -872,6 +1026,21 @@ echo(str("  stigning ", stair_east_rise * 1000, " mm, steg ", stair_east_run * 1
     " mm, vinkel ", atan(stair_east_rise / stair_east_run), " grader"));
 echo(str("  trappformeln 2h+b = ", stair_east_sum * 1000, " mm (ska ligga 600-640)"));
 echo(str("  utsprång ", stair_east_treads * stair_east_run, " m österut"));
+echo(str("Utskjutande terrassdel: ", stair_east_out_boards, " plankor = ",
+    stair_east_out, " m österut, ", stair_east_width, " m bred"));
+echo(str("  terrassens kant x = ", stair_east_x_edge, " m, tungans kant x = ",
+    stair_east_x_top, " m"));
+echo(str("  trappan når marken vid x = ",
+    stair_east_x_top + stair_east_risers * stair_east_run, " m"));
+echo(str("Ramp öst: ", ramp_east_run, " m lång i plan, fall ", ramp_east_rise,
+    " m, bredd ", ramp_east_width, " m"));
+echo(str("  lutning 1:", ramp_east_run / ramp_east_rise, " = ",
+    100 * ramp_east_rise / ramp_east_run, " %, ", ramp_east_angle, " grader"));
+echo(str("  ", ramp_east_count, " plank tvärs rampen á ", ramp_east_width,
+    " m, mellanrum ", ramp_east_gap * 1000, " mm, lutande längd ",
+    ramp_east_slope, " m"));
+echo(str("  möter tungan vid y = ", ramp_east_y_top,
+    " m, når marken vid y = ", ramp_east_y_bot, " m"));
 echo(str("Terrass bredd: ", deck_total_width, " m"));
 echo(str("Terrass längd: ", house_depth + porch_depth, " m"));
 
@@ -929,10 +1098,45 @@ mat_east_rail_total = railing_east_stub_len + railing_east_south_len + ext_width
 
 // Trappräcket, en sektion per sida. Alla 2x2 är lika långa eftersom de står
 // lodrätt mellan gånglinjen och den lutande handledaren.
-mat_stair_x_top   = house_width + ext_width;
+// Tungans räcke, en enda sektion — bara södra sidan, eftersom rampen kommer upp
+// i den norra kanten. Samma stolplängd som terrassräckets låga del, eftersom de
+// utgår från samma nivå. Ingen startstolpe — den i väster hör till
+// terrassräcket — så antalet 2x4 är lika med antalet fack.
+mat_tongue_bays      = rs_fit_bays(stair_east_out, false);
+mat_tongue_2x2_per   = rs_fit_n(stair_east_out, false);
+mat_tongue_2x2_count = mat_tongue_bays * mat_tongue_2x2_per;
+mat_tongue_2x2_total = mat_tongue_2x2_count * mat_len_low_west;
+mat_tongue_2x4_count = mat_tongue_bays;
+mat_tongue_2x4_total = mat_tongue_2x4_count * mat_len_low_west;
+mat_tongue_gap       = (rs_fit_clear(stair_east_out, false)
+                        - mat_tongue_2x2_per * railing_post_size)
+                     / (mat_tongue_2x2_per + 1);
+// Handledare och bottenregel, en av varje
+mat_tongue_rail_total = stair_east_out;
+
+// Rampens räcke, en sektion på östra sidan. Alla 2x2 är lika långa eftersom de
+// står lodrätt mellan gångytan och den lutande handledaren.
+mat_ramp_clear     = (ramp_east_y_bot - railing_big_along)
+                   - (ramp_east_y_top + railing_big_offset);
+mat_ramp_2x2_count = rs_fit_small(mat_ramp_clear, railing_gap_low);
+mat_ramp_2x2_len   = railing_height_low;
+mat_ramp_2x2_total = mat_ramp_2x2_count * mat_ramp_2x2_len;
+mat_ramp_gap       = (mat_ramp_clear - mat_ramp_2x2_count * railing_post_size)
+                   / (mat_ramp_2x2_count + 1);
+// Nedre stolpen kapas så att handledaren vilar på den; hörnstolpen i tungans
+// nordöstra hörn är lika lång som terrassräckets låga del.
+mat_ramp_post_len   = deck_top_z + railing_height_low
+                    - (ramp_east_y_bot - railing_big_along - ramp_east_y_top)
+                      * ramp_east_rise / ramp_east_run;
+mat_ramp_corner_len = mat_len_low_west;
+mat_ramp_post_total = mat_ramp_post_len + mat_ramp_corner_len;
+// Lutande handledare, mätt längs lutningen. Ingen bottenregel — samma som trappan.
+mat_ramp_rail_len   = ramp_east_slope;
+
+mat_stair_x_top   = stair_east_x_top;
 mat_stair_x_bot   = mat_stair_x_top + stair_east_risers * stair_east_run;
-mat_stair_clear   = (mat_stair_x_bot - railing_big_along)
-                  - (mat_stair_x_top + railing_big_offset);
+// Övre stolpen är tungans ändstolpe, vars östra liv ligger exakt på x_top
+mat_stair_clear   = (mat_stair_x_bot - railing_big_along) - mat_stair_x_top;
 mat_stair_2x2_per = rs_fit_small(mat_stair_clear, railing_gap_low);
 mat_stair_2x2_count = 2 * mat_stair_2x2_per;
 mat_stair_2x2_len   = railing_height_low;
@@ -967,7 +1171,8 @@ mat_2x2_step_total = mat_step_bays * railing_small_per_bay_step
     * (2 * mat_len_step_1 + 2 * mat_len_step_2 + mat_len_low_west);
 
 mat_2x2_total = mat_2x2_low_total + mat_2x2_high_total + mat_2x2_north_total
-    + mat_2x2_step_total + mat_east_2x2_total + mat_stair_2x2_total;
+    + mat_2x2_step_total + mat_east_2x2_total + mat_tongue_2x2_total
+    + mat_stair_2x2_total + mat_ramp_2x2_total;
 
 // --- 2x4 (50x100 mm) ---
 // Låga delen: en inledande stolpe + en i slutet av varje fack utom det sista
@@ -985,18 +1190,20 @@ mat_2x4_step_total = mat_step_bays
     * (2 * mat_len_step_1 + 2 * mat_len_step_2 + mat_len_low_west);
 
 mat_2x4_posts_count = mat_2x4_low_count + 1 + mat_high_bays + mat_north_bays
-    + mat_2x4_step_count + mat_east_2x4_count + 2;
+    + mat_2x4_step_count + mat_east_2x4_count + mat_tongue_2x4_count + 2 + 2;
 mat_2x4_posts_total = mat_2x4_low_total + mat_2x4_trans_total
     + mat_2x4_high_total + mat_2x4_north_total + mat_2x4_step_total
-    + mat_east_2x4_total + mat_stair_post_total;
+    + mat_east_2x4_total + mat_tongue_2x4_total + mat_stair_post_total
+    + mat_ramp_post_total;
 
 // Liggande handledare ovanpå räcket
 mat_2x4_top_total = railing_west_low_len + railing_west_high_len + deck_total_width
-    + mat_step_units * mat_step_rail + mat_east_rail_total + mat_stair_rail_total;
+    + mat_step_units * mat_step_rail + mat_east_rail_total + mat_tongue_rail_total
+    + mat_stair_rail_total + mat_ramp_rail_len;
 
 // Bottenregel: en genomgående per sida
 mat_2x4_bottom_total = railing_bottom_west_len + deck_total_width
-    + railing_east_bottom_len + mat_east_rail_total;
+    + railing_east_bottom_len + mat_east_rail_total + mat_tongue_rail_total;
 
 mat_2x4_total = mat_2x4_posts_total + mat_2x4_top_total + mat_2x4_bottom_total;
 
@@ -1009,6 +1216,10 @@ echo(str("Norr: ", mat_north_bays, " fack á ", railing_small_per_bay_high,
     " st 2x2, öppning ", mat_north_gap * 1000, " mm"));
 echo(str("Trappsteg (2 st): ", mat_step_bays, " fack á ", railing_small_per_bay_step,
     " st 2x2, öppning ", mat_step_gap * 1000, " mm"));
+echo(str("Tungan (söder): ", mat_tongue_bays, " fack á ", mat_tongue_2x2_per,
+    " st 2x2, öppning ", mat_tongue_gap * 1000, " mm"));
+echo(str("Rampen (öster): ", mat_ramp_2x2_count, " st 2x2, öppning ",
+    mat_ramp_gap * 1000, " mm"));
 
 echo("=== 2x2 ÅTGÅNG TILL RÄCKET ===");
 echo(str("Väst låg: ", mat_2x2_low_count, " st á ", mat_len_low_west, " m = ", mat_2x2_low_total, " m"));
@@ -1020,8 +1231,12 @@ echo(str("Trappan: ", 2 * railing_small_per_bay_step, " st á ", mat_len_step_1,
     " m (östra toppnivån) = ", mat_2x2_step_total, " m"));
 echo(str("Östra terrassen: ", mat_east_2x2_count, " st á ", mat_len_low_west,
     " m = ", mat_east_2x2_total, " m"));
+echo(str("Tungan: ", mat_tongue_2x2_count, " st á ", mat_len_low_west,
+    " m = ", mat_tongue_2x2_total, " m"));
 echo(str("Trappräcket: ", mat_stair_2x2_count, " st á ", mat_stair_2x2_len,
     " m = ", mat_stair_2x2_total, " m"));
+echo(str("Rampräcket: ", mat_ramp_2x2_count, " st á ", mat_ramp_2x2_len,
+    " m = ", mat_ramp_2x2_total, " m"));
 echo(str("TOTALT 2x2: ", mat_2x2_total, " m"));
 
 echo("=== 2x4 ÅTGÅNG TILL RÄCKET ===");
@@ -1033,7 +1248,11 @@ echo(str("Trappan: 2 st á ", mat_len_step_1, " m + 2 st á ", mat_len_step_2,
     " m + 1 st á ", mat_len_low_west, " m (östra toppnivån) = ", mat_2x4_step_total, " m"));
 echo(str("Östra terrassen: ", mat_east_2x4_count, " stolpar á ", mat_len_low_west,
     " m = ", mat_east_2x4_total, " m"));
+echo(str("Tungan: ", mat_tongue_2x4_count, " stolpar á ", mat_len_low_west,
+    " m = ", mat_tongue_2x4_total, " m"));
 echo(str("Trappräcket: 2 stolpar á ", mat_stair_post_len, " m = ", mat_stair_post_total, " m"));
+echo(str("Rampräcket: 1 hörnstolpe á ", mat_ramp_corner_len, " m + 1 markstolpe á ",
+    mat_ramp_post_len, " m = ", mat_ramp_post_total, " m"));
 echo(str("Stolpar totalt: ", mat_2x4_posts_count, " st = ", mat_2x4_posts_total, " m"));
 echo(str("Handledare ovanpå: ", mat_2x4_top_total, " m"));
 echo(str("Bottenregel: ", mat_2x4_bottom_total, " m"));
@@ -1068,7 +1287,9 @@ kl_2x2 = [
     [round(mat_len_step_1    * 1000), 2 * mat_step_bays * railing_small_per_bay_step],
     [round(mat_len_step_2    * 1000), 2 * mat_step_bays * railing_small_per_bay_step],
     [round(mat_len_low_west  * 1000), mat_step_bays * railing_small_per_bay_step],
-    [round(mat_stair_2x2_len * 1000), mat_stair_2x2_count]
+    [round(mat_len_low_west  * 1000), mat_tongue_2x2_count],
+    [round(mat_stair_2x2_len * 1000), mat_stair_2x2_count],
+    [round(mat_ramp_2x2_len  * 1000), mat_ramp_2x2_count]
 ];
 
 kl_2x4_posts = [
@@ -1078,7 +1299,10 @@ kl_2x4_posts = [
     [round(mat_len_step_1     * 1000), 2 * mat_step_bays],
     [round(mat_len_step_2     * 1000), 2 * mat_step_bays],
     [round(mat_len_low_west   * 1000), mat_step_bays],
-    [round(mat_stair_post_len * 1000), 2]
+    [round(mat_len_low_west   * 1000), mat_tongue_2x4_count],
+    [round(mat_stair_post_len * 1000), 2],
+    [round(mat_ramp_corner_len * 1000), 1],
+    [round(mat_ramp_post_len   * 1000), 1]
 ];
 
 kl_2x4_rails = [
@@ -1089,7 +1313,9 @@ kl_2x4_rails = [
     [round(railing_east_stub_len    * 1000), 1],
     [round(railing_east_south_len   * 1000), 1],
     [round(ext_width                * 1000), 1],
-    [round(mat_stair_rail_len       * 1000), 2]   // lutande, mätt längs lutningen
+    [round(stair_east_out           * 1000), 1],  // tungan, bara södra sidan
+    [round(mat_stair_rail_len       * 1000), 2],  // lutande, mätt längs lutningen
+    [round(mat_ramp_rail_len        * 1000), 1]   // rampen, mätt längs lutningen
 ];
 
 kl_2x4_bottom = [
@@ -1098,7 +1324,8 @@ kl_2x4_bottom = [
     [round(railing_east_bottom_len  * 1000), 1],
     [round(railing_east_stub_len    * 1000), 1],
     [round(railing_east_south_len   * 1000), 1],
-    [round(ext_width                * 1000), 1]
+    [round(ext_width                * 1000), 1],
+    [round(stair_east_out           * 1000), 1]   // tungan, bara södra sidan
 ];
 
 echo("=== KAPLISTA: 2x2 (50x50 mm) ===");
