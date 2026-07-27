@@ -769,6 +769,52 @@ module railing_deck_east() {
                    railing_bottom_z);
 }
 
+// Räcke längs trappan, ett per sida. Handledaren följer trappans lutning
+// medan 2x2 står lodrätt, från gånglinjen (nosningarnas linje) upp till
+// handledarens undersida. Överst ansluter handledaren till terrassräckets
+// stolpe, som redan står där och har rätt höjd.
+// y_line = södra kanten på 2x2-linjen; 2x4 centreras över den som i övrigt.
+module stair_east_railing(y_line) {
+    x_top = house_width + ext_width;
+    x_bot = x_top + stair_east_risers * stair_east_run;
+    angle = atan(stair_east_rise / stair_east_run);
+    rake  = sqrt(pow(x_bot - x_top, 2) + pow(deck_top_z, 2));
+
+    // Nedre stolpe, står på marken
+    translate([x_bot - railing_big_along, y_line - railing_big_offset, 0]) {
+        cube([railing_big_along, railing_big_across,
+              railing_height_low + railing_top_height]);
+    }
+
+    // Handledare längs lutningen. Roteras kring sin övre ände, så att
+    // undersidan hela vägen ligger railing_height_low lodrätt över gånglinjen.
+    translate([x_top, y_line - railing_big_offset,
+               deck_top_z + railing_height_low]) {
+        rotate([0, angle, 0]) {
+            cube([rake, railing_big_across, railing_top_height]);
+        }
+    }
+
+    // Stående 2x2 mellan terrassräckets stolpe och den nedre stolpen
+    x0 = x_top + railing_big_offset;          // östra sidan av övre stolpen
+    x1 = x_bot - railing_big_along;           // västra sidan av nedre stolpen
+    clear = x1 - x0;
+    n = rs_fit_small(clear, railing_gap_low);
+    g = (clear - n * railing_post_size) / (n + 1);
+    for (i = [0 : n - 1]) {
+        x = x0 + g + i * (railing_post_size + g);
+        z = deck_top_z - (x - x_top) * stair_east_rise / stair_east_run;
+        translate([x, y_line, z]) {
+            cube([railing_post_size, railing_post_size, railing_height_low]);
+        }
+    }
+}
+
+module stair_east_railings() {
+    stair_east_railing(stair_east_y0);                       // södra sidan
+    stair_east_railing(stair_east_y1 - railing_post_size);   // norra sidan
+}
+
 // Bottenregel under samtliga stolpfötter — en genomgående per sida
 module railing_bottom() {
     railing_rail_y(-deck_total_width, railing_bottom_west_y,
@@ -802,6 +848,7 @@ module complete_house() {
     color(burnt_wood) railing_steps();
     color(burnt_wood) railing_bottom();
     color(burnt_wood) railing_deck_east();
+    color(burnt_wood) stair_east_railings();
 }
 
 // Rendera huset
@@ -880,6 +927,24 @@ mat_east_2x4_total = mat_east_2x4_count * mat_len_low_west;
 // Handledare och bottenregel, en av varje per sektion
 mat_east_rail_total = railing_east_stub_len + railing_east_south_len + ext_width;
 
+// Trappräcket, en sektion per sida. Alla 2x2 är lika långa eftersom de står
+// lodrätt mellan gånglinjen och den lutande handledaren.
+mat_stair_x_top   = house_width + ext_width;
+mat_stair_x_bot   = mat_stair_x_top + stair_east_risers * stair_east_run;
+mat_stair_clear   = (mat_stair_x_bot - railing_big_along)
+                  - (mat_stair_x_top + railing_big_offset);
+mat_stair_2x2_per = rs_fit_small(mat_stair_clear, railing_gap_low);
+mat_stair_2x2_count = 2 * mat_stair_2x2_per;
+mat_stair_2x2_len   = railing_height_low;
+mat_stair_2x2_total = mat_stair_2x2_count * mat_stair_2x2_len;
+// Nedre stolpe per sida
+mat_stair_post_len   = railing_height_low + railing_top_height;
+mat_stair_post_total = 2 * mat_stair_post_len;
+// Lutande handledare per sida
+mat_stair_rail_len   = sqrt(pow(mat_stair_x_bot - mat_stair_x_top, 2)
+                          + pow(deck_top_z, 2));
+mat_stair_rail_total = 2 * mat_stair_rail_len;
+
 // --- 2x2 (50x50 mm) ---
 mat_2x2_low_count = mat_low_bays * railing_small_per_bay_low;
 mat_2x2_low_total = mat_2x2_low_count * mat_len_low_west;
@@ -902,7 +967,7 @@ mat_2x2_step_total = mat_step_bays * railing_small_per_bay_step
     * (2 * mat_len_step_1 + 2 * mat_len_step_2 + mat_len_low_west);
 
 mat_2x2_total = mat_2x2_low_total + mat_2x2_high_total + mat_2x2_north_total
-    + mat_2x2_step_total + mat_east_2x2_total;
+    + mat_2x2_step_total + mat_east_2x2_total + mat_stair_2x2_total;
 
 // --- 2x4 (50x100 mm) ---
 // Låga delen: en inledande stolpe + en i slutet av varje fack utom det sista
@@ -920,14 +985,14 @@ mat_2x4_step_total = mat_step_bays
     * (2 * mat_len_step_1 + 2 * mat_len_step_2 + mat_len_low_west);
 
 mat_2x4_posts_count = mat_2x4_low_count + 1 + mat_high_bays + mat_north_bays
-    + mat_2x4_step_count + mat_east_2x4_count;
+    + mat_2x4_step_count + mat_east_2x4_count + 2;
 mat_2x4_posts_total = mat_2x4_low_total + mat_2x4_trans_total
     + mat_2x4_high_total + mat_2x4_north_total + mat_2x4_step_total
-    + mat_east_2x4_total;
+    + mat_east_2x4_total + mat_stair_post_total;
 
 // Liggande handledare ovanpå räcket
 mat_2x4_top_total = railing_west_low_len + railing_west_high_len + deck_total_width
-    + mat_step_units * mat_step_rail + mat_east_rail_total;
+    + mat_step_units * mat_step_rail + mat_east_rail_total + mat_stair_rail_total;
 
 // Bottenregel: en genomgående per sida
 mat_2x4_bottom_total = railing_bottom_west_len + deck_total_width
@@ -955,6 +1020,8 @@ echo(str("Trappan: ", 2 * railing_small_per_bay_step, " st á ", mat_len_step_1,
     " m (östra toppnivån) = ", mat_2x2_step_total, " m"));
 echo(str("Östra terrassen: ", mat_east_2x2_count, " st á ", mat_len_low_west,
     " m = ", mat_east_2x2_total, " m"));
+echo(str("Trappräcket: ", mat_stair_2x2_count, " st á ", mat_stair_2x2_len,
+    " m = ", mat_stair_2x2_total, " m"));
 echo(str("TOTALT 2x2: ", mat_2x2_total, " m"));
 
 echo("=== 2x4 ÅTGÅNG TILL RÄCKET ===");
@@ -966,6 +1033,7 @@ echo(str("Trappan: 2 st á ", mat_len_step_1, " m + 2 st á ", mat_len_step_2,
     " m + 1 st á ", mat_len_low_west, " m (östra toppnivån) = ", mat_2x4_step_total, " m"));
 echo(str("Östra terrassen: ", mat_east_2x4_count, " stolpar á ", mat_len_low_west,
     " m = ", mat_east_2x4_total, " m"));
+echo(str("Trappräcket: 2 stolpar á ", mat_stair_post_len, " m = ", mat_stair_post_total, " m"));
 echo(str("Stolpar totalt: ", mat_2x4_posts_count, " st = ", mat_2x4_posts_total, " m"));
 echo(str("Handledare ovanpå: ", mat_2x4_top_total, " m"));
 echo(str("Bottenregel: ", mat_2x4_bottom_total, " m"));
@@ -999,7 +1067,8 @@ kl_2x2 = [
     [round(mat_2x2_north_len * 1000), mat_2x2_north_count],
     [round(mat_len_step_1    * 1000), 2 * mat_step_bays * railing_small_per_bay_step],
     [round(mat_len_step_2    * 1000), 2 * mat_step_bays * railing_small_per_bay_step],
-    [round(mat_len_low_west  * 1000), mat_step_bays * railing_small_per_bay_step]
+    [round(mat_len_low_west  * 1000), mat_step_bays * railing_small_per_bay_step],
+    [round(mat_stair_2x2_len * 1000), mat_stair_2x2_count]
 ];
 
 kl_2x4_posts = [
@@ -1008,7 +1077,8 @@ kl_2x4_posts = [
     [round(mat_len_high_north * 1000), mat_north_bays],
     [round(mat_len_step_1     * 1000), 2 * mat_step_bays],
     [round(mat_len_step_2     * 1000), 2 * mat_step_bays],
-    [round(mat_len_low_west   * 1000), mat_step_bays]
+    [round(mat_len_low_west   * 1000), mat_step_bays],
+    [round(mat_stair_post_len * 1000), 2]
 ];
 
 kl_2x4_rails = [
@@ -1018,7 +1088,8 @@ kl_2x4_rails = [
     [round(mat_step_rail            * 1000), mat_step_units],
     [round(railing_east_stub_len    * 1000), 1],
     [round(railing_east_south_len   * 1000), 1],
-    [round(ext_width                * 1000), 1]
+    [round(ext_width                * 1000), 1],
+    [round(mat_stair_rail_len       * 1000), 2]   // lutande, mätt längs lutningen
 ];
 
 kl_2x4_bottom = [
