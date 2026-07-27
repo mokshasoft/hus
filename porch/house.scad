@@ -64,6 +64,19 @@ deck_upper_depth = 3 * deck_board_width + 2 * deck_board_gap;
 // Terrassens södra kant — dit räcket ska gå, inte bara till y = -porch_depth
 deck_south_y = -porch_depth - deck_board_gap - deck_upper_depth;
 
+// Terrass öster om huset, i den tomma delen norr om utbyggnaden. Den går
+// lika långt österut som utbyggnaden, alltså mellan husväggen och
+// utbyggnadens östra liv.
+deck_east_y0 = ext_depth;
+deck_east_len = house_depth - ext_depth;
+// Så många hela plankor som ryms med normalt mellanrum. Bredden är låst av
+// utbyggnaden, så mellanrummet justeras i stället för att lämna en stump
+// vid kanten — samma princip som räckets fackindelning.
+deck_east_count = floor((ext_width + deck_board_gap)
+                        / (deck_board_width + deck_board_gap));
+deck_east_gap = (ext_width - deck_east_count * deck_board_width)
+                / (deck_east_count - 1);
+
 // === MODULER ===
 
 // Husväggar (utan tak)
@@ -270,6 +283,18 @@ module deck() {
             x_pos = -(i * (deck_board_width + deck_board_gap) + deck_board_width);
             translate([x_pos, 0, 0]) {
                 cube([deck_board_width, deck_length, deck_board_thickness]);
+            }
+        }
+    }
+}
+
+// Terrass öster om huset, norr om utbyggnaden.
+// Plankorna går i nord-sydlig riktning som på västsidan.
+module deck_east() {
+    translate([house_width, deck_east_y0, deck_height]) {
+        for (i = [0 : deck_east_count - 1]) {
+            translate([i * (deck_board_width + deck_east_gap), 0, 0]) {
+                cube([deck_board_width, deck_east_len, deck_board_thickness]);
             }
         }
     }
@@ -657,6 +682,7 @@ module complete_house() {
     color("lightblue", 0.5) porch();
     color("gray") porch_roof();
     color(organowood) deck();
+    color(organowood) deck_east();
     color(organowood) deck_to_porch();
     color(organowood) deck_south_edge();
     color(organowood) deck_step_1();
@@ -681,6 +707,8 @@ echo(str("Takfall: ", roof_drop, " m"));
 echo(str("Takutskjut: ", roof_overhang, " m"));
 echo(str("Utbyggnad öst: ", ext_width, " x ", ext_depth, " m, vägghöjd ",
     roof_z(0), " m (syd) till ", roof_z(ext_depth), " m (norr)"));
+echo(str("Terrass öst: ", ext_width, " x ", deck_east_len, " m, ", deck_east_count,
+    " plankor, mellanrum ", deck_east_gap * 1000, " mm"));
 echo(str("Terrass bredd: ", deck_total_width, " m"));
 echo(str("Terrass längd: ", house_depth + porch_depth, " m"));
 
