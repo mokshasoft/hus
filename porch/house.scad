@@ -16,6 +16,18 @@ roof_thickness = 0.15;   // Taktjocklek (15 cm)
 ext_width = 1.7;                 // Hur långt byggnaden går ut åt öst
 ext_depth = house_depth - 5.2;   // Nord-sydlig längd, räknat från södra väggen
 
+// Tak över östra terrassen (altanen på framsidan). Går från utbyggnadens
+// norra vägg och norrut, en bit under takutskjutet ovanför, och lutar med
+// samma vinkel som huvudtaket fast åt andra hållet — dvs fall mot norr.
+deck_east_roof_below     = 0.5;   // Under takutskjutets underkant ovanför
+deck_east_roof_span      = 2.5;   // Från utbyggnaden fram till stolpen
+deck_east_roof_overhang  = 0.3;   // Utskjut norr om stolpen
+deck_east_roof_joist_w   = 0.05;  // 2x6 tum: 50 mm tvärs regeln
+deck_east_roof_joist_h   = 0.15;  // 2x6 tum: 150 mm på höjden
+deck_east_roof_joist_cc  = 0.6;   // Önskat CC mellan takreglarna
+deck_east_roof_post_size = 0.15;  // Stolpe 6x6 tum ≈ 150 mm
+deck_east_roof_sheet_t   = 0.022; // Takskiva ovanpå reglarna, 22 mm råspont
+
 // Veranda
 porch_width = 4;         // Öst-väst (X)
 porch_depth = 3;         // Nord-syd (Y)
@@ -53,7 +65,8 @@ railing_small_per_bay_step = 3;    // Antal 2x2 mellan varje 2x4, trappstegen
 
 // Räcket på östra terrassen — L-format plus en stump i söder
 railing_east_stub_len  = 0.5;      // Från utbyggnadens vägg och norrut
-railing_east_south_len = 3.0;      // Från nordöstra hörnet och söderut
+// Östra kanten går från nordöstra hörnet och söderut fram till takstolpen.
+// Längden följer därför av var stolpen står, se railing_east_south_len nedan.
 
 railing_high_horizontal = false;  // true = liggande, false = stående
 // Alla stolpar går ner till samma nivå. Hur långt varje stolpe sticker ner
@@ -80,6 +93,31 @@ deck_east_count = floor((ext_width + deck_board_gap)
                         / (deck_board_width + deck_board_gap));
 deck_east_gap = (ext_width - deck_east_count * deck_board_width)
                 / (deck_east_count - 1);
+
+// Taket över östra terrassen. Det går lika långt österut som resten av
+// byggnaden, dvs husets utskjut räknat från utbyggnadens östra liv, och
+// norrut till stolpen plus utskjutet där.
+deck_east_roof_x0     = house_width;                    // Mot husets östra vägg
+deck_east_roof_x_post = house_width + ext_width;        // Stolplinjen = utbyggnadens liv
+deck_east_roof_x1     = deck_east_roof_x_post + roof_overhang;
+deck_east_roof_y_post = deck_east_y0 + deck_east_roof_span;
+deck_east_roof_y1     = deck_east_roof_y_post + deck_east_roof_overhang;
+deck_east_roof_width  = deck_east_roof_x1 - deck_east_roof_x0;
+
+// Takreglarna går i nord-sydlig riktning, dvs med fallet. Den västra ligger
+// mot husväggen och den östra i takets yttre kant, så antalet väljs så att
+// CC hamnar så nära det önskade som möjligt och kanterna går jämnt ut.
+deck_east_roof_joists = max(2, round((deck_east_roof_width - deck_east_roof_joist_w)
+                                     / deck_east_roof_joist_cc) + 1);
+deck_east_roof_pitch  = (deck_east_roof_width - deck_east_roof_joist_w)
+                        / (deck_east_roof_joists - 1);
+// Längd längs lutningen — reglarna är längre än det vågräta måttet
+deck_east_roof_rake   = (deck_east_roof_y1 - deck_east_y0) / cos(roof_angle);
+
+// Räcket längs östra kanten går söderut från nordöstra hörnet och slutar mot
+// takstolpen, som tar över rollen som avslutande stolpe. Trappöppningen blir
+// därmed allt söder om stolpen, ner till stumpen vid utbyggnaden.
+railing_east_south_len = house_depth - deck_east_roof_y_post;
 
 // === MODULER ===
 
@@ -321,6 +359,91 @@ module stair_east() {
     }
 }
 
+// Taket över östra terrassen. Ovansidan av takskivan är ett eget takplan som
+// börjar deck_east_roof_below under takutskjutets underkant vid utbyggnadens
+// norra vägg och faller mot norr med husets taklutning.
+function deck_east_roof_top_z(y) =
+    roof_z(deck_east_y0) - deck_east_roof_below
+    - tan(roof_angle) * (y - deck_east_y0);
+
+// Takreglarnas ovansida — takskivan ligger ovanpå dem
+function deck_east_roof_joist_top_z(y) =
+    deck_east_roof_top_z(y) - deck_east_roof_sheet_t;
+
+// Undersidan av takreglarna vid ett givet y
+function deck_east_roof_soffit_z(y) =
+    deck_east_roof_joist_top_z(y) - deck_east_roof_joist_h;
+
+// Skiva eller balk i takplanet, byggd liggande längs +Y och vriden ner i
+// lutningen kring sin södra ände. z_top = ovansidan vid södra änden.
+module deck_east_roof_raked(width, height, z_top) {
+    translate([0, deck_east_y0, z_top]) {
+        rotate([-roof_angle, 0, 0]) {
+            translate([0, 0, -height]) {
+                cube([width, deck_east_roof_rake, height]);
+            }
+        }
+    }
+}
+
+// En takregel, 2x6 på högkant, med ovansidan mot takskivan
+module deck_east_roof_joist(x) {
+    translate([x, 0, 0]) {
+        deck_east_roof_raked(deck_east_roof_joist_w, deck_east_roof_joist_h,
+                             deck_east_roof_joist_top_z(deck_east_y0));
+    }
+}
+
+// Takskivan, hela takytan i ett stycke ovanpå reglarna
+module deck_east_roof_sheet() {
+    translate([deck_east_roof_x0, 0, 0]) {
+        deck_east_roof_raked(deck_east_roof_width, deck_east_roof_sheet_t,
+                             deck_east_roof_top_z(deck_east_y0));
+    }
+}
+
+// Vågrät bärande regel under takreglarna, tvärs över hela takets bredd:
+// väggregeln mot utbyggnaden i söder och bärlinan över stolpen i norr.
+// y_north = regelns norra sida; ovansidan läggs i liv med takreglarnas
+// undersida där, dvs i regelns lägsta punkt.
+module deck_east_roof_beam(y_north) {
+    z_top = deck_east_roof_soffit_z(y_north);
+    translate([deck_east_roof_x0, y_north - deck_east_roof_joist_w,
+               z_top - deck_east_roof_joist_h]) {
+        cube([deck_east_roof_width, deck_east_roof_joist_w,
+              deck_east_roof_joist_h]);
+    }
+}
+
+// Stolpen som bär upp det fria hörnet. Norra och östra sidan ligger i liv
+// med bärlinans respektive takets stolplinje, så utskjuten mäts från stolpen.
+// I modellen står den på terrassen; i verkligheten fortsätter den ner till
+// en plint under terrassen.
+module deck_east_roof_post() {
+    z_top = deck_east_roof_soffit_z(deck_east_roof_y_post)
+            - deck_east_roof_joist_h;
+    translate([deck_east_roof_x_post - deck_east_roof_post_size,
+               deck_east_roof_y_post - deck_east_roof_post_size, deck_top_z]) {
+        cube([deck_east_roof_post_size, deck_east_roof_post_size,
+              z_top - deck_top_z]);
+    }
+}
+
+module deck_east_roof() {
+    // Takreglar, från husväggen och österut till takets yttre kant
+    for (i = [0 : deck_east_roof_joists - 1]) {
+        deck_east_roof_joist(deck_east_roof_x0 + i * deck_east_roof_pitch);
+    }
+
+    // Väggregel mot utbyggnadens norra vägg, och bärlina över stolpen.
+    // Båda går ut i takets östra kant, dvs de kragar ut roof_overhang
+    // förbi utbyggnadens liv.
+    deck_east_roof_beam(deck_east_y0 + deck_east_roof_joist_w);
+    deck_east_roof_beam(deck_east_roof_y_post);
+
+    deck_east_roof_post();
+}
+
 // Plankor mellan terrassen och inglasade verandan
 module deck_to_porch() {
     porch_x_offset = (house_width - porch_width) / 2;
@@ -559,6 +682,13 @@ deck_top_z     = deck_height + deck_board_thickness;
 railing_foot_z = step_2_top_z;
 railing_below_deck = deck_top_z - railing_foot_z;
 
+// På östra terrassen går inga stolpar ner under däcket. Bottenregeln ligger
+// i stället ovanpå plankorna och stolparna står på den, så stolparna blir
+// kortare medan handledaren hamnar på samma höjd över däcket som i väster.
+railing_east_foot_z = deck_top_z + railing_top_height;  // ovansidan på bottenregeln
+railing_east_top_z  = deck_top_z + railing_height_low;  // undersidan på handledaren
+railing_east_height = railing_east_top_z - railing_east_foot_z;
+
 // Trappa ner från östra terrassen, i öppningen mellan räckessektionerna.
 // Dimensionerad efter trappformeln (Blondel): 2 x stighöjd + steg ska ligga
 // i intervallet 600-640 mm. Planstegen byggs av 2x8, och stegdjupet följer
@@ -728,11 +858,13 @@ module railing_steps() {
 // Räcke på östra terrassen. Tre sektioner:
 //  - en stump från utbyggnadens vägg och railing_east_stub_len norrut
 //  - norra kanten, från husets nordöstra hörn och österut till hörnstolpen
-//  - östra kanten, railing_east_south_len söderut från hörnet
+//  - östra kanten, söderut från hörnet fram till takets stolpe
 // Hörnstolpen hör till den östra sektionen; den norra går fram till den.
 // Varje sektion får handledare på ovansidan och bottenregel under fötterna.
+// Här ligger bottenregeln ovanpå terrassen och stolparna står på den, så
+// inget virke går ner under däcket.
 module railing_deck_east() {
-    base_z  = deck_top_z;
+    base_z  = railing_east_foot_z;
     x_edge  = house_width + ext_width;
     x_line  = x_edge - railing_post_size;   // 2x2-linjen, indragen från kanten
     y_south = house_depth - railing_east_south_len;
@@ -740,33 +872,32 @@ module railing_deck_east() {
 
     // Stump i söder, längs östra kanten
     translate([x_line, deck_east_y0, base_z]) {
-        railing_section_fit(railing_east_stub_len, railing_height_low,
-                            railing_below_deck);
+        railing_section_fit(railing_east_stub_len, railing_east_height, 0);
     }
     railing_rail_y(x_line, deck_east_y0, railing_east_stub_len,
-                   base_z + railing_height_low);
-    railing_rail_y(x_line, deck_east_y0, railing_east_stub_len, railing_bottom_z);
+                   railing_east_top_z);
+    railing_rail_y(x_line, deck_east_y0, railing_east_stub_len, deck_top_z);
 
-    // Östra kanten, söderut från nordöstra hörnet
+    // Östra kanten, söderut från nordöstra hörnet fram till takstolpen.
+    // Ingen egen 2x4 i södra änden — där står takets stolpe.
     translate([x_line, y_south, base_z]) {
-        railing_section_fit(railing_east_south_len, railing_height_low,
-                            railing_below_deck);
+        railing_section_fit(railing_east_south_len, railing_east_height, 0,
+                            start_post = false);
     }
-    railing_rail_y(x_line, y_south, railing_east_south_len,
-                   base_z + railing_height_low);
-    railing_rail_y(x_line, y_south, railing_east_south_len, railing_bottom_z);
+    railing_rail_y(x_line, y_south, railing_east_south_len, railing_east_top_z);
+    railing_rail_y(x_line, y_south, railing_east_south_len, deck_top_z);
 
     // Norra kanten, från husväggen och österut
     translate([house_width, house_depth, base_z]) {
         rotate([0, 0, -90]) {
-            railing_section_fit(north_len, railing_height_low, railing_below_deck,
+            railing_section_fit(north_len, railing_east_height, 0,
                                 start_post = true, end_post = false);
         }
     }
     railing_rail_x(house_width, house_depth - railing_post_size, ext_width,
-                   base_z + railing_height_low);
+                   railing_east_top_z);
     railing_rail_x(house_width, house_depth - railing_post_size, ext_width,
-                   railing_bottom_z);
+                   deck_top_z);
 }
 
 // Räcke längs trappan, ett per sida. Handledaren följer trappans lutning
@@ -837,6 +968,8 @@ module complete_house() {
     color("gray") porch_roof();
     color(organowood) deck();
     color(organowood) deck_east();
+    color(burnt_wood) deck_east_roof();
+    color("darkgray") deck_east_roof_sheet();
     color(organowood) stair_east();
     color(organowood) deck_to_porch();
     color(organowood) deck_south_edge();
@@ -866,6 +999,20 @@ echo(str("Utbyggnad öst: ", ext_width, " x ", ext_depth, " m, vägghöjd ",
     roof_z(0), " m (syd) till ", roof_z(ext_depth), " m (norr)"));
 echo(str("Terrass öst: ", ext_width, " x ", deck_east_len, " m, ", deck_east_count,
     " plankor, mellanrum ", deck_east_gap * 1000, " mm"));
+echo(str("Tak över östra terrassen: ", deck_east_roof_width, " x ",
+    deck_east_roof_y1 - deck_east_y0, " m, fall mot norr ", roof_angle, " grader"));
+echo(str("  ovansida ", deck_east_roof_top_z(deck_east_y0), " m vid utbyggnaden till ",
+    deck_east_roof_top_z(deck_east_roof_y1), " m i norra kanten"));
+echo(str("  fri höjd över terrassen ",
+    deck_east_roof_soffit_z(deck_east_roof_y1) - deck_top_z, " m i norra kanten"));
+echo(str("  ", deck_east_roof_joists, " takreglar 2x6 á ", deck_east_roof_rake,
+    " m, CC ", deck_east_roof_pitch * 1000, " mm"));
+echo(str("  2 st 2x6 tvärs á ", deck_east_roof_width, " m (väggregel + bärlina)"));
+echo(str("  takskiva ", deck_east_roof_sheet_t * 1000, " mm, ",
+    deck_east_roof_width * deck_east_roof_rake, " m2 längs lutningen"));
+echo(str("  stolpe ", deck_east_roof_post_size * 1000, " mm, längd ",
+    deck_east_roof_soffit_z(deck_east_roof_y_post) - deck_east_roof_joist_h - deck_top_z,
+    " m ovan terrassen"));
 echo(str("Trappa öst: ", stair_east_treads, " plansteg á ", stair_east_boards,
     " st 2x8, bredd ", stair_east_width, " m"));
 echo(str("  stigning ", stair_east_rise * 1000, " mm, steg ", stair_east_run * 1000,
@@ -908,22 +1055,24 @@ mat_len_high_north = railing_height_high + railing_below_deck;
 mat_len_step_1     = railing_height_low  + (step_1_top_z - railing_foot_z);
 mat_len_step_2     = railing_height_low  + (step_2_top_z - railing_foot_z);
 
-// Räcket på östra terrassen — alla tre sektionerna har samma stolplängd
-// som terrassräckets låga del, eftersom de utgår från samma nivå.
+// Räcket på östra terrassen — alla tre sektionerna har samma stolplängd.
+// Stolparna står på bottenregeln ovanpå däcket och går upp till handledaren,
+// alltså kortare än i väster där de fortsätter ner under terrassen.
+mat_len_east       = railing_east_height;
 mat_east_north_len = ext_width - (railing_big_across - railing_big_offset);
 mat_east_stub_bays = rs_fit_bays(railing_east_stub_len, true);
-mat_east_side_bays = rs_fit_bays(railing_east_south_len, true);
+mat_east_side_bays = rs_fit_bays(railing_east_south_len, false);
 mat_east_nort_bays = rs_fit_bays(mat_east_north_len, true);
 // 2x2: antal fack gånger antal per fack
 mat_east_2x2_count = mat_east_stub_bays * rs_fit_n(railing_east_stub_len, true)
-    + mat_east_side_bays * rs_fit_n(railing_east_south_len, true)
+    + mat_east_side_bays * rs_fit_n(railing_east_south_len, false)
     + mat_east_nort_bays * rs_fit_n(mat_east_north_len, true);
-// 2x4: stump och östra kanten har stolpe i båda ändar, norra bara i väster
-// (hörnstolpen hör till östra kanten)
-mat_east_2x4_count = (mat_east_stub_bays + 1) + (mat_east_side_bays + 1)
+// 2x4: stumpen har stolpe i båda ändar. Östra kanten och norra bara i ena —
+// hörnstolpen hör till östra kanten, och i söder tar takstolpen vid.
+mat_east_2x4_count = (mat_east_stub_bays + 1) + mat_east_side_bays
     + mat_east_nort_bays;
-mat_east_2x2_total = mat_east_2x2_count * mat_len_low_west;
-mat_east_2x4_total = mat_east_2x4_count * mat_len_low_west;
+mat_east_2x2_total = mat_east_2x2_count * mat_len_east;
+mat_east_2x4_total = mat_east_2x4_count * mat_len_east;
 // Handledare och bottenregel, en av varje per sektion
 mat_east_rail_total = railing_east_stub_len + railing_east_south_len + ext_width;
 
@@ -1018,7 +1167,7 @@ echo(str("Trappan: ", 2 * railing_small_per_bay_step, " st á ", mat_len_step_1,
     2 * railing_small_per_bay_step, " st á ", mat_len_step_2, " m + ",
     railing_small_per_bay_step, " st á ", mat_len_low_west,
     " m (östra toppnivån) = ", mat_2x2_step_total, " m"));
-echo(str("Östra terrassen: ", mat_east_2x2_count, " st á ", mat_len_low_west,
+echo(str("Östra terrassen: ", mat_east_2x2_count, " st á ", mat_len_east,
     " m = ", mat_east_2x2_total, " m"));
 echo(str("Trappräcket: ", mat_stair_2x2_count, " st á ", mat_stair_2x2_len,
     " m = ", mat_stair_2x2_total, " m"));
@@ -1031,7 +1180,7 @@ echo(str("Väst hög: ", mat_high_bays, " stolpar á ", mat_len_high_west, " m =
 echo(str("Norr: ", mat_north_bays, " stolpar á ", mat_len_high_north, " m = ", mat_2x4_north_total, " m"));
 echo(str("Trappan: 2 st á ", mat_len_step_1, " m + 2 st á ", mat_len_step_2,
     " m + 1 st á ", mat_len_low_west, " m (östra toppnivån) = ", mat_2x4_step_total, " m"));
-echo(str("Östra terrassen: ", mat_east_2x4_count, " stolpar á ", mat_len_low_west,
+echo(str("Östra terrassen: ", mat_east_2x4_count, " stolpar á ", mat_len_east,
     " m = ", mat_east_2x4_total, " m"));
 echo(str("Trappräcket: 2 stolpar á ", mat_stair_post_len, " m = ", mat_stair_post_total, " m"));
 echo(str("Stolpar totalt: ", mat_2x4_posts_count, " st = ", mat_2x4_posts_total, " m"));
@@ -1062,7 +1211,8 @@ function kl_total_meters(items) = kl_sum([for (it = items) it[1] * it[0] / 1000]
 
 // [längd i mm, antal]
 kl_2x2 = [
-    [round(mat_len_low_west  * 1000), mat_2x2_low_count + mat_east_2x2_count],
+    [round(mat_len_low_west  * 1000), mat_2x2_low_count],
+    [round(mat_len_east      * 1000), mat_east_2x2_count],
     [round(mat_2x2_high_len  * 1000), mat_2x2_high_count],
     [round(mat_2x2_north_len * 1000), mat_2x2_north_count],
     [round(mat_len_step_1    * 1000), 2 * mat_step_bays * railing_small_per_bay_step],
@@ -1072,7 +1222,8 @@ kl_2x2 = [
 ];
 
 kl_2x4_posts = [
-    [round(mat_len_low_west   * 1000), mat_2x4_low_count + mat_east_2x4_count],
+    [round(mat_len_low_west   * 1000), mat_2x4_low_count],
+    [round(mat_len_east       * 1000), mat_east_2x4_count],
     [round(mat_len_high_west  * 1000), 1 + mat_high_bays],  // övergångsstolpe + höga delen
     [round(mat_len_high_north * 1000), mat_north_bays],
     [round(mat_len_step_1     * 1000), 2 * mat_step_bays],
