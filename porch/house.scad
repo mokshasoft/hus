@@ -716,9 +716,11 @@ stair_east_width  = stair_east_y1 - stair_east_y0;
 // x -> step_mirror_dx - x
 step_east_x    = (house_width - porch_width) / 2 + porch_width;
 step_mirror_dx = step_east_x - deck_total_width;
-// Bottenregel längs trappans östra kant — bara så lång som räcket där
+// Bottenregel längs trappans östra kant — från trappans sydligaste kant och
+// norrut ända in till verandans södra vägg, så att även översta stegets
+// stolpfötter får något att stå på. Motsvarar den genomgående regeln i väster.
 railing_east_bottom_y   = step_2_y_north - deck_upper_depth;
-railing_east_bottom_len = deck_south_y + railing_big_along - railing_east_bottom_y;
+railing_east_bottom_len = -porch_depth - railing_east_bottom_y;
 
 // Bottenregel att fästa stolpfötterna i — samma 2x4 som handledaren, men
 // liggande under fötterna. Eftersom alla fötter ligger på railing_foot_z
