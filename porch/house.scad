@@ -1277,3 +1277,88 @@ echo(str("  SUMMA: ", kl_total_count(kl_2x4_bottom), " st, ", kl_total_meters(kl
 echo(str("=== KAPLISTA SUMMA: 2x2 ", kl_total_meters(kl_2x2), " m, 2x4 ",
     kl_total_meters(kl_2x4_posts) + kl_total_meters(kl_2x4_rails)
         + kl_total_meters(kl_2x4_bottom), " m ==="));
+
+// === VIRKESÅTGÅNG I HELA LÄNGDER ===
+// Kaplistan säger hur många bitar som behövs, men virket köps i hela längder.
+// Här packas bitarna i så få längder som möjligt med "first fit decreasing":
+// längsta biten först, ner i den första längden där den får plats, annars
+// bryts en ny längd. Metoden är inte garanterat optimal, men ligger nära och
+// är lätt att följa med kapsågen i handen.
+//
+// Bitar som är längre än en hel längd (de genomgående rakorna i väster) måste
+// skarvas ändå och delas därför upp i hela längder plus en stump.
+
+stock_len = 4.8;      // Längd på virket som köps in
+saw_kerf  = 0.005;    // Sågsnitt, 5 mm
+
+bp_stock = round(stock_len * 1000);
+bp_kerf  = round(saw_kerf * 1000);
+
+// En för lång bit blir hela längder plus resten
+function bp_chunks(L) =
+    L <= bp_stock ? [L] : concat([bp_stock], bp_chunks(L - bp_stock));
+
+function bp_repeat(v, n) = n <= 0 ? [] : concat(v, bp_repeat(v, n - 1));
+
+// Kaplistan [längd, antal] -> en post per bit
+function bp_flat(items, i = 0, acc = []) =
+    i >= len(items) ? acc
+    : bp_flat(items, i + 1, concat(acc, bp_repeat(bp_chunks(items[i][0]), items[i][1])));
+
+// Quicksort fallande. kl_sort_desc duger inte här — den tappar dubletter.
+function bp_sort_desc(v) =
+    len(v) <= 1 ? v
+    : let(p = v[0])
+      concat(bp_sort_desc([for (e = v) if (e > p) e]),
+             [for (e = v) if (e == p) e],
+             bp_sort_desc([for (e = v) if (e < p) e]));
+
+// Ett fack är [kvar i mm, [bitar]]. Sågsnittet dras av tillsammans med biten,
+// utom när biten går ut hela längden — då behövs inget snitt.
+function bp_fit(bins, L, i = 0) =
+    i >= len(bins) ? -1 : (bins[i][0] >= L ? i : bp_fit(bins, L, i + 1));
+
+function bp_place(bins, L) =
+    let(j = bp_fit(bins, L))
+    j < 0
+        ? concat(bins, [[bp_stock - min(L + bp_kerf, bp_stock), [L]]])
+        : [for (i = [0 : len(bins) - 1])
+              i == j ? [bins[i][0] - min(L + bp_kerf, bins[i][0]),
+                        concat(bins[i][1], [L])]
+                     : bins[i]];
+
+function bp_pack(pieces, i = 0, bins = []) =
+    i >= len(pieces) ? bins : bp_pack(pieces, i + 1, bp_place(bins, pieces[i]));
+
+function bp_bins(items) = bp_pack(bp_sort_desc(bp_flat(items)));
+
+// Identiska kapmönster slås ihop i utskriften. Mönstret jämförs som sträng.
+function bp_join(v, i = 0) =
+    i >= len(v) ? ""
+    : str(v[i], i == len(v) - 1 ? "" : " + ", bp_join(v, i + 1));
+
+function bp_uniq(v, i = 0, acc = []) =
+    i >= len(v) ? acc
+    : bp_uniq(v, i + 1, kl_has(acc, v[i]) ? acc : concat(acc, [v[i]]));
+
+function bp_count(v, x) = kl_sum([for (e = v) e == x ? 1 : 0]);
+
+module bp_report(name, items) {
+    bins   = bp_bins(items);
+    n      = len(bins);
+    need   = kl_total_meters(items);
+    bought = n * bp_stock / 1000;
+    pats   = [for (b = bins) str(bp_join(b[1]), "   (rest ", b[0], " mm)")];
+
+    echo(str("=== VIRKE I ", stock_len, " m-LÄNGDER: ", name, " ==="));
+    for (p = bp_uniq(pats))
+        echo(str("  ", bp_count(pats, p), " st: ", p));
+    echo(str("  SUMMA: ", n, " st á ", stock_len, " m = ", bought, " m",
+        ", varav ", bought - need, " m spill (",
+        round(1000 * (bought - need) / bought) / 10, " %)"));
+}
+
+kl_2x4 = concat(kl_2x4_posts, kl_2x4_rails, kl_2x4_bottom);
+
+bp_report("2x2 (50x50 mm)", kl_2x2);
+bp_report("2x4 (50x100 mm)", kl_2x4);
