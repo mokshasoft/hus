@@ -288,10 +288,32 @@ n2_underkant  = n_overkant_nedre - n2_h;
 n2_avstand    = 2.955;  // Fönster 1-2:s vänstra kant till detta fönsters högra kant
 n2_fran_hoger = n1_fran_hoger + n1_b + n2_avstand;
 
+// === ÖVRE RADEN ===
+// Två fönster som delar både underkant och höjd. Underkanten är den som det
+// befintliga övre fönstret redan har, dvs given av mellanrummet upp från det
+// undre högra. Höjden är gemensam och sätts på ett ställe.
+n_ovre_underkant = n1_underkant + n1_h + n1_mellanrum;
+
+// Gemensam hålhöjd för båda fönstren i övre raden — ändra bara här.
+// Underkanten ligger på 3000 över golv och stommens överkant på 4985, så
+// taket för den här siffran är 1985 mm.
+n_ovre_h = 1.210;
+
+// Höger: samma bredd och sidoläge som det undre fönstret rakt under
+n3_b          = n1_b;
+n3_h          = n_ovre_h;
+n3_fran_hoger = n1_fran_hoger;
+
+// Vänster: nytt fönster, med högerkanten i liv med det stora under det
+n4_b          = 0.675;
+n4_h          = n_ovre_h;
+n4_fran_hoger = n2_fran_hoger;
+
 window_list_north = [
     ["N", n_x(n1_fran_hoger, n1_b), n1_underkant, n1_b, n1_h],
-    ["N", n_x(n1_fran_hoger, n1_b), n1_underkant + n1_h + n1_mellanrum, n1_b, n1_h],
-    ["N", n_x(n2_fran_hoger, n2_b), n2_underkant, n2_b, n2_h]
+    ["N", n_x(n3_fran_hoger, n3_b), n_ovre_underkant, n3_b, n3_h],
+    ["N", n_x(n2_fran_hoger, n2_b), n2_underkant, n2_b, n2_h],
+    ["N", n_x(n4_fran_hoger, n4_b), n_ovre_underkant, n4_b, n4_h]
 ];
 
 // Västfasaden ses också utifrån. Där är "höger" i vyn söder, dvs mot y = 0,
