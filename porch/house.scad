@@ -18,12 +18,35 @@ frame_width = 10.05;     // Stommen öst-väst
 frame_depth = 8.15;      // Stommen nord-syd
 house_width = frame_width + 2 * wall_utanfor_stomme;   // Öst-väst (X)
 house_depth = frame_depth + 2 * wall_utanfor_stomme;   // Nord-syd (Y)
-house_height_north = 6;  // Höjd på norra sidan
+// Stommens höjd på norra sidan, mätt från färdigt golv. Husets höjd över mark
+// räknas ut i Beräknade värden, när golvnivån är känd.
+frame_height_north = 4.985;
 roof_angle = 11;         // Taklutning i grader mot syd
 
 // Takutskjut
 roof_overhang = 0.5;     // Takutskjut huvudhus (50 cm)
-roof_thickness = 0.15;   // Taktjocklek (15 cm)
+
+// Takets uppbyggnad ovanpå stommen, nerifrån och upp. Underkanten ligger i
+// takplanet roof_z(), så hela paketet reser sig därifrån.
+roof_isolering = 0.51;   // Isolering
+roof_bradlager = 0.03;   // Brädlager ovanpå isoleringen
+roof_lakt      = 0.06;   // Läkt som bär plåten
+roof_plat      = 0.001;  // Plåttak
+roof_thickness = roof_isolering + roof_bradlager + roof_lakt + roof_plat;
+
+// Utskjutet har ingen isolering. Där bär en stående 2x4 upp samma ytskikt,
+// så utskjutet blir betydligt tunnare än taket över huskroppen. Plåten är
+// gemensam och ligger i ett plan, så det är ovansidorna som möts — utskjutets
+// undersida hamnar därför en bit ovanför stommens överkant.
+roof_utskjut_regel = 0.10;   // 2x4 stående, 100 mm på höjden
+roof_utskjut_panel = 0.03;   // Panel ovanpå regeln
+roof_utskjut_spalt = 0.06;   // Luftspalt under plåten
+roof_utskjut_thickness = roof_utskjut_regel + roof_utskjut_panel
+                       + roof_utskjut_spalt + roof_plat;
+
+// Verandataket är en egen, lätt konstruktion och följer inte huvudtakets
+// uppbyggnad.
+porch_roof_thickness = 0.15;
 
 // Utbyggnad på sydöstra sidan. De 1700 är stommens utskjut; utanpå det kommer
 // samma skikt som på övriga väggar, så utskjutet räknat från fasadlivet blir
@@ -60,7 +83,10 @@ window_glass_t    = 0.03;   // Glaspaketets tjocklek
 // Tak över östra terrassen (altanen på framsidan). Går från utbyggnadens
 // norra vägg och norrut, en bit under takutskjutet ovanför, och lutar med
 // samma vinkel som huvudtaket fast åt andra hållet — dvs fall mot norr.
-deck_east_roof_below     = 0.5;   // Under takutskjutets underkant ovanför
+// Måttet räknas från takplanet, dvs stommens överkant. Takfoten ovanför
+// ligger högre än så — utskjutet har ingen isolering och hänger i plåtens
+// plan — så den fria höjden upp till takfoten blir större än det här talet.
+deck_east_roof_below     = 0.5;   // Under takplanet vid utbyggnaden
 deck_east_roof_span      = 2.5;   // Från utbyggnaden fram till stolpen
 deck_east_roof_overhang  = 0.3;   // Utskjut norr om stolpen
 deck_east_roof_joist_w   = 0.05;  // 2x6 tum: 50 mm tvärs regeln
@@ -114,6 +140,18 @@ railing_high_horizontal = false;  // true = liggande, false = stående
 // under sin egen nivå räknas därför ut, se railing_foot_z längre ner.
 
 // Beräknade värden
+
+// Färdigt golv ligger i liv med terrassen, så man går rakt ut utan steg.
+// Bjälklaget ligger mellan house_floor_z - house_floor_thickness och golvnivån.
+// Nivån behövs redan här, eftersom stommens höjd mäts från golvet.
+deck_top_z    = deck_height + deck_board_thickness;
+house_floor_z = deck_top_z;
+
+// Stommen står på bjälklaget, så husets höjd över mark är golvnivån plus
+// stomhöjden. Takplanet roof_z() ligger i stommens överkant och takpaketet
+// ovanpå det.
+house_height_north = house_floor_z + frame_height_north;
+
 roof_drop = tan(roof_angle) * house_depth;
 house_height_south = house_height_north - roof_drop;
 deck_total_width = deck_board_count * deck_board_width + (deck_board_count - 1) * deck_board_gap;
@@ -410,25 +448,18 @@ module house_east_ext() {
     polyhedron(points=points, faces=faces, convexity=2);
 }
 
-// Utbyggnadens tak — samma plan och samma utskjut som huvudtaket.
-// Inget utskjut i väster, där möter det huvudtaket.
-module house_east_ext_roof() {
-    x0 = house_width;
-    x1 = house_width + ext_width + roof_overhang;
-    y0 = -roof_overhang;
-    y1 = ext_depth + roof_overhang;
-
+// Ett skivstycke i takplanet. z0 och z1 är under- respektive ovansidans
+// avstånd från takplanet roof_z(), så skivan följer lutningen av sig själv.
+module roof_slab(x0, x1, y0, y1, z0, z1) {
     points = [
-        // Undersida
-        [x0, y0, roof_z(y0)],                   // 0: SW
-        [x1, y0, roof_z(y0)],                   // 1: SE
-        [x1, y1, roof_z(y1)],                   // 2: NE
-        [x0, y1, roof_z(y1)],                   // 3: NW
-        // Ovansida
-        [x0, y0, roof_z(y0) + roof_thickness],  // 4: SW
-        [x1, y0, roof_z(y0) + roof_thickness],  // 5: SE
-        [x1, y1, roof_z(y1) + roof_thickness],  // 6: NE
-        [x0, y1, roof_z(y1) + roof_thickness]   // 7: NW
+        [x0, y0, roof_z(y0) + z0],   // 0: SW under
+        [x1, y0, roof_z(y0) + z0],   // 1: SE under
+        [x1, y1, roof_z(y1) + z0],   // 2: NE under
+        [x0, y1, roof_z(y1) + z0],   // 3: NW under
+        [x0, y0, roof_z(y0) + z1],   // 4: SW över
+        [x1, y0, roof_z(y0) + z1],   // 5: SE över
+        [x1, y1, roof_z(y1) + z1],   // 6: NE över
+        [x0, y1, roof_z(y1) + z1]    // 7: NW över
     ];
 
     faces = [
@@ -443,44 +474,30 @@ module house_east_ext_roof() {
     polyhedron(points=points, faces=faces, convexity=2);
 }
 
-// Huvudhusets tak med utskjut
+// Utbyggnadens tak — samma plan och samma utskjut som huvudtaket.
+// Inget utskjut i väster, där möter det huvudtaket.
+module house_east_ext_roof() {
+    // Tunn skiva över hela ytan, inklusive utskjutet
+    roof_slab(house_width, house_width + ext_width + roof_overhang,
+              -roof_overhang, ext_depth + roof_overhang,
+              roof_thickness - roof_utskjut_thickness, roof_thickness);
+
+    // Isolerpaketet, bara över utbyggnadens egen kropp
+    roof_slab(house_width, house_width + ext_width,
+              0, ext_depth,
+              0, roof_thickness);
+}
+
+// Huvudhusets tak med utskjut. Två skivor: en tunn som går ut över kanterna
+// och bär plåten, och isolerpaketet som bara ligger över huskroppen.
 module house_roof() {
-    // Takutskjutets extra höjdfall
-    overhang_drop_south = tan(roof_angle) * roof_overhang;
-    overhang_drop_north = tan(roof_angle) * roof_overhang;
+    // Tunn skiva över hela ytan, inklusive utskjutet
+    roof_slab(-roof_overhang, house_width + roof_overhang,
+              -roof_overhang, house_depth + roof_overhang,
+              roof_thickness - roof_utskjut_thickness, roof_thickness);
 
-    // Takytans höjder vid kanterna (med utskjut)
-    z_south = house_height_south - overhang_drop_south;
-    z_north = house_height_north + overhang_drop_north;
-
-    translate([-roof_overhang, -roof_overhang, 0]) {
-        total_width = house_width + 2 * roof_overhang;
-        total_depth = house_depth + 2 * roof_overhang;
-
-        points = [
-            // Undersida av taket
-            [0, 0, z_south],                    // 0: SW under
-            [total_width, 0, z_south],          // 1: SE under
-            [total_width, total_depth, z_north], // 2: NE under
-            [0, total_depth, z_north],          // 3: NW under
-            // Ovansida av taket
-            [0, 0, z_south + roof_thickness],                    // 4: SW över
-            [total_width, 0, z_south + roof_thickness],          // 5: SE över
-            [total_width, total_depth, z_north + roof_thickness], // 6: NE över
-            [0, total_depth, z_north + roof_thickness]           // 7: NW över
-        ];
-
-        faces = [
-            [3, 2, 1, 0],   // Undersida
-            [4, 5, 6, 7],   // Ovansida
-            [0, 4, 7, 3],   // Västra kanten
-            [1, 2, 6, 5],   // Östra kanten
-            [2, 3, 7, 6],   // Norra kanten
-            [0, 1, 5, 4]    // Södra kanten
-        ];
-
-        polyhedron(points=points, faces=faces, convexity=2);
-    }
+    // Isolerpaketet, bara över huskroppen
+    roof_slab(0, house_width, 0, house_depth, 0, roof_thickness);
 }
 
 // Veranda (inglasad)
@@ -522,10 +539,10 @@ module porch_roof() {
             [total_width, total_depth, porch_roof_drop], // 2: NE
             [0, total_depth, porch_roof_drop],      // 3: NW
             // Ovansida
-            [0, 0, roof_thickness],                              // 4: SW
-            [total_width, 0, roof_thickness],                    // 5: SE
-            [total_width, total_depth, porch_roof_drop + roof_thickness], // 6: NE
-            [0, total_depth, porch_roof_drop + roof_thickness]   // 7: NW
+            [0, 0, porch_roof_thickness],                              // 4: SW
+            [total_width, 0, porch_roof_thickness],                    // 5: SE
+            [total_width, total_depth, porch_roof_drop + porch_roof_thickness], // 6: NE
+            [0, total_depth, porch_roof_drop + porch_roof_thickness]   // 7: NW
         ];
 
         faces = [
@@ -588,8 +605,8 @@ module stair_east() {
 }
 
 // Taket över östra terrassen. Ovansidan av takskivan är ett eget takplan som
-// börjar deck_east_roof_below under takutskjutets underkant vid utbyggnadens
-// norra vägg och faller mot norr med husets taklutning.
+// börjar deck_east_roof_below under takplanet vid utbyggnadens norra vägg
+// och faller mot norr med husets taklutning.
 function deck_east_roof_top_z(y) =
     roof_z(deck_east_y0) - deck_east_roof_below
     - tan(roof_angle) * (y - deck_east_y0);
@@ -906,12 +923,8 @@ step_2_top_z   = deck_height - 2 * step_drop + deck_board_thickness;
 // Alla stolpfötter hamnar på samma nivå: lägsta trappstegets ovansida.
 // Hur långt en stolpe sticker ner under sin egen nivå är då bara skillnaden
 // mellan den nivån och stolpfoten.
-deck_top_z     = deck_height + deck_board_thickness;
-
-// Färdigt golv i liv med terrassen, så man går rakt ut utan steg. Bjälklaget
-// ligger alltså mellan house_floor_z - house_floor_thickness och golvnivån.
-house_floor_z  = deck_top_z;
-
+// deck_top_z och house_floor_z definieras bland de beräknade värdena längre
+// upp, eftersom stommens höjd mäts från golvnivån.
 railing_foot_z = step_2_top_z;
 railing_below_deck = deck_top_z - railing_foot_z;
 
