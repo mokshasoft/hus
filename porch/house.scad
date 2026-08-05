@@ -16,6 +16,18 @@ roof_thickness = 0.15;   // Taktjocklek (15 cm)
 ext_width = 1.7;                 // Hur långt byggnaden går ut åt öst
 ext_depth = house_depth - 5.2;   // Nord-sydlig längd, räknat från södra väggen
 
+// Ytterväggen. Huset var tidigare en solid kloss; för att fönstren ska sitta
+// i ett genomgående hål gröps huset ur och väggen får en tjocklek.
+house_wall_thickness = 0.55;
+
+// Fönster. Måtten i window_list är hålets mått i väggen — fönstret tillverkas
+// mindre än så, med en spalt runt om som drevas.
+window_gap        = 0.015;  // Spalt mellan karm och hålkant, runt om
+window_karm       = 0.05;   // Karmens synliga bredd runt glaset
+window_karm_depth = 0.12;   // Karmens djup in i väggen
+window_inset      = 0.17;   // Karmens utsida indragen från fasadliv
+window_glass_t    = 0.03;   // Glaspaketets tjocklek
+
 // Tak över östra terrassen (altanen på framsidan). Går från utbyggnadens
 // norra vägg och norrut, en bit under takutskjutet ovanför, och lutar med
 // samma vinkel som huvudtaket fast åt andra hållet — dvs fall mot norr.
@@ -121,8 +133,8 @@ railing_east_south_len = house_depth - deck_east_roof_y_post;
 
 // === MODULER ===
 
-// Husväggar (utan tak)
-module house_walls() {
+// Husets yttre form (utan tak) — solid kloss, gröps ur av house_walls()
+module house_shell() {
     points = [
         // Golv (z=0)
         [0, 0, 0],                          // 0: SW
@@ -147,6 +159,102 @@ module house_walls() {
     ];
 
     polyhedron(points=points, faces=faces, convexity=2);
+}
+
+// === FÖNSTER ===
+// Ett fönster anges med hålets mått i väggen, inte fönstrets. Fönstret görs
+// window_gap mindre runt om, och glaset ligger window_karm innanför det.
+//
+//   [vägg, läge, underkant, hålets bredd, hålets höjd]
+//
+// vägg   "S" syd, "N" norr, "O" öst, "V" väst
+// läge   hålets mittlinje, i husets koordinater (x för syd/norr, y för öst/väst)
+// underkant  hålets underkant över mark
+//
+// OBS: platshållare tills riktiga mått finns. Södra väggen är skymd av
+// verandan mellan x = 3.1 och 7.1, östra av utbyggnaden upp till y = 3.1.
+window_list = [
+    ["S", 1.6, 0.9, 1.2, 1.3],
+    ["S", 8.6, 0.9, 1.2, 1.3],
+    ["V", 2.0, 0.9, 1.2, 1.3],
+    ["V", 6.0, 0.9, 1.6, 1.3],
+    ["N", 5.1, 1.1, 1.0, 1.0],
+    ["O", 5.5, 0.9, 1.2, 1.3]
+];
+
+// Fönstrets tillverkningsmått (karmyttermått) och glasets fria mått
+function win_outer_w(w) = w - 2 * window_gap;
+function win_outer_h(h) = h - 2 * window_gap;
+function win_glass_w(w) = win_outer_w(w) - 2 * window_karm;
+function win_glass_h(h) = win_outer_h(h) - 2 * window_karm;
+
+// Ställer barnen i väggens plan: fasadliv i y = 0, väggen inåt mot +y,
+// hålets underkant i z = 0 och hålet centrerat kring x = 0.
+module window_place(win) {
+    v = win[0];
+    p = win[1];
+    z = win[2];
+
+    if (v == "S")      translate([p, 0, z]) children();
+    else if (v == "N") translate([p, house_depth, z]) rotate([0, 0, 180]) children();
+    else if (v == "O") translate([house_width, p, z]) rotate([0, 0, 90]) children();
+    else if (v == "V") translate([0, p, z]) rotate([0, 0, -90]) children();
+}
+
+// Hålet i väggen, genomgående
+module window_opening(w, h) {
+    eps = 0.001;
+    translate([-w / 2, -eps, 0])
+        cube([w, house_wall_thickness + 2 * eps, h]);
+}
+
+// Själva fönstret: karm som ram runt glaset, centrerat i hålet
+module window_unit(w, h) {
+    eps = 0.001;
+    ow = win_outer_w(w);
+    oh = win_outer_h(h);
+    gw = win_glass_w(w);
+    gh = win_glass_h(h);
+
+    translate([-ow / 2, window_inset, window_gap]) {
+        color(organowood) difference() {
+            cube([ow, window_karm_depth, oh]);
+            translate([window_karm, -eps, window_karm])
+                cube([gw, window_karm_depth + 2 * eps, gh]);
+        }
+        // Glaset mitt i karmdjupet
+        color("lightblue", 0.5)
+            translate([window_karm, (window_karm_depth - window_glass_t) / 2, window_karm])
+                cube([gw, window_glass_t, gh]);
+    }
+}
+
+module windows() {
+    for (win = window_list) window_place(win) window_unit(win[3], win[4]);
+}
+
+// Hålrummet innanför ytterväggen. Går ända upp genom väggkrönet, så att
+// väggarna blir en ram och taket vilar ovanpå.
+module house_cavity() {
+    t = house_wall_thickness;
+    translate([t, t, 0])
+        cube([house_width - 2 * t, house_depth - 2 * t, house_height_north + 1]);
+}
+
+// Husväggar (utan tak) — urgröpta och med hål för fönstren.
+//
+// render(convexity) behövs för snabbpreviewen (F5). Den ritar difference()
+// med djuptest i stället för att räkna ut geometrin, och måste veta hur många
+// ytor en blick som mest korsar. Ett urgröpt hus med fönsterhål ger många
+// fler än polyhedrons convexity=2, och utan det här ser väggarna genomskinliga
+// ut — man ser bortre väggens insida rakt igenom den närmaste.
+module house_walls() {
+    render(convexity = 12)
+    difference() {
+        house_shell();
+        house_cavity();
+        for (win = window_list) window_place(win) window_opening(win[3], win[4]);
+    }
 }
 
 // Takplanets underkant vid en given y. Samma plan över hela byggnaden, så
@@ -965,6 +1073,7 @@ burnt_wood = [0.25, 0.18, 0.12];      // Bränt trä (shou sugi ban)
 // === KOMPLETT MODELL ===
 module complete_house() {
     color(organowood) house_walls();
+    windows();
     color("darkgray") house_roof();
     color(organowood) house_east_ext();
     color("darkgray") house_east_ext_roof();
@@ -1023,6 +1132,17 @@ echo(str("  stigning ", stair_east_rise * 1000, " mm, steg ", stair_east_run * 1
     " mm, vinkel ", atan(stair_east_rise / stair_east_run), " grader"));
 echo(str("  trappformeln 2h+b = ", stair_east_sum * 1000, " mm (ska ligga 600-640)"));
 echo(str("  utsprång ", stair_east_treads * stair_east_run, " m österut"));
+echo("=== FÖNSTER ===");
+echo(str("Karm ", window_karm * 1000, " mm, spalt ", window_gap * 1000,
+    " mm runt om, väggtjocklek ", house_wall_thickness * 1000, " mm"));
+for (win = window_list)
+    echo(str("  ", win[0], " vid ", win[1], " m, underkant ", win[2], " m:",
+        "  hål ", round(win[3] * 1000), "x", round(win[4] * 1000),
+        "  karmyttermått ", round(win_outer_w(win[3]) * 1000), "x",
+        round(win_outer_h(win[4]) * 1000),
+        "  glas ", round(win_glass_w(win[3]) * 1000), "x",
+        round(win_glass_h(win[4]) * 1000), " mm"));
+
 echo(str("Terrass bredd: ", deck_total_width, " m"));
 echo(str("Terrass längd: ", house_depth + porch_depth, " m"));
 
