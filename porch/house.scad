@@ -194,9 +194,12 @@ module house_shell() {
 // Ett fönster anges med hålets mått i väggen, inte fönstrets. Fönstret görs
 // window_gap mindre runt om, och glaset ligger window_karm innanför det.
 //
-//   [vägg, läge, underkant, hålets bredd, hålets höjd]
+//   [vägg, läge, underkant, hålets bredd, hålets höjd, typ]
 //
 // vägg   "S" syd, "N" norr, "O" öst, "V" väst
+// typ    valfri text till beställningslistan; utelämnad blir posten "Fönster".
+//        Geometrin är densamma — en glasdörr är ett hål med karm och glas,
+//        bara med underkanten i golvnivå.
 // läge   hålets mittlinje, i husets koordinater (x för syd/norr, y för öst/väst)
 // underkant  hålets underkant över färdigt golv
 //
@@ -238,18 +241,62 @@ window_list_north = [
     ["N", n_x(n2_fran_hoger, n2_b), n2_underkant, n2_b, n2_h]
 ];
 
-// Övriga väggar — platshållare tills riktiga mått finns. Södra väggen är
-// skymd av verandan mellan x = 3.1 och 7.1, östra av utbyggnaden upp till
-// y = 3.1.
+// Västfasaden ses också utifrån. Där är "höger" i vyn söder, dvs mot y = 0,
+// och måtten löper norrut därifrån. Samma skaltillägg som på nordfasaden,
+// eftersom stommens södra liv ligger wall_utanfor_stomme in från fasadlivet.
+function v_y(fran_hoger_horn, w) = wall_utanfor_stomme + fran_hoger_horn + w / 2;
+
+// Västra väggen — riktiga mått
+
+// 1: stort fönster närmast södra hörnet
+v1_b          = 1.808;  // Hålets bredd
+v1_h          = 1.210;  // Hålets höjd
+v1_fran_hoger = 0.600;  // Stommens södra liv till hålets högra kant
+v1_underkant  = 0.800;  // Underkant över färdigt golv
+
+// 2: mindre fönster högre upp, norr om det första. Sidoläget är givet som en
+// måttkedja från ritningen och står kvar som en summa: 600 fram till v1, 1850
+// för v1:s stomöppning, och 255 därifrån hit. Att 1850 är 42 mm mer än v1:s
+// hålmått 1808 beror på plywooden som klär öppningen, 21 mm på varje sida —
+// måtten i window_list är alltid det färdiga hålet, inte stomöppningen.
+v2_b          = 0.908;
+v2_h          = 0.610;
+v2_fran_hoger = 0.255 + 1.850 + 0.600;
+v2_underkant  = 3.000;
+
+// 3: samma underkant som v2, längre norrut. Sidoläget är givet från stommens
+// norra ände, så det räknas om till avstånd från höger genom att dras från
+// stommens djup.
+v3_b          = 1.308;
+v3_h          = 0.610;
+v3_fran_norr  = 1.955;  // Stommens norra liv till hålets högra kant
+v3_fran_hoger = frame_depth - v3_fran_norr;
+v3_underkant  = v2_underkant;
+
+// 4: glasdörr rakt under v2, med underkanten i golvnivå
+v4_b          = 0.908;
+v4_h          = 2.010;
+v4_fran_hoger = v2_fran_hoger;   // Exakt under fönster 2
+v4_underkant  = 0;
+
+window_list_west = [
+    ["V", v_y(v1_fran_hoger, v1_b), v1_underkant, v1_b, v1_h],
+    ["V", v_y(v2_fran_hoger, v2_b), v2_underkant, v2_b, v2_h],
+    ["V", v_y(v3_fran_hoger, v3_b), v3_underkant, v3_b, v3_h],
+    ["V", v_y(v4_fran_hoger, v4_b), v4_underkant, v4_b, v4_h, "Glasdörr"]
+];
+
+// Kvarvarande väggar — platshållare tills riktiga mått finns. Södra väggen
+// är skymd av verandan mellan x = 3.1 och 7.1, östra av utbyggnaden upp
+// till y = 3.2.
 window_list_placeholder = [
     ["S", 1.6, 0.9, 1.2, 1.3],
     ["S", 8.6, 0.9, 1.2, 1.3],
-    ["V", 2.0, 0.9, 1.2, 1.3],
-    ["V", 6.0, 0.9, 1.6, 1.3],
     ["O", 5.5, 0.9, 1.2, 1.3]
 ];
 
-window_list = concat(window_list_north, window_list_placeholder);
+window_list = concat(window_list_north, window_list_west,
+                     window_list_placeholder);
 
 // Fönstrets tillverkningsmått (karmyttermått) och glasets fria mått
 function win_outer_w(w) = w - 2 * window_gap;
@@ -1219,7 +1266,8 @@ echo("=== FÖNSTER ===");
 echo(str("Karm ", window_karm * 1000, " mm, spalt ", window_gap * 1000,
     " mm runt om, väggtjocklek ", house_wall_thickness * 1000, " mm"));
 for (win = window_list)
-    echo(str("  ", win[0], " vid ", win[1], " m, hålet ", round(win[2] * 1000),
+    echo(str("  ", is_undef(win[5]) ? "Fönster" : win[5],
+        " ", win[0], " vid ", win[1], " m, hålet ", round(win[2] * 1000),
         "-", round((win[2] + win[4]) * 1000), " mm ö golv:",
         "  hål ", round(win[3] * 1000), "x", round(win[4] * 1000),
         "  karmyttermått ", round(win_outer_w(win[3]) * 1000), "x",
