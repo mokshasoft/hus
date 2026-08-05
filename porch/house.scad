@@ -44,6 +44,12 @@ roof_utskjut_spalt = 0.06;   // Luftspalt under plåten
 roof_utskjut_thickness = roof_utskjut_regel + roof_utskjut_panel
                        + roof_utskjut_spalt + roof_plat;
 
+// Fasadskiktet slutar inte vid stommens överkant utan fortsätter upp förbi
+// takets isolering och möter takfotens undersida. Utifrån syns därför vägg
+// ända dit, och bara takfoten ovanför är taktäckt. Isolerpaketets kant ligger
+// bakom fasaden och syns inte.
+wall_over_frame = roof_thickness - roof_utskjut_thickness;
+
 // Verandataket är en egen, lätt konstruktion och följer inte huvudtakets
 // uppbyggnad.
 porch_roof_thickness = 0.15;
@@ -208,11 +214,12 @@ module house_shell() {
         [house_width, 0, 0],                // 1: SE
         [house_width, house_depth, 0],      // 2: NE
         [0, house_depth, 0],                // 3: NW
-        // Toppen av väggarna
-        [0, 0, house_height_south],         // 4: SW
-        [house_width, 0, house_height_south], // 5: SE
-        [house_width, house_depth, house_height_north], // 6: NE
-        [0, house_depth, house_height_north]  // 7: NW
+        // Toppen av väggarna — fasaden går upp till takfotens undersida,
+        // wall_over_frame ovanför stommens överkant
+        [0, 0, house_height_south + wall_over_frame],         // 4: SW
+        [house_width, 0, house_height_south + wall_over_frame], // 5: SE
+        [house_width, house_depth, house_height_north + wall_over_frame], // 6: NE
+        [0, house_depth, house_height_north + wall_over_frame]  // 7: NW
     ];
 
     faces = [
@@ -428,11 +435,11 @@ module house_east_ext() {
         [x1, 0, 0],                     // 1: SE
         [x1, ext_depth, 0],             // 2: NE
         [x0, ext_depth, 0],             // 3: NW
-        // Toppen av väggarna, i takplanet
-        [x0, 0, roof_z(0)],             // 4: SW
-        [x1, 0, roof_z(0)],             // 5: SE
-        [x1, ext_depth, roof_z(ext_depth)], // 6: NE
-        [x0, ext_depth, roof_z(ext_depth)]  // 7: NW
+        // Toppen av väggarna — upp till takfotens undersida, som på huvudhuset
+        [x0, 0, roof_z(0) + wall_over_frame],             // 4: SW
+        [x1, 0, roof_z(0) + wall_over_frame],             // 5: SE
+        [x1, ext_depth, roof_z(ext_depth) + wall_over_frame], // 6: NE
+        [x0, ext_depth, roof_z(ext_depth) + wall_over_frame]  // 7: NW
     ];
 
     faces = [
@@ -482,9 +489,11 @@ module house_east_ext_roof() {
               -roof_overhang, ext_depth + roof_overhang,
               roof_thickness - roof_utskjut_thickness, roof_thickness);
 
-    // Isolerpaketet, bara över utbyggnadens egen kropp
-    roof_slab(house_width, house_width + ext_width,
-              0, ext_depth,
+    // Isolerpaketet, bara över utbyggnadens egen kropp. Indraget bakom
+    // fasaden på de tre fria sidorna; i väster möter det huvudhuset.
+    t = house_wall_thickness;
+    roof_slab(house_width, house_width + ext_width - t,
+              t, ext_depth - t,
               0, roof_thickness);
 }
 
@@ -496,8 +505,11 @@ module house_roof() {
               -roof_overhang, house_depth + roof_overhang,
               roof_thickness - roof_utskjut_thickness, roof_thickness);
 
-    // Isolerpaketet, bara över huskroppen
-    roof_slab(0, house_width, 0, house_depth, 0, roof_thickness);
+    // Isolerpaketet, bara över huskroppen. Indraget en väggtjocklek så att
+    // dess kant hamnar bakom fasaden i stället för i liv med den — annars
+    // ligger två olikfärgade ytor i samma plan och strider om vem som syns.
+    t = house_wall_thickness;
+    roof_slab(t, house_width - t, t, house_depth - t, 0, roof_thickness);
 }
 
 // Veranda (inglasad)
