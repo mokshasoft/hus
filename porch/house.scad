@@ -384,9 +384,18 @@ s2_spalt        = 0.360;  // Mellan hålens kanter
 s2_fran_vanster = s1_fran_vanster + s1_b + s2_spalt;
 s2_underkant    = s1_underkant;
 
+// 3: mindre fönster högre upp, öster om de två. Placerat utifrån spalten till
+// nummer 2, så kedjan hänger ihop hela vägen från västra gaveln.
+s3_b            = 0.558;  // Hålets bredd
+s3_h            = 1.040;  // Hålets höjd
+s3_spalt        = 2.915;  // Mellan hålens kanter
+s3_fran_vanster = s2_fran_vanster + s2_b + s3_spalt;
+s3_underkant    = 0.900;  // Underkant över färdigt golv
+
 window_list_south = [
     ["S", s_x(s1_fran_vanster, s1_b), s1_underkant, s1_b, s1_h],
-    ["S", s_x(s2_fran_vanster, s2_b), s2_underkant, s2_b, s2_h]
+    ["S", s_x(s2_fran_vanster, s2_b), s2_underkant, s2_b, s2_h],
+    ["S", s_x(s3_fran_vanster, s3_b), s3_underkant, s3_b, s3_h]
 ];
 
 window_list = concat(window_list_north, window_list_west, window_list_east,
