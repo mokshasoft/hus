@@ -1191,7 +1191,8 @@ echo("=== FÖNSTER ===");
 echo(str("Karm ", window_karm * 1000, " mm, spalt ", window_gap * 1000,
     " mm runt om, väggtjocklek ", house_wall_thickness * 1000, " mm"));
 for (win = window_list)
-    echo(str("  ", win[0], " vid ", win[1], " m, underkant ", win[2], " m ö golv:",
+    echo(str("  ", win[0], " vid ", win[1], " m, hålet ", round(win[2] * 1000),
+        "-", round((win[2] + win[4]) * 1000), " mm ö golv:",
         "  hål ", round(win[3] * 1000), "x", round(win[4] * 1000),
         "  karmyttermått ", round(win_outer_w(win[3]) * 1000), "x",
         round(win_outer_h(win[4]) * 1000),
