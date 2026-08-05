@@ -85,6 +85,10 @@ window_karm       = 0.05;   // Karmens synliga bredd runt glaset
 window_karm_depth = 0.12;   // Karmens djup in i väggen
 window_inset      = 0.17;   // Karmens utsida indragen från fasadliv
 window_glass_t    = 0.03;   // Glaspaketets tjocklek
+// Färgen på ett tätt dörrblad. Hör egentligen hemma i FÄRGER längre ner, men
+// window_list använder den och filnivåns tilldelningar utvärderas i ordning —
+// en framåtreferens ger undef och dörren hade ritats som glas.
+door_white        = [1, 1, 1];
 
 // Tak över östra terrassen (altanen på framsidan). Går från utbyggnadens
 // norra vägg och norrut, en bit under takutskjutet ovanför, och lutar med
@@ -239,12 +243,15 @@ module house_shell() {
 // Ett fönster anges med hålets mått i väggen, inte fönstrets. Fönstret görs
 // window_gap mindre runt om, och glaset ligger window_karm innanför det.
 //
-//   [vägg, läge, underkant, hålets bredd, hålets höjd, typ]
+//   [vägg, läge, underkant, hålets bredd, hålets höjd, typ, fyllning]
 //
-// vägg   "S" syd, "N" norr, "O" öst, "V" väst
+// vägg   "S" syd, "N" norr, "O" öst, "V" väst på huvudhuset,
+//        "UO" utbyggnadens östvägg
 // typ    valfri text till beställningslistan; utelämnad blir posten "Fönster".
 //        Geometrin är densamma — en glasdörr är ett hål med karm och glas,
 //        bara med underkanten i golvnivå.
+// fyllning  valfri färg på det som sitter innanför karmen; utelämnad ger
+//        genomskinligt glas. En tät dörr får sitt dörrblad här i stället.
 // läge   hålets mittlinje, i husets koordinater (x för syd/norr, y för öst/väst)
 // underkant  hålets underkant över färdigt golv
 //
@@ -331,16 +338,42 @@ window_list_west = [
     ["V", v_y(v4_fran_hoger, v4_b), v4_underkant, v4_b, v4_h, "Glasdörr"]
 ];
 
-// Kvarvarande väggar — platshållare tills riktiga mått finns. Södra väggen
-// är skymd av verandan mellan x = 3.1 och 7.1, östra av utbyggnaden upp
-// till y = 3.2.
-window_list_placeholder = [
-    ["S", 1.6, 0.9, 1.2, 1.3],
-    ["S", 8.6, 0.9, 1.2, 1.3],
-    ["O", 5.5, 0.9, 1.2, 1.3]
+// Östfasaden ses utifrån, så "höger" i den vyn är norr och vänster söder.
+// Måtten på den här fasaden är tagna från båda hållen, så det finns en
+// funktion per riktning. Båda lägger på skalet, eftersom stommens liv ligger
+// wall_utanfor_stomme innanför fasaden.
+function o_y_vanster(fran_vanster, w) =
+    wall_utanfor_stomme + fran_vanster + w / 2;
+function o_y_hoger(fran_hoger, w) =
+    wall_utanfor_stomme + frame_depth - fran_hoger - w / 2;
+
+// Utbyggnadens östvägg — enda fönstret på östsidan
+o1_b            = 0.558;  // Hålets bredd
+o1_h            = 1.050;  // Hålets höjd
+o1_fran_vanster = 1.175;  // Utbyggnadens södra stomliv till hålets vänstra kant
+o1_underkant    = 0.900;  // Underkant över färdigt golv
+
+// Huvudhusets östvägg — en tät vit dörr ut mot östra terrassen, norr om
+// utbyggnaden. Sidoläget är mätt från stommens norra liv.
+o2_b          = 1.013;  // Hålets bredd
+o2_h          = 2.115;  // Hålets höjd
+o2_fran_hoger = 3.600;  // Stommens norra liv till hålets högra kant
+o2_underkant  = 0;      // Dörr, alltså golvnivå
+
+window_list_east = [
+    ["UO", o_y_vanster(o1_fran_vanster, o1_b), o1_underkant, o1_b, o1_h],
+    ["O",  o_y_hoger(o2_fran_hoger, o2_b), o2_underkant, o2_b, o2_h,
+           "Dörr", door_white]
 ];
 
-window_list = concat(window_list_north, window_list_west,
+// Kvarvarande vägg — platshållare tills riktiga mått finns. Södra väggen
+// är skymd av verandan mellan x = 3.1 och 7.1.
+window_list_placeholder = [
+    ["S", 1.6, 0.9, 1.2, 1.3],
+    ["S", 8.6, 0.9, 1.2, 1.3]
+];
+
+window_list = concat(window_list_north, window_list_west, window_list_east,
                      window_list_placeholder);
 
 // Fönstrets tillverkningsmått (karmyttermått) och glasets fria mått
@@ -361,6 +394,8 @@ module window_place(win) {
     else if (v == "N") translate([p, house_depth, z]) rotate([0, 0, 180]) children();
     else if (v == "O") translate([house_width, p, z]) rotate([0, 0, 90]) children();
     else if (v == "V") translate([0, p, z]) rotate([0, 0, -90]) children();
+    else if (v == "UO") translate([house_width + ext_width, p, z])
+                            rotate([0, 0, 90]) children();
 }
 
 // Hålet i väggen, genomgående
@@ -371,7 +406,9 @@ module window_opening(w, h) {
 }
 
 // Själva fönstret: karm som ram runt glaset, centrerat i hålet
-module window_unit(w, h) {
+// fyllning = färg på det som sitter innanför karmen. Utelämnad ger
+// genomskinligt glas; en tät dörr skickar in sitt dörrblad i stället.
+module window_unit(w, h, fyllning = undef) {
     eps = 0.001;
     ow = win_outer_w(w);
     oh = win_outer_h(h);
@@ -384,15 +421,16 @@ module window_unit(w, h) {
             translate([window_karm, -eps, window_karm])
                 cube([gw, window_karm_depth + 2 * eps, gh]);
         }
-        // Glaset mitt i karmdjupet
-        color("lightblue", 0.5)
+        // Fyllningen mitt i karmdjupet
+        color(is_undef(fyllning) ? "lightblue" : fyllning,
+              is_undef(fyllning) ? 0.5 : 1)
             translate([window_karm, (window_karm_depth - window_glass_t) / 2, window_karm])
                 cube([gw, window_glass_t, gh]);
     }
 }
 
 module windows() {
-    for (win = window_list) window_place(win) window_unit(win[3], win[4]);
+    for (win = window_list) window_place(win) window_unit(win[3], win[4], win[6]);
 }
 
 // Hålrummet innanför ytterväggen. Börjar ovanpå bjälklaget och går ända upp
@@ -424,8 +462,9 @@ module house_walls() {
 // både huvudtaket och utbyggnadens tak ligger i liv med varandra.
 function roof_z(y) = house_height_south + tan(roof_angle) * y;
 
-// Utbyggnad i sydöstra hörnet — väggarna toppar mot samma takplan
-module house_east_ext() {
+// Utbyggnad i sydöstra hörnet — väggarna toppar mot samma takplan.
+// Yttre form; gröps ur av house_east_ext().
+module house_east_ext_shell() {
     x0 = house_width;
     x1 = house_width + ext_width;
 
@@ -453,6 +492,24 @@ module house_east_ext() {
     ];
 
     polyhedron(points=points, faces=faces, convexity=2);
+}
+
+// Hålrummet i utbyggnaden. Öppet mot huvudhuset i väster, så det börjar i
+// husets fasadliv och lämnar bara utbyggnadens tre egna väggar.
+module house_east_ext_cavity() {
+    t = house_wall_thickness;
+    translate([house_width, t, house_floor_z])
+        cube([ext_width - t, ext_depth - 2 * t, house_height_north + 1]);
+}
+
+// Utbyggnaden, urgröpt och med hål för sina fönster
+module house_east_ext() {
+    render(convexity = 12)
+    difference() {
+        house_east_ext_shell();
+        house_east_ext_cavity();
+        for (win = window_list) window_place(win) window_opening(win[3], win[4]);
+    }
 }
 
 // Ett skivstycke i takplanet. z0 och z1 är under- respektive ovansidans
@@ -1218,6 +1275,8 @@ module railing_bottom() {
 organowood = [0.9, 0.88, 0.85];       // Silvergrå/vit (organowood-behandlat)
 burnt_wood = [0.25, 0.18, 0.12];      // Bränt trä (shou sugi ban)
 window_frame = [1, 1, 1];             // Vitmålad fönsterkarm
+// door_white hör hemma här men definieras bland fönsterparametrarna, eftersom
+// window_list refererar till den och filnivåns tilldelningar körs i ordning.
 
 // === KOMPLETT MODELL ===
 module complete_house() {
