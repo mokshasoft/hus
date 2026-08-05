@@ -366,15 +366,31 @@ window_list_east = [
            "Dörr", door_white]
 ];
 
-// Kvarvarande vägg — platshållare tills riktiga mått finns. Södra väggen
-// är skymd av verandan mellan x = 3.1 och 7.1.
-window_list_placeholder = [
-    ["S", 1.6, 0.9, 1.2, 1.3],
-    ["S", 8.6, 0.9, 1.2, 1.3]
+// Sydfasaden ses utifrån, så "höger" i den vyn är öster och vänster väster.
+// Måtten är tagna från stommens västra liv och löper österut.
+function s_x(fran_vanster, w) = wall_utanfor_stomme + fran_vanster + w / 2;
+
+// Södra väggen — två lika öppningar i golvnivå med en smal spalt emellan
+s1_b            = 0.908;  // Hålets bredd
+s1_h            = 2.010;  // Hålets höjd
+s1_fran_vanster = 1.495;  // Stommens västra liv till hålets vänstra kant
+s1_underkant    = 0;      // Golvnivå
+
+// 2: likadan, placerad utifrån spalten till den första i stället för med ett
+// eget mått från gaveln. Ligger innanför verandan.
+s2_b            = s1_b;
+s2_h            = s1_h;
+s2_spalt        = 0.360;  // Mellan hålens kanter
+s2_fran_vanster = s1_fran_vanster + s1_b + s2_spalt;
+s2_underkant    = s1_underkant;
+
+window_list_south = [
+    ["S", s_x(s1_fran_vanster, s1_b), s1_underkant, s1_b, s1_h],
+    ["S", s_x(s2_fran_vanster, s2_b), s2_underkant, s2_b, s2_h]
 ];
 
 window_list = concat(window_list_north, window_list_west, window_list_east,
-                     window_list_placeholder);
+                     window_list_south);
 
 // Fönstrets tillverkningsmått (karmyttermått) och glasets fria mått
 function win_outer_w(w) = w - 2 * window_gap;
