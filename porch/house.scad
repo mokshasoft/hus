@@ -105,8 +105,9 @@ deck_east_roof_joist_cc  = 0.6;   // Önskat CC mellan takreglarna
 deck_east_roof_post_size = 0.15;  // Stolpe 6x6 tum ≈ 150 mm
 deck_east_roof_sheet_t   = 0.022; // Takskiva ovanpå reglarna, 22 mm råspont
 
-// Veranda
-porch_width = 4;         // Öst-väst (X)
+// Veranda. Bredden och läget i öst-väst räknas ut ur sydfasadens öppningar,
+// se porch_x_offset längre ner — verandan är inte inmätt utan avläst ur var
+// den står i förhållande till fönstren.
 porch_depth = 3;         // Nord-syd (Y)
 porch_height = 3.0;      // Höjd på verandan
 porch_overhang = 0.2;    // Takutskjut veranda (20 cm)
@@ -401,6 +402,20 @@ window_list_south = [
 window_list = concat(window_list_north, window_list_west, window_list_east,
                      window_list_south);
 
+// === VERANDANS LÄGE ===
+// Verandan har inga egna inmätta mått. Läget är avläst ur sydfasaden: västra
+// väggen står i spalten mellan de två vänstra öppningarna, och östra väggen
+// slutar porch_ost_fore_s3 innan den högra öppningens vänstra kant. Måtten
+// binds därför till fönsterkedjan i stället för att centreras på huset — då
+// följer verandan med om fönstren flyttas.
+//
+// OBS: ungefärligt. Byt mot stommått när de finns.
+porch_ost_fore_s3 = 0.200;   // Från verandans östra vägg till s3:s vänstra kant
+
+porch_x_offset = s_x(s1_fran_vanster, s1_b) + s1_b / 2 + s2_spalt / 2;
+porch_x1       = s_x(s3_fran_vanster, s3_b) - s3_b / 2 - porch_ost_fore_s3;
+porch_width    = porch_x1 - porch_x_offset;
+
 // Fönstrets tillverkningsmått (karmyttermått) och glasets fria mått
 function win_outer_w(w) = w - 2 * window_gap;
 function win_outer_h(h) = h - 2 * window_gap;
@@ -596,7 +611,6 @@ module house_roof() {
 
 // Veranda (inglasad)
 module porch() {
-    porch_x_offset = (house_width - porch_width) / 2;
 
     translate([porch_x_offset, -porch_depth, 0]) {
         difference() {
@@ -617,7 +631,6 @@ module porch() {
 
 // Verandatak med utskjut
 module porch_roof() {
-    porch_x_offset = (house_width - porch_width) / 2;
     porch_roof_angle = 5;
     porch_roof_drop = tan(porch_roof_angle) * (porch_depth + porch_overhang);
 
@@ -785,7 +798,6 @@ module deck_east_roof() {
 
 // Plankor mellan terrassen och inglasade verandan
 module deck_to_porch() {
-    porch_x_offset = (house_width - porch_width) / 2;
     // Börja med 1 cm gap från terrassen (x=0)
     connection_width = porch_x_offset - deck_board_gap;
     board_count = floor(connection_width / (deck_board_width + deck_board_gap));
@@ -803,7 +815,6 @@ module deck_to_porch() {
 
 // Plankor i öst-västlig riktning söder om verandan och terrassen
 module deck_south_edge() {
-    porch_x_offset = (house_width - porch_width) / 2;
     // Från terrassens västra kant till verandans östra kant
     board_length = deck_total_width + porch_x_offset + porch_width;
     south_board_count = 3;
@@ -827,7 +838,6 @@ riser_board_height = (step_drop - deck_board_gap) / 2;  // Två brädor med 1 cm
 
 // Plankor i öst-västlig riktning, första steget (30 cm ner)
 module deck_step_1() {
-    porch_x_offset = (house_width - porch_width) / 2;
     board_length = deck_total_width + porch_x_offset + porch_width;
 
     // Börja söder om deck_south_edge (3 plankor + mellanrum)
@@ -845,7 +855,6 @@ module deck_step_1() {
 
 // Plankor i öst-västlig riktning, andra steget (60 cm ner)
 module deck_step_2() {
-    porch_x_offset = (house_width - porch_width) / 2;
     board_length = deck_total_width + porch_x_offset + porch_width;
 
     // Börja söder om deck_step_1
@@ -863,7 +872,6 @@ module deck_step_2() {
 
 // Vertikala plankor mellan nivåerna (sättsteg)
 module deck_risers() {
-    porch_x_offset = (house_width - porch_width) / 2;
     board_length = deck_total_width + porch_x_offset + porch_width;
 
     // Sättsteg 1: mellan deck_south_edge och deck_step_1
@@ -1054,7 +1062,7 @@ stair_east_width  = stair_east_y1 - stair_east_y0;
 // Trappstegen sträcker sig från terrassens västra kant ända fram till
 // verandans östra vägg. Östra kanten speglas kring trappans mittlinje:
 // x -> step_mirror_dx - x
-step_east_x    = (house_width - porch_width) / 2 + porch_width;
+step_east_x    = porch_x1;   // Verandans östra liv
 step_mirror_dx = step_east_x - deck_total_width;
 // Bottenregel längs trappans östra kant — från trappans sydligaste kant och
 // norrut ända in till verandans södra vägg, så att även översta stegets
