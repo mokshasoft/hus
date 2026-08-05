@@ -137,7 +137,8 @@ module house_walls() {
     ];
 
     faces = [
-        [0, 1, 2, 3],   // Golv
+        [3, 2, 1, 0],   // Golv (vänd som takens undersidor, annars blir
+                        // formen inte sluten och difference() ger tomt)
         [4, 5, 6, 7],   // Övre kant
         [0, 4, 7, 3],   // Västra väggen
         [1, 2, 6, 5],   // Östra väggen
@@ -171,7 +172,8 @@ module house_east_ext() {
     ];
 
     faces = [
-        [0, 1, 2, 3],   // Golv
+        [3, 2, 1, 0],   // Golv (vänd som takens undersidor, annars blir
+                        // formen inte sluten och difference() ger tomt)
         [4, 5, 6, 7],   // Övre kant
         [0, 4, 7, 3],   // Västra väggen (mot huvudhuset)
         [1, 2, 6, 5],   // Östra väggen
