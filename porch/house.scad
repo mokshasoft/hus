@@ -177,16 +177,51 @@ module house_shell() {
 // läge   hålets mittlinje, i husets koordinater (x för syd/norr, y för öst/väst)
 // underkant  hålets underkant över färdigt golv
 //
-// OBS: platshållare tills riktiga mått finns. Södra väggen är skymd av
-// verandan mellan x = 3.1 och 7.1, östra av utbyggnaden upp till y = 3.1.
-window_list = [
+// Nordfasaden ritas sedd utifrån, så "höger" i den vyn är väster, dvs mot
+// x = 0. Måtten tas därifrån och in till fönstrets högra kant; mittlinjen
+// blir då avståndet plus halva hålbredden.
+function n_x(fran_hoger_gavel, w) = fran_hoger_gavel + w / 2;
+
+// Norra väggen — riktiga mått. Måtten löper från fasadvyns högra kant, dvs
+// västra gaveln, och vidare åt vänster fönster för fönster. Varje fönster
+// placeras relativt det föregående i stället för med ett eget absolutmått,
+// så att kedjan håller ihop om ett mått ändras.
+
+// 1-2: två lika fönster över varandra, längst till höger
+n1_b          = 1.308;  // Hålets bredd
+n1_h          = 0.610;  // Hålets höjd
+n1_fran_hoger = 1.400;  // Höger gavel till hålets högra kant
+n1_underkant  = 1.200;  // Undre fönstrets underkant över färdigt golv
+n1_mellanrum  = 1.190;  // Undre fönstrets översida till övre fönstrets underkant
+
+// De nedre fönstren har hålens överkant på exakt samma höjd
+n_overkant_nedre = n1_underkant + n1_h;
+
+// 3: ett högre fönster till vänster om dem, med överkanten i liv
+n2_b          = 1.308;
+n2_h          = 1.210;
+n2_underkant  = n_overkant_nedre - n2_h;
+n2_avstand    = 2.955;  // Fönster 1-2:s vänstra kant till detta fönsters högra kant
+n2_fran_hoger = n1_fran_hoger + n1_b + n2_avstand;
+
+window_list_north = [
+    ["N", n_x(n1_fran_hoger, n1_b), n1_underkant, n1_b, n1_h],
+    ["N", n_x(n1_fran_hoger, n1_b), n1_underkant + n1_h + n1_mellanrum, n1_b, n1_h],
+    ["N", n_x(n2_fran_hoger, n2_b), n2_underkant, n2_b, n2_h]
+];
+
+// Övriga väggar — platshållare tills riktiga mått finns. Södra väggen är
+// skymd av verandan mellan x = 3.1 och 7.1, östra av utbyggnaden upp till
+// y = 3.1.
+window_list_placeholder = [
     ["S", 1.6, 0.9, 1.2, 1.3],
     ["S", 8.6, 0.9, 1.2, 1.3],
     ["V", 2.0, 0.9, 1.2, 1.3],
     ["V", 6.0, 0.9, 1.6, 1.3],
-    ["N", 5.1, 1.1, 1.0, 1.0],
     ["O", 5.5, 0.9, 1.2, 1.3]
 ];
+
+window_list = concat(window_list_north, window_list_placeholder);
 
 // Fönstrets tillverkningsmått (karmyttermått) och glasets fria mått
 function win_outer_w(w) = w - 2 * window_gap;
