@@ -175,7 +175,7 @@ module house_shell() {
 //
 // vägg   "S" syd, "N" norr, "O" öst, "V" väst
 // läge   hålets mittlinje, i husets koordinater (x för syd/norr, y för öst/väst)
-// underkant  hålets underkant över mark
+// underkant  hålets underkant över färdigt golv
 //
 // OBS: platshållare tills riktiga mått finns. Södra väggen är skymd av
 // verandan mellan x = 3.1 och 7.1, östra av utbyggnaden upp till y = 3.1.
@@ -196,10 +196,11 @@ function win_glass_h(h) = win_outer_h(h) - 2 * window_karm;
 
 // Ställer barnen i väggens plan: fasadliv i y = 0, väggen inåt mot +y,
 // hålets underkant i z = 0 och hålet centrerat kring x = 0.
+// Höjden i window_list räknas från färdigt golv, inte från mark.
 module window_place(win) {
     v = win[0];
     p = win[1];
-    z = win[2];
+    z = house_floor_z + win[2];
 
     if (v == "S")      translate([p, 0, z]) children();
     else if (v == "N") translate([p, house_depth, z]) rotate([0, 0, 180]) children();
@@ -223,7 +224,7 @@ module window_unit(w, h) {
     gh = win_glass_h(h);
 
     translate([-ow / 2, window_inset, window_gap]) {
-        color(organowood) difference() {
+        color(window_frame) difference() {
             cube([ow, window_karm_depth, oh]);
             translate([window_karm, -eps, window_karm])
                 cube([gw, window_karm_depth + 2 * eps, gh]);
@@ -1081,6 +1082,7 @@ module railing_bottom() {
 // === FÄRGER ===
 organowood = [0.9, 0.88, 0.85];       // Silvergrå/vit (organowood-behandlat)
 burnt_wood = [0.25, 0.18, 0.12];      // Bränt trä (shou sugi ban)
+window_frame = [1, 1, 1];             // Vitmålad fönsterkarm
 
 // === KOMPLETT MODELL ===
 module complete_house() {
@@ -1154,7 +1156,7 @@ echo("=== FÖNSTER ===");
 echo(str("Karm ", window_karm * 1000, " mm, spalt ", window_gap * 1000,
     " mm runt om, väggtjocklek ", house_wall_thickness * 1000, " mm"));
 for (win = window_list)
-    echo(str("  ", win[0], " vid ", win[1], " m, underkant ", win[2], " m:",
+    echo(str("  ", win[0], " vid ", win[1], " m, underkant ", win[2], " m ö golv:",
         "  hål ", round(win[3] * 1000), "x", round(win[4] * 1000),
         "  karmyttermått ", round(win_outer_w(win[3]) * 1000), "x",
         round(win_outer_h(win[4]) * 1000),
