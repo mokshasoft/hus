@@ -14,7 +14,11 @@ wall_utanfor_stomme = wall_vindskydd + wall_luftspalt + wall_panel;
 
 // Huvudhus. Grundstommens yttermått är det som mäts på bygget; husets
 // yttermått blir stommen plus ett skikt på varje sida.
-frame_width = 10.05;     // Stommen öst-väst
+//
+// frame_width är bara huvuddelen, alltså längden på den nordligaste väggen.
+// Ritningens 10050 är byggnadens totala stommått i öst-väst och innehåller
+// även utbyggnadens utskjut på 1700 — se ext_frame_width nedan.
+frame_width = 8.35;      // Stommen öst-väst, huvuddelen
 frame_depth = 8.15;      // Stommen nord-syd
 house_width = frame_width + 2 * wall_utanfor_stomme;   // Öst-väst (X)
 house_depth = frame_depth + 2 * wall_utanfor_stomme;   // Nord-syd (Y)
