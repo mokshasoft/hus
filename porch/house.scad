@@ -2,9 +2,22 @@
 // Alla mått i meter
 
 // === PARAMETRAR ===
-// Huvudhus
-house_width = 10.2;      // Öst-väst (X)
-house_depth = 8.3;       // Nord-syd (Y)
+
+// Ytterväggens skikt utanför grundstommen. Stommen är referensen när man
+// bygger och mäter, medan modellens fasadliv är panelens utsida. Skillnaden
+// är summan här, och den används både för att sätta husets yttermått och för
+// att räkna om uppmätta fönsterlägen till modellkoordinater.
+wall_vindskydd = 0.06;   // Komprimerad halm
+wall_luftspalt = 0.05;   // Ventilerad spalt bakom panelen
+wall_panel     = 0.03;   // Fasadpanel
+wall_utanfor_stomme = wall_vindskydd + wall_luftspalt + wall_panel;
+
+// Huvudhus. Grundstommens yttermått är det som mäts på bygget; husets
+// yttermått blir stommen plus ett skikt på varje sida.
+frame_width = 10.05;     // Stommen öst-väst
+frame_depth = 8.15;      // Stommen nord-syd
+house_width = frame_width + 2 * wall_utanfor_stomme;   // Öst-väst (X)
+house_depth = frame_depth + 2 * wall_utanfor_stomme;   // Nord-syd (Y)
 house_height_north = 6;  // Höjd på norra sidan
 roof_angle = 11;         // Taklutning i grader mot syd
 
@@ -12,9 +25,19 @@ roof_angle = 11;         // Taklutning i grader mot syd
 roof_overhang = 0.5;     // Takutskjut huvudhus (50 cm)
 roof_thickness = 0.15;   // Taktjocklek (15 cm)
 
-// Utbyggnad på sydöstra sidan
-ext_width = 1.7;                 // Hur långt byggnaden går ut åt öst
-ext_depth = house_depth - 5.2;   // Nord-sydlig längd, räknat från södra väggen
+// Utbyggnad på sydöstra sidan. De 1700 är stommens utskjut; utanpå det kommer
+// samma skikt som på övriga väggar, så utskjutet räknat från fasadlivet blir
+// stommåttet plus skaltjockleken.
+ext_frame_width = 1.7;   // Stommens utskjut åt öst
+ext_width = ext_frame_width + wall_utanfor_stomme;   // Hur långt byggnaden går ut
+
+// Utbyggnadens norra vägg ligger 5200 mm söder om stommens norra vägg. Båda
+// de väggarna har skalet utanpå sig, så ext_depth räknas hela vägen från
+// södra fasadlivet: in till stommens norra liv, 5200 söderut, och ut igen
+// genom utbyggnadens eget skal.
+ext_fran_norra_stomvaggen = 5.2;
+ext_depth = (wall_utanfor_stomme + frame_depth - ext_fran_norra_stomvaggen)
+          + wall_utanfor_stomme;
 
 // Ytterväggen. Huset var tidigare en solid kloss; för att fönstren ska sitta
 // i ett genomgående hål gröps huset ur och väggen får en tjocklek.
@@ -180,7 +203,12 @@ module house_shell() {
 // Nordfasaden ritas sedd utifrån, så "höger" i den vyn är väster, dvs mot
 // x = 0. Måtten tas därifrån och in till fönstrets högra kant; mittlinjen
 // blir då avståndet plus halva hålbredden.
-function n_x(fran_hoger_gavel, w) = fran_hoger_gavel + w / 2;
+//
+// Måtten är tagna från grundstommens liv, inte från panelens utsida som är
+// modellens x = 0. Hela fönsterpaketet skjuts därför wall_utanfor_stomme
+// inåt (åt vänster i fasadvyn). Inbördes avstånd påverkas inte, eftersom
+// samma tillägg görs på alla fönster på väggen.
+function n_x(fran_hoger_gavel, w) = wall_utanfor_stomme + fran_hoger_gavel + w / 2;
 
 // Norra väggen — riktiga mått. Måtten löper från fasadvyns högra kant, dvs
 // västra gaveln, och vidare åt vänster fönster för fönster. Varje fönster
