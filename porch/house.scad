@@ -251,7 +251,7 @@ module house_shell() {
 //   [vägg, läge, underkant, hålets bredd, hålets höjd, typ, fyllning]
 //
 // vägg   "S" syd, "N" norr, "O" öst, "V" väst på huvudhuset,
-//        "UO" utbyggnadens östvägg
+//        "UO" utbyggnadens östvägg, "UN" dess norrvägg
 // typ    valfri text till beställningslistan; utelämnad blir posten "Fönster".
 //        Geometrin är densamma — en glasdörr är ett hål med karm och glas,
 //        bara med underkanten i golvnivå.
@@ -387,9 +387,24 @@ o2_h          = 2.115;  // Hålets höjd
 o2_fran_hoger = 3.600;  // Stommens norra liv till hålets högra kant
 o2_underkant  = 0;      // Dörr, alltså golvnivå
 
+// Utbyggnadens norrvägg vetter åt samma håll som huvudhusets nordfasad, så
+// "vänster" i den vyn är öster. Måttet löper därifrån västerut till hålets
+// vänstra kant. Referensen är utbyggnadens östra stomliv, som ligger
+// ext_frame_width öster om huvudhusets fasadliv.
+function un_x(fran_vanster, w) =
+    house_width + ext_frame_width - fran_vanster - w / 2;
+
+// Utbyggnadens norrvägg — vit dörr ut mot östra terrassen
+o3_b            = 0.913;  // Hålets bredd
+o3_h            = 2.115;  // Hålets höjd
+o3_fran_vanster = 0.490;  // Utbyggnadens östra stomliv till hålets vänstra kant
+o3_underkant    = 0;      // Dörr, alltså golvnivå
+
 window_list_east = [
     ["UO", o_y_vanster(o1_fran_vanster, o1_b), o1_underkant, o1_b, o1_h],
     ["O",  o_y_hoger(o2_fran_hoger, o2_b), o2_underkant, o2_b, o2_h,
+           "Dörr", door_white],
+    ["UN", un_x(o3_fran_vanster, o3_b), o3_underkant, o3_b, o3_h,
            "Dörr", door_white]
 ];
 
@@ -462,6 +477,8 @@ module window_place(win) {
     else if (v == "V") translate([0, p, z]) rotate([0, 0, -90]) children();
     else if (v == "UO") translate([house_width + ext_width, p, z])
                             rotate([0, 0, 90]) children();
+    else if (v == "UN") translate([p, ext_depth, z])
+                            rotate([0, 0, 180]) children();
 }
 
 // Hålet i väggen, genomgående
