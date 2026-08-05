@@ -20,6 +20,12 @@ ext_depth = house_depth - 5.2;   // Nord-sydlig längd, räknat från södra vä
 // i ett genomgående hål gröps huset ur och väggen får en tjocklek.
 house_wall_thickness = 0.55;
 
+// Golvbjälklaget, lika tjockt som väggen. Färdigt golv ligger i liv med
+// terrassen, så bjälklaget hamnar en bit upp i huskroppen och det som blir
+// kvar under det är grund. Nivån sätts vid deck_top_z längre ner, eftersom
+// terrassmåtten definieras först där.
+house_floor_thickness = 0.55;
+
 // Fönster. Måtten i window_list är hålets mått i väggen — fönstret tillverkas
 // mindre än så, med en spalt runt om som drevas.
 window_gap        = 0.015;  // Spalt mellan karm och hålkant, runt om
@@ -233,11 +239,12 @@ module windows() {
     for (win = window_list) window_place(win) window_unit(win[3], win[4]);
 }
 
-// Hålrummet innanför ytterväggen. Går ända upp genom väggkrönet, så att
-// väggarna blir en ram och taket vilar ovanpå.
+// Hålrummet innanför ytterväggen. Börjar ovanpå bjälklaget och går ända upp
+// genom väggkrönet, så att väggarna blir en ram och taket vilar ovanpå.
+// Det som blir kvar under hålrummet är golvet.
 module house_cavity() {
     t = house_wall_thickness;
-    translate([t, t, 0])
+    translate([t, t, house_floor_z])
         cube([house_width - 2 * t, house_depth - 2 * t, house_height_north + 1]);
 }
 
@@ -789,6 +796,11 @@ step_2_top_z   = deck_height - 2 * step_drop + deck_board_thickness;
 // Hur långt en stolpe sticker ner under sin egen nivå är då bara skillnaden
 // mellan den nivån och stolpfoten.
 deck_top_z     = deck_height + deck_board_thickness;
+
+// Färdigt golv i liv med terrassen, så man går rakt ut utan steg. Bjälklaget
+// ligger alltså mellan house_floor_z - house_floor_thickness och golvnivån.
+house_floor_z  = deck_top_z;
+
 railing_foot_z = step_2_top_z;
 railing_below_deck = deck_top_z - railing_foot_z;
 
@@ -1132,6 +1144,12 @@ echo(str("  stigning ", stair_east_rise * 1000, " mm, steg ", stair_east_run * 1
     " mm, vinkel ", atan(stair_east_rise / stair_east_run), " grader"));
 echo(str("  trappformeln 2h+b = ", stair_east_sum * 1000, " mm (ska ligga 600-640)"));
 echo(str("  utsprång ", stair_east_treads * stair_east_run, " m österut"));
+echo(str("Yttervägg: ", house_wall_thickness * 1000, " mm, bjälklag ",
+    house_floor_thickness * 1000, " mm"));
+echo(str("  färdigt golv ", house_floor_z, " m över mark, i liv med terrassen"));
+echo(str("  bjälklag ", house_floor_z - house_floor_thickness, " till ",
+    house_floor_z, " m, grund därunder"));
+
 echo("=== FÖNSTER ===");
 echo(str("Karm ", window_karm * 1000, " mm, spalt ", window_gap * 1000,
     " mm runt om, väggtjocklek ", house_wall_thickness * 1000, " mm"));
