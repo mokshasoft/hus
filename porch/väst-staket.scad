@@ -229,15 +229,28 @@ echo(str("2x2: ", high_bays, " sektioner á ", high_small_per_bay, " st = ",
 echo(str("Öppning: ", high_gap * 1000, " mm, CC 2x2 ",
     (high_gap + railing_post_size) * 1000, " mm"));
 
-// === HÅLBORRNINGSLISTA ===
-// Stolparnas centrum längs staketet, mätt från norra änden (hörnet mot norra
-// staketet) och söderut. Stolpe 1 är den nordligaste. Hela mm; en halv mm
-// avrundas alltid uppåt — utan tillägget avgör flyttalsfelet åt vilket håll
-// 22,5 hamnar.
-echo("=== HÅLBORRNINGSLISTA (från norr) ===");
-for (n = [1 : len(railing_post_list)]) {
-    p = railing_post_list[len(railing_post_list) - n];
+// === HÅLBORRNINGSLISTA, LÅG DEL ===
+// Bara den låga delen längs terrassen. Nollpunkten är övergångsstolpens södra
+// sida, dvs där den höga sektionen slutar; måtten växer söderut och gäller
+// stolpens centrum. Stolpe 1 är den nordligaste i den låga delen, den första
+// 2x2:an söder om övergångsstolpen. Övergångsstolpen själv hör till den höga
+// delen och står därför inte i listan.
+//
+// Hela mm; en halv mm avrundas alltid uppåt — utan tillägget avgör
+// flyttalsfelet åt vilket håll 22,5 hamnar.
+low_zero_x = stair_extent + low_extent;
+
+// Plockas ur samma railing_post_list som modellen ritas från, så listan och
+// geometrin kan inte glida isär. Den låga delens stolpar är de som står norr
+// om trappan men söder om nollpunkten.
+low_post_list = [for (p = railing_post_list)
+    if (p[0] >= stair_extent - 1e-9 && p[0] < low_zero_x - 1e-9) p];
+
+echo("=== HÅLBORRNINGSLISTA, LÅG DEL (0 = höga delens södra ände) ===");
+echo(str("Låg del: ", low_extent, " m, ", len(low_post_list), " stolpar"));
+for (n = [1 : len(low_post_list)]) {
+    p = low_post_list[len(low_post_list) - n];
     center = p[0] + railing_post_width(p[1]) / 2;
-    echo(str("Stolpe ", n, ": ", round((west_extent - center) * 1000 + 1e-6), " mm",
+    echo(str("Stolpe ", n, ": ", round((low_zero_x - center) * 1000 + 1e-6), " mm",
              p[1] ? str("  (2x4, ", round(p[2] * 1000), " mm)") : ""));
 }
